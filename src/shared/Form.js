@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onChange, setError } from "../redux/formSlice";
+import { onChange } from "../redux/formSlice";
 import Input from "./Input";
 import SelectOptions from "./Select";
 
