@@ -4,7 +4,7 @@ export const signUpFormFields = [
     label: "Role",
     list: ["student", "teacher"],
     name: "role",
-    isRequired: "Please Select Role.",
+    isRequired: "Please Select Your Role.",
   },
   {
     type: "text",

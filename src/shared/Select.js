@@ -1,35 +1,33 @@
-import { MenuItem, Select } from "@mui/material";
 import React from "react";
 
-const SelectOptions = ({ label, list, name, value, ...rest }) => {
+const SelectOptions = ({ label, list, name, value, errorMessage, ...rest }) => {
   return (
-    <div>
+    <div style={inputStyle}>
       {label && (
-        <label style={{ display: "inline-block", paddingTop: 16 }}>
+        <label style={{ display: "inline-block", paddingTop: 5 }}>
           {label} :
         </label>
       )}
-      <Select
-        {...rest}
-        name={name}
-        value={value}
-        variant="standard"
-        sx={{ m: 1, minWidth: 120 }}
-      >
-        <MenuItem value={""} disabled>
-          Select
-        </MenuItem>
+      <select {...rest} name={name} value={value}>
+        <option value={""}>Select</option>
         {list &&
           list.map((ele, index) => {
             return (
-              <MenuItem value={ele} key={index}>
+              <option value={ele} key={index}>
                 {ele}
-              </MenuItem>
+              </option>
             );
           })}
-      </Select>
+      </select>
+      {errorMessage && (
+        <span style={{ color: "red", fontSize: 13 }}>{errorMessage}</span>
+      )}
     </div>
   );
 };
 
 export default SelectOptions;
+const inputStyle = {
+  width: "100%",
+  marginBlock: 15,
+};

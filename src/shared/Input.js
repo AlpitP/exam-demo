@@ -1,21 +1,14 @@
-import { TextField } from "@mui/material";
 import React from "react";
 
-const Input = ({ label, errorMessage, value, name, ...rest }) => {
+const Input = ({ label, errorMessage, type, value, name, ...rest }) => {
   return (
     <div style={inputStyle}>
-      {label && (
-        <label style={{ display: "inline-block", paddingTop: 16 }}>
-          {label} :
-        </label>
+      {label && <label>{label} :</label>}
+      <input type={type} name={name} {...rest} value={value} />
+      <br />
+      {errorMessage && (
+        <span style={{ color: "red", fontSize: 13 }}>{errorMessage}</span>
       )}
-      <TextField
-        variant="filled"
-        label={label}
-        name={name}
-        value={value}
-        {...rest}
-      />
     </div>
   );
 };
@@ -23,5 +16,5 @@ const Input = ({ label, errorMessage, value, name, ...rest }) => {
 export default Input;
 const inputStyle = {
   width: "100%",
-  marginBlock: 10,
+  marginBlock: 15,
 };

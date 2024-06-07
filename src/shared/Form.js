@@ -1,24 +1,30 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onChange } from "../redux/formSlice";
+import { onChange, setError } from "../redux/slices/formSlice";
 import Input from "./Input";
 import SelectOptions from "./Select";
 
 const Form = ({ formFields }) => {
   const { formData } = useSelector((state) => state.formData);
-  const error = useSelector((state) => state.formData);
-  console.log(error);
+  const { error } = useSelector((state) => state.formData);
   const dispatch = useDispatch();
 
-  const changeHandler = (event) => {
-    const { name, value } = event.target;
-    dispatch(onChange({ name, value }));
+  const changeHandler = (event, error) => {
+    return (dispatch) => {
+      const { name, value } = event.target;
+      dispatch(onChange({ name, value }));
+      if (value.length === 0) {
+        dispatch(setError({ name, error }));
+      } else {
+        dispatch(setError({ name }));
+      }
+    };
   };
 
   return (
     <div>
       {formFields.map((ele, index) => {
-        const { name, label, list, type } = ele;
+        const { name, label, list, type, isRequired } = ele;
         switch (type) {
           case "select":
             return (
@@ -28,7 +34,8 @@ const Form = ({ formFields }) => {
                 key={index}
                 name={name}
                 value={formData[name]}
-                onChange={changeHandler}
+                onChange={(e) => dispatch(changeHandler(e, isRequired))}
+                errorMessage={error[name]}
               />
             );
           default:
@@ -39,9 +46,8 @@ const Form = ({ formFields }) => {
                 key={index}
                 name={name}
                 value={formData[name]}
-                onChange={(e) =>
-                  dispatch(onChange({ name: name, value: e.target.value }))
-                }
+                errorMessage={error[name]}
+                onChange={(e) => dispatch(changeHandler(e, isRequired))}
               />
             );
         }
