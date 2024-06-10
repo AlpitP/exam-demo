@@ -1,20 +1,20 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import "./App.css";
-import ForgotPassword from "./components/ForgotPassword";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
+import AppRoutes from "./routes/AppRoutes";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
 
 function App() {
+  const { open, type, message } = useSelector((state) => state.toast);
+  useEffect(() => {
+    open && toast[type](message);
+  }, [open, type, message]);
   return (
     <>
-      {/* <SignIn /> */}
-      {/* <SignUp /> */}
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<SignUp />} />
-          <Route path="/signIn" element={<SignIn />} />
-          <Route path="/forgotPassword" element={<ForgotPassword />} />
-        </Routes>
+        <AppRoutes />
+        <ToastContainer />
       </BrowserRouter>
     </>
   );

@@ -15,8 +15,12 @@ const formSlice = createSlice({
       const { name, error } = action.payload;
       state.error[name] = error;
     },
+    clearForm: (state) => {
+      state.formData = {};
+      state.error = {};
+    },
   },
 });
 
-export const { onChange, setError } = formSlice.actions;
+export const { onChange, setError, clearForm } = formSlice.actions;
 export default formSlice.reducer;

@@ -1,16 +1,45 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { axiosInstance } from "../redux/api";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { SUCCESS_CODE } from "../constants";
+import api from "../redux/actions/apiAction";
+import { clearForm } from "../redux/slices/formSlice";
+import { showToast } from "../redux/slices/toastSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signUpFormFields } from "../utils/signUpFormFields";
 
 const SignUp = () => {
   const { formData } = useSelector((state) => state.formData);
+  const { loading } = useSelector((state) => state.api);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearForm());
+    };
+  }, [dispatch]);
 
   const signUpHandler = async () => {
-    await axiosInstance.post("users/SignUp", formData);
+    const config = {
+      url: "users/SignUp",
+      data: formData,
+      method: "POST",
+    };
+    const response = await dispatch(api({ name: "signUp", config }));
+    const { statusCode } = response?.payload?.data;
+
+    if (statusCode === SUCCESS_CODE) {
+      navigate("/sign-in");
+      dispatch(
+        showToast({
+          type: "info",
+          message: "Please, Check you mail box for verification!",
+        })
+      );
+    }
   };
 
   return (
@@ -19,9 +48,12 @@ const SignUp = () => {
       <div style={signUpStyle}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signUpFormFields} />
-          <CustomButton text="Sign Up" onClick={signUpHandler} />
+          <CustomButton
+            text={loading === true ? "Loading" : "Sign Up"}
+            onClick={signUpHandler}
+          />
           <p>
-            Already have an account? <Link to="/signIn">Sign In</Link>
+            Already have an account? <Link to="/sign-in">Sign In</Link>
           </p>
         </form>
       </div>

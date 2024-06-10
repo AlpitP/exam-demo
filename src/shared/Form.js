@@ -33,7 +33,7 @@ const Form = ({ formFields }) => {
                 list={list}
                 key={index}
                 name={name}
-                value={formData[name]}
+                value={formData[name] || "select"}
                 onChange={(e) => dispatch(changeHandler(e, isRequired))}
                 errorMessage={error[name]}
               />
@@ -45,7 +45,7 @@ const Form = ({ formFields }) => {
                 label={label}
                 key={index}
                 name={name}
-                value={formData[name]}
+                value={formData[name] || ""}
                 errorMessage={error[name]}
                 onChange={(e) => dispatch(changeHandler(e, isRequired))}
               />

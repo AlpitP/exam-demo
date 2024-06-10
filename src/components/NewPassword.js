@@ -1,17 +1,16 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { SUCCESS_CODE } from "../constants";
+import { Link } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { forgotPasswordFormFields } from "../utils/forgotPasswordFormFields";
+import { getLocalStorage } from "../utils/javascript";
+import { newPasswordFormFields } from "../utils/newPasswordFormFields";
 
-const ForgotPassword = () => {
+const NewPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -19,24 +18,22 @@ const ForgotPassword = () => {
       dispatch(clearForm());
     };
   }, [dispatch]);
-
+  const token = getLocalStorage("token");
+  console.log(token);
   const clickHandler = async () => {
     const config = {
-      url: "users/ForgotPassword",
+      url: `users/ForgotPassword/Verify?token=${token}`,
       method: "post",
       data: formData,
     };
-    const response = await dispatch(api({ name: "forgot password", config }));
-    const { statusCode } = response?.payload?.data;
-
-    statusCode === SUCCESS_CODE && navigate(`/newPassword`);
+    await dispatch(api({ name: "new password", config }));
   };
   return (
     <div>
       <h1 style={{ textAlign: "center", marginTop: 200 }}>Forgot Password</h1>
       <div style={forgotPasswordStyle}>
         <form onSubmit={(e) => e.preventDefault()}>
-          <Form formFields={forgotPasswordFormFields} />
+          <Form formFields={newPasswordFormFields} />
           <CustomButton
             text={loading === true ? "Loading" : "Submit"}
             onClick={clickHandler}
@@ -50,7 +47,7 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default NewPassword;
 
 const forgotPasswordStyle = {
   margin: 0,

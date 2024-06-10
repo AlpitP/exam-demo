@@ -1,18 +1,35 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import { axiosInstance } from "../redux/api";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { SUCCESS_CODE } from "../constants";
+import api from "../redux/actions/apiAction";
+import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signInFormFields } from "../utils/signInFormFIelds";
 
 const SignIn = () => {
+  const navigate = useNavigate();
   const { formData } = useSelector((state) => state.formData);
+  const { loading } = useSelector((state) => state.api);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearForm());
+    };
+  }, [dispatch]);
+
   const signInHandler = async () => {
-    await axiosInstance.post("users/Login", formData).then((response) => {
-      console.log(response);
-      localStorage.setItem("token", response.data.data.token);
-    });
+    const config = {
+      url: "users/Login",
+      data: formData,
+      method: "POST",
+    };
+    const response = await dispatch(api({ name: "signIn", config }));
+    const { data, statusCode } = response?.payload?.data ?? {};
+
+    statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
   };
 
   return (
@@ -21,12 +38,15 @@ const SignIn = () => {
       <div style={signInStyle}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signInFormFields} />
-          <CustomButton text="Sign In" onClick={signInHandler} />
+          <CustomButton
+            text={loading === true ? "Loading" : "Sign In"}
+            onClick={signInHandler}
+          />
           <p>
-            Create New Account? <Link to="/">Sign Up</Link>
+            Create New Account? <Link to="/sign-up">Sign Up</Link>
           </p>
           <p>
-            Forgot Password? <Link to="/forgotPassword">Forgot Password</Link>
+            Forgot Password? <Link to="/forgot-Password">Forgot Password</Link>
           </p>
         </form>
       </div>
