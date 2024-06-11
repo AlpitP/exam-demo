@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
+import apiSlice from "../slices/apiSlice";
 import formReducer from "../slices/formSlice";
 import toastSlice from "../slices/toastSlice";
-import apiSlice from "../slices/apiSlice";
 import userSlice from "../slices/userSlice";
+import teacherSlice from "../slices/teacherSlice";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     toast: toastSlice,
     api: apiSlice,
     user: userSlice,
+    teacher: teacherSlice,
   },
 });
 export default store;

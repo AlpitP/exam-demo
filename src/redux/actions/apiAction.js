@@ -1,25 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { SUCCESS_CODE } from "../../constants";
-import { capitalize } from "../../utils/javascript";
-import { showToast } from "../slices/toastSlice";
 import { axiosInstance } from "../api";
+import { showToast } from "../slices/toastSlice";
 import { addUserInfo } from "../slices/userSlice";
 
 const api = createAsyncThunk(
   "api",
-  async (
-    { name, config, toast = true },
-    { rejectWithValue, dispatch, signal }
-  ) => {
+  async ({ name, config, toast = true }, { rejectWithValue, dispatch }) => {
     try {
-      const { method, url, params = {}, data, ...rest } = config;
+      const { method, url, data, ...rest } = config;
 
       const response = await axiosInstance({
         method,
         url,
-        params,
         data,
-        signal,
         ...rest,
       });
       const { statusCode, message } = response?.data ?? {};
@@ -33,8 +27,7 @@ const api = createAsyncThunk(
           dispatch(addUserInfo(response?.data?.data));
       }
 
-      toast &&
-        dispatch(showToast({ type: "success", message: capitalize(message) }));
+      toast && dispatch(showToast({ type: "success", message: message }));
       return { name, data: response?.data };
     } catch (error) {
       let errorMessage = "Unknown Error Occurred!";
@@ -46,8 +39,7 @@ const api = createAsyncThunk(
       } else {
         errorMessage = error.message;
       }
-
-      dispatch(showToast({ type: "error", message: capitalize(errorMessage) }));
+      dispatch(showToast({ type: "error", message: errorMessage }));
       return rejectWithValue({ name, message: errorMessage });
     }
   }

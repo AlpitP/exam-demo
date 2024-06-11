@@ -1,17 +1,16 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
-import { SUCCESS_CODE } from "../constants";
+import { Link } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { forgotPasswordFormFields } from "../utils/forgotPasswordFormFields";
+import { validation } from "../utils/validation";
 
 const ForgotPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,15 +20,16 @@ const ForgotPassword = () => {
   }, [dispatch]);
 
   const clickHandler = async () => {
-    const config = {
-      url: "users/ForgotPassword",
-      method: "post",
-      data: formData,
-    };
-    const response = await dispatch(api({ name: "forgot password", config }));
-    const { statusCode } = response?.payload?.data;
-
-    statusCode === SUCCESS_CODE && navigate(`/newPassword`);
+    const valid = validation(forgotPasswordFormFields);
+    if (valid) {
+      const config = {
+        url: "users/ForgotPassword",
+        method: "post",
+        data: formData,
+      };
+      await dispatch(api({ name: "forgotPassword", config }));
+      dispatch(clearForm());
+    }
   };
   return (
     <div>
@@ -38,7 +38,7 @@ const ForgotPassword = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={forgotPasswordFormFields} />
           <CustomButton
-            text={loading === true ? "Loading" : "Submit"}
+            text={loading.forgotPassword === true ? "Loading" : "Submit"}
             onClick={clickHandler}
           />
           <p>

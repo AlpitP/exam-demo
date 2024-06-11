@@ -1,41 +1,52 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { getLocalStorage } from "../utils/javascript";
 import { newPasswordFormFields } from "../utils/newPasswordFormFields";
+import { validation } from "../utils/validation";
+import { toast } from "react-toastify";
 
 const NewPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { search } = useLocation();
 
   useEffect(() => {
     return () => {
       dispatch(clearForm());
     };
   }, [dispatch]);
-  const token = getLocalStorage("token");
-  console.log(token);
+
   const clickHandler = async () => {
-    const config = {
-      url: `users/ForgotPassword/Verify?token=${token}`,
-      method: "post",
-      data: formData,
-    };
-    await dispatch(api({ name: "new password", config }));
+    const valid = validation(newPasswordFormFields);
+    if (valid) {
+      const config = {
+        url: `users/ForgotPassword/Verify${search}`,
+        method: "post",
+        data: formData,
+      };
+      const response = await dispatch(api({ name: "newPassword", config }));
+      const { statusCode } = response?.payload?.data ?? {};
+
+      statusCode === SUCCESS_CODE && navigate(`/sign-in`);
+    } else {
+      toast.error("Please Enter valid data.");
+    }
   };
   return (
     <div>
-      <h1 style={{ textAlign: "center", marginTop: 200 }}>Forgot Password</h1>
+      <h1 style={{ textAlign: "center", marginTop: 200 }}>New Password</h1>
       <div style={forgotPasswordStyle}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={newPasswordFormFields} />
           <CustomButton
-            text={loading === true ? "Loading" : "Submit"}
+            text={loading.newPassword === true ? "Loading" : "Submit"}
             onClick={clickHandler}
           />
           <p>

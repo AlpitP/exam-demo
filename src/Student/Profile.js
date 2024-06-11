@@ -6,6 +6,10 @@ import Sidebar from "./Sidebar";
 const Profile = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
+  const { studentProfile } = data;
+  const { editedProfile } = data;
+  const { studentProfile: ProfileLoader } = loading;
+  const { editedProfile: editLoader } = loading;
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState(data?.name);
 
@@ -15,7 +19,7 @@ const Profile = () => {
         url: "student/getStudentDetail",
         method: "get",
       };
-      await dispatch(api({ name: "student profile", config }));
+      await dispatch(api({ name: "studentProfile", config }));
     };
     fetch();
   }, [dispatch]);
@@ -31,31 +35,35 @@ const Profile = () => {
       method: "put",
       data: { name: name },
     };
-    await dispatch(api({ name: "edit-profile", config }));
+    await dispatch(api({ name: "editedProfile", config }));
   };
 
   return (
     <div>
       <Sidebar />
       <h1>Profile</h1>
-      {data?.name && (
+      {studentProfile?.name && (
         <>
           <h3>
             Name:
-            {isEdit ? (
+            {editLoader ? (
+              "Updating"
+            ) : isEdit ? (
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
+            ) : editedProfile ? (
+              editedProfile?.name
             ) : (
-              data?.name
+              studentProfile?.name
             )}
           </h3>
-          <h3>Email: {data?.email}</h3>
         </>
       )}
-      {loading && <h1>Loading..</h1>}
+      {ProfileLoader && <h1>Loading..</h1>}
+
       <button onClick={isEdit ? submitProfile : editProfile}>
         {isEdit ? "Submit" : "Edit Profile"}
       </button>

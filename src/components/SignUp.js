@@ -8,6 +8,8 @@ import { showToast } from "../redux/slices/toastSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signUpFormFields } from "../utils/signUpFormFields";
+import { validation } from "../utils/validation";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const { formData } = useSelector((state) => state.formData);
@@ -23,22 +25,28 @@ const SignUp = () => {
   }, [dispatch]);
 
   const signUpHandler = async () => {
-    const config = {
-      url: "users/SignUp",
-      data: formData,
-      method: "POST",
-    };
-    const response = await dispatch(api({ name: "signUp", config }));
-    const { statusCode } = response?.payload?.data;
+    const valid = validation(signUpFormFields);
+    if (valid) {
+      const config = {
+        url: "users/SignUp",
+        data: formData,
+        method: "POST",
+      };
+      const response = await dispatch(api({ name: "signUp", config }));
 
-    if (statusCode === SUCCESS_CODE) {
-      navigate("/sign-in");
-      dispatch(
-        showToast({
-          type: "info",
-          message: "Please, Check you mail box for verification!",
-        })
-      );
+      const { statusCode } = response?.payload?.data ?? {};
+
+      if (statusCode === SUCCESS_CODE) {
+        navigate("/sign-in");
+        dispatch(
+          showToast({
+            type: "info",
+            message: "Please, Check you mail box for verification!",
+          })
+        );
+      }
+    } else {
+      toast.error("Please Enter valid data.");
     }
   };
 
@@ -49,7 +57,7 @@ const SignUp = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signUpFormFields} />
           <CustomButton
-            text={loading === true ? "Loading" : "Sign Up"}
+            text={loading.signUp === true ? "Loading" : "Sign Up"}
             onClick={signUpHandler}
           />
           <p>

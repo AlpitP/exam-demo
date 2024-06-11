@@ -7,6 +7,8 @@ import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signInFormFields } from "../utils/signInFormFIelds";
+import { validation } from "../utils/validation";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -21,17 +23,21 @@ const SignIn = () => {
   }, [dispatch]);
 
   const signInHandler = async () => {
-    const config = {
-      url: "users/Login",
-      data: formData,
-      method: "POST",
-    };
-    const response = await dispatch(api({ name: "signIn", config }));
-    const { data, statusCode } = response?.payload?.data ?? {};
+    const valid = validation(signInFormFields);
+    if (valid) {
+      const config = {
+        url: "users/Login",
+        data: formData,
+        method: "POST",
+      };
+      const response = await dispatch(api({ name: "signIn", config }));
+      const { data, statusCode } = response?.payload?.data ?? {};
 
-    statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
+      statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
+    } else {
+      toast.error("Please Enter valid data.");
+    }
   };
-
   return (
     <div>
       <h1 style={{ textAlign: "center", marginTop: 200 }}>Sign In</h1>
@@ -39,7 +45,7 @@ const SignIn = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signInFormFields} />
           <CustomButton
-            text={loading === true ? "Loading" : "Sign In"}
+            text={loading.signIn === true ? "Loading" : "Sign In"}
             onClick={signInHandler}
           />
           <p>

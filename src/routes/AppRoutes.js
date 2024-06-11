@@ -4,7 +4,6 @@ import SignUp from "../components/SignUp";
 import ForgotPassword from "../components/ForgotPassword";
 import { Fragment } from "react";
 import ErrorElement from "../components/ErrorElement";
-import ProtectedRoute from "./ProtectedRoutes";
 import NewPassword from "../components/NewPassword";
 import HomePage from "../dashboard/HomePage";
 import AllExams from "../Student/AllExams";
@@ -13,6 +12,8 @@ import Profile from "../Student/Profile";
 import AllStudents from "../Teacher/AllStudents";
 import CreateExam from "../Teacher/CreateExam";
 import Student from "../Teacher/Student";
+import ResetPassword from "../Student/ResetPassword";
+import ProtectedRoute from "./ProtectedRoutes";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -33,6 +34,7 @@ const AppRoutes = () => {
             { path: "students", element: <AllStudents /> },
             { path: "viewStudentDetail", element: <Student /> },
             { path: "create-exam", element: <CreateExam /> },
+            { path: "resetPassword", element: <ResetPassword /> },
           ],
         },
 
@@ -44,6 +46,7 @@ const AppRoutes = () => {
             { path: "Exams", element: <AllExams /> },
             { path: "give-exam", element: <GiveExam /> },
             { path: "profile", element: <Profile /> },
+            { path: "resetPassword", element: <ResetPassword /> },
           ],
         },
       ],

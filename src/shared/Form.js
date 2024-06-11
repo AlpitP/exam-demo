@@ -1,12 +1,15 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onChange, setError } from "../redux/slices/formSlice";
+import { onChange, removeError, setError } from "../redux/slices/formSlice";
 import Input from "./Input";
 import SelectOptions from "./Select";
 
-const Form = ({ formFields }) => {
+const Form = ({ formFields, ...rest }) => {
   const { formData } = useSelector((state) => state.formData);
+  const { examData } = useSelector((state) => state.teacher);
   const { error } = useSelector((state) => state.formData);
+  console.log(rest.id);
+
   const dispatch = useDispatch();
 
   const changeHandler = (event, error) => {
@@ -16,7 +19,7 @@ const Form = ({ formFields }) => {
       if (value.length === 0) {
         dispatch(setError({ name, error }));
       } else {
-        dispatch(setError({ name }));
+        dispatch(removeError({ name }));
       }
     };
   };
@@ -24,7 +27,7 @@ const Form = ({ formFields }) => {
   return (
     <div>
       {formFields.map((ele, index) => {
-        const { name, label, list, type, isRequired } = ele;
+        const { name, label, list, type, isRequired, disabled } = ele;
         switch (type) {
           case "select":
             return (
@@ -38,6 +41,7 @@ const Form = ({ formFields }) => {
                 errorMessage={error[name]}
               />
             );
+
           default:
             return (
               <Input
@@ -45,9 +49,10 @@ const Form = ({ formFields }) => {
                 label={label}
                 key={index}
                 name={name}
-                value={formData[name] || ""}
+                value={formData[name] || examData[name] || ""}
                 errorMessage={error[name]}
                 onChange={(e) => dispatch(changeHandler(e, isRequired))}
+                disabled={disabled}
               />
             );
         }

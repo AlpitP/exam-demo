@@ -8,6 +8,8 @@ import Loader from "../shared/Loader";
 const AllExams = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
+  const { allExam } = data;
+  const { allExam: allExamLoading } = loading;
 
   useEffect(() => {
     const fetch = async () => {
@@ -15,7 +17,7 @@ const AllExams = () => {
         url: "student/studentExam",
         method: "get",
       };
-      await dispatch(api({ name: "all-exam", config }));
+      await dispatch(api({ name: "allExam", config }));
     };
     fetch();
   }, [dispatch]);
@@ -35,8 +37,8 @@ const AllExams = () => {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(data).length > 0 &&
-              data?.map((ele, index) => {
+            {allExam &&
+              allExam?.map((ele, index) => {
                 return (
                   <tr key={index}>
                     <td>{index + 1}</td>
@@ -50,7 +52,7 @@ const AllExams = () => {
               })}
           </tbody>
         </table>
-        <Loader loading={loading} />
+        <Loader loading={allExamLoading} />
       </div>
     </>
   );
