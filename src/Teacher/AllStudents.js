@@ -19,11 +19,10 @@ const AllStudents = () => {
       };
       await dispatch(api({ name: "allStudents", config }));
     };
-    fetch();
-  }, [dispatch]);
+    !data.allStudents && fetch();
+  }, [dispatch, data]);
 
   const viewStudentDetailHandler = (e, id) => {
-    console.log(e, id);
     navigate(`/teacher/viewStudentDetail?id=${id}`);
   };
   return (

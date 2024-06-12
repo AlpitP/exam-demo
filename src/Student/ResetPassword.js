@@ -1,13 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import api from "../redux/actions/apiAction";
+import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { resetPasswordFormFields } from "../utils/resetPasswordFormFields";
 import { validation } from "../utils/validation";
 import Sidebar from "./Sidebar";
-import { clearForm } from "../redux/slices/formSlice";
 
 const ResetPassword = () => {
   const { formData } = useSelector((state) => state.formData);
@@ -25,8 +24,6 @@ const ResetPassword = () => {
       };
       await dispatch(api({ name: "resetPassword", config }));
       dispatch(clearForm());
-    } else {
-      toast.error("Please Enter valid data.");
     }
   };
 
@@ -39,6 +36,7 @@ const ResetPassword = () => {
         <CustomButton
           text={loading.resetPassword ? "Loading" : "Submit"}
           onClick={resetPasswordHandler}
+          disabled={loading.resetPassword}
         />
       </form>
     </div>

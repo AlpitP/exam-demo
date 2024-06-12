@@ -9,7 +9,7 @@ const AllExams = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
   const { allExam } = data;
-  const { allExam: allExamLoading } = loading;
+  const { allExam: allExamLoader } = loading;
 
   useEffect(() => {
     const fetch = async () => {
@@ -19,8 +19,8 @@ const AllExams = () => {
       };
       await dispatch(api({ name: "allExam", config }));
     };
-    fetch();
-  }, [dispatch]);
+    !allExam && fetch();
+  }, [dispatch, allExam]);
 
   return (
     <>
@@ -52,7 +52,7 @@ const AllExams = () => {
               })}
           </tbody>
         </table>
-        <Loader loading={allExamLoading} />
+        <Loader loading={allExamLoader} />
       </div>
     </>
   );

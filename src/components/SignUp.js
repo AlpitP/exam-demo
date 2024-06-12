@@ -9,7 +9,6 @@ import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signUpFormFields } from "../utils/signUpFormFields";
 import { validation } from "../utils/validation";
-import { toast } from "react-toastify";
 
 const SignUp = () => {
   const { formData } = useSelector((state) => state.formData);
@@ -45,8 +44,6 @@ const SignUp = () => {
           })
         );
       }
-    } else {
-      toast.error("Please Enter valid data.");
     }
   };
 
@@ -57,8 +54,9 @@ const SignUp = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signUpFormFields} />
           <CustomButton
-            text={loading.signUp === true ? "Loading" : "Sign Up"}
+            text={loading.signUp === true ? "Signing Up" : "Sign Up"}
             onClick={signUpHandler}
+            disabled={loading.signUp}
           />
           <p>
             Already have an account? <Link to="/sign-in">Sign In</Link>

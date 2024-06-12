@@ -8,11 +8,11 @@ import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { newPasswordFormFields } from "../utils/newPasswordFormFields";
 import { validation } from "../utils/validation";
-import { toast } from "react-toastify";
 
 const NewPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { search } = useLocation();
@@ -35,8 +35,6 @@ const NewPassword = () => {
       const { statusCode } = response?.payload?.data ?? {};
 
       statusCode === SUCCESS_CODE && navigate(`/sign-in`);
-    } else {
-      toast.error("Please Enter valid data.");
     }
   };
   return (
@@ -48,6 +46,7 @@ const NewPassword = () => {
           <CustomButton
             text={loading.newPassword === true ? "Loading" : "Submit"}
             onClick={clickHandler}
+            disabled={loading.newPassword}
           />
           <p>
             Want to Sign in? <Link to="/sign-in">Sign In</Link>

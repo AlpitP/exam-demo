@@ -11,11 +11,14 @@ const CreateExam = () => {
   const [index, setIndex] = useState(0);
   const { formData } = useSelector((state) => state.formData);
   const dispatch = useDispatch();
-  const { subjectName, notes, question, ans1, ans2, ans3, ans4 } = formData;
+  const { subjectName, notes, question, ans, ans1, ans2, ans3, ans4 } =
+    formData;
 
   const examData = {
     subjectName: subjectName,
-    questions: [{ question: question, options: [ans1, ans2, ans3, ans4] }],
+    questions: [
+      { question: question, options: [ans1, ans2, ans3, ans4], ans: ans },
+    ],
     notes: [notes],
   };
 
@@ -41,7 +44,7 @@ const CreateExam = () => {
       <Sidebar />
       <h2>Create Exam</h2>
       <form onSubmit={(e) => e.preventDefault()}>
-        <Form formFields={createExamFormFields(index)} id={index} />
+        <Form formFields={createExamFormFields(index)} />
         <CustomButton
           text="Previous"
           onClick={previousHandler}

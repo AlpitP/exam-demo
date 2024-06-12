@@ -5,10 +5,10 @@ import api from "../redux/actions/apiAction";
 import Sidebar from "../Student/Sidebar";
 
 const Student = () => {
-  const { search } = useLocation();
-  const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
   const { viewStudentDetail } = data;
+  const { search } = useLocation();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetch = async () => {
@@ -18,11 +18,12 @@ const Student = () => {
       };
       await dispatch(api({ name: "viewStudentDetail", config }));
     };
-    fetch();
-  }, [dispatch, search]);
+    !viewStudentDetail && fetch();
+  }, [dispatch, search, viewStudentDetail]);
   return (
     <div>
       <Sidebar />
+      <h1 style={{ textAlign: "center" }}>Student Detail.</h1>
       <div
         style={{
           textAlign: "center",
@@ -31,7 +32,6 @@ const Student = () => {
           marginInline: "auto",
         }}
       >
-        <h1>Student Detail.</h1>
         {loading.viewStudentDetail ? (
           <h1>Loading.</h1>
         ) : (
@@ -39,7 +39,7 @@ const Student = () => {
             <h2>Name: {viewStudentDetail && viewStudentDetail[0].name}</h2>
             <h2>Email: {viewStudentDetail && viewStudentDetail[0].email}</h2>
             {viewStudentDetail && (
-              <h2>{viewStudentDetail[0]?.Result[0]?.rank}</h2>
+              <h2>Rank:{viewStudentDetail[0]?.Result[0]?.rank}</h2>
             )}
           </>
         )}

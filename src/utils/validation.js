@@ -1,4 +1,5 @@
-import { setError } from "../redux/slices/formSlice";
+import { DEFAULT_ERROR } from "../constants";
+import { removeError, setError } from "../redux/slices/formSlice";
 import store from "../redux/store/store";
 
 export const validation = (formFields) => {
@@ -7,36 +8,38 @@ export const validation = (formFields) => {
   const dispatch = store.dispatch;
 
   let valid = true;
+
   formFields.forEach(({ name, isRequired, pattern, customValidations }) => {
     if (pattern && !pattern.value.test(data[name]) && data[name]) {
       dispatch(
         setError({
           name,
-          error: pattern.message,
+          error: pattern.message || DEFAULT_ERROR,
         })
       );
       valid = false;
-    } else if (isRequired) {
-      if (!data[name]) {
-        dispatch(
-          setError({
-            name,
-            error: isRequired,
-          })
-        );
-        valid = false;
-      } else if (
-        customValidations &&
-        customValidations(data.Password, data[name])
-      ) {
-        dispatch(
-          setError({
-            name,
-            error: customValidations(data.Password, data[name]),
-          })
-        );
-        valid = false;
-      }
+    } else if (isRequired && !data[name]) {
+      dispatch(
+        setError({
+          name,
+          error: isRequired || DEFAULT_ERROR,
+        })
+      );
+      valid = false;
+    } else if (
+      isRequired &&
+      customValidations &&
+      customValidations(data.Password, data[name])
+    ) {
+      dispatch(
+        setError({
+          name,
+          error: customValidations(data.Password, data[name]) || DEFAULT_ERROR,
+        })
+      );
+      valid = false;
+    } else {
+      dispatch(removeError({ name }));
     }
   });
   return valid;

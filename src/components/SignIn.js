@@ -8,13 +8,13 @@ import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signInFormFields } from "../utils/signInFormFIelds";
 import { validation } from "../utils/validation";
-import { toast } from "react-toastify";
 
 const SignIn = () => {
-  const navigate = useNavigate();
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
@@ -34,8 +34,6 @@ const SignIn = () => {
       const { data, statusCode } = response?.payload?.data ?? {};
 
       statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
-    } else {
-      toast.error("Please Enter valid data.");
     }
   };
   return (
@@ -45,8 +43,9 @@ const SignIn = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signInFormFields} />
           <CustomButton
-            text={loading.signIn === true ? "Loading" : "Sign In"}
+            text={loading.signIn === true ? "Signing In" : "Sign In"}
             onClick={signInHandler}
+            disabled={loading.signIn}
           />
           <p>
             Create New Account? <Link to="/sign-up">Sign Up</Link>

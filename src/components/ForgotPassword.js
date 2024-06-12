@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
@@ -11,7 +11,9 @@ import { validation } from "../utils/validation";
 const ForgotPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
@@ -28,7 +30,7 @@ const ForgotPassword = () => {
         data: formData,
       };
       await dispatch(api({ name: "forgotPassword", config }));
-      dispatch(clearForm());
+      navigate(`/sign-in`);
     }
   };
   return (
@@ -38,8 +40,9 @@ const ForgotPassword = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={forgotPasswordFormFields} />
           <CustomButton
-            text={loading.forgotPassword === true ? "Loading" : "Submit"}
+            text={loading.forgotPassword === true ? "Forgoting" : "Submit"}
             onClick={clickHandler}
+            disabled={loading.forgotPassword}
           />
           <p>
             Want to Sign in? <Link to="/sign-in">Sign In</Link>
