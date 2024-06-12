@@ -16,6 +16,7 @@ const api = createAsyncThunk(
         data,
         ...rest,
       });
+
       const { statusCode, message } = response?.data ?? {};
 
       if (statusCode !== SUCCESS_CODE) {

@@ -1,27 +1,34 @@
-import { useRoutes } from "react-router-dom";
-import SignIn from "../components/SignIn";
-import SignUp from "../components/SignUp";
-import ForgotPassword from "../components/ForgotPassword";
 import { Fragment } from "react";
-import ErrorElement from "../components/ErrorElement";
-import NewPassword from "../components/NewPassword";
-import HomePage from "../dashboard/HomePage";
+import { useRoutes } from "react-router-dom";
 import AllExams from "../Student/AllExams";
 import GiveExam from "../Student/GiveExam";
 import Profile from "../Student/Profile";
+import ResetPassword from "../Student/ResetPassword";
 import AllStudents from "../Teacher/AllStudents";
 import CreateExam from "../Teacher/CreateExam";
 import Student from "../Teacher/Student";
-import ResetPassword from "../Student/ResetPassword";
+import ErrorElement from "../components/ErrorElement";
+import ForgotPassword from "../components/ForgotPassword";
+import NewPassword from "../components/NewPassword";
+import SignIn from "../components/SignIn";
+import SignUp from "../components/SignUp";
+import HomePage from "../dashboard/HomePage";
 import ProtectedRoute from "./ProtectedRoutes";
+import AuthRoute from "./AuthRoutes";
 
 const AppRoutes = () => {
   const routes = useRoutes([
     { path: "*", element: <ErrorElement /> },
-    { path: "/sign-in", element: <SignIn /> },
-    { path: "/sign-up", element: <SignUp /> },
-    { path: "/forgot-password", element: <ForgotPassword /> },
-    { path: "/newPassword", element: <NewPassword /> },
+    {
+      path: "/",
+      element: <AuthRoute />,
+      children: [
+        { path: "sign-in", element: <SignIn /> },
+        { path: "sign-up", element: <SignUp /> },
+        { path: "forgot-password", element: <ForgotPassword /> },
+        { path: "newPassword", element: <NewPassword /> },
+      ],
+    },
     {
       path: "/",
       element: <ProtectedRoute />,

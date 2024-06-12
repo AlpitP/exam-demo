@@ -1,51 +1,46 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { SUCCESS_CODE } from "../constants";
-import api from "../redux/actions/apiAction";
+import { signUpHandler } from "../container/signUpHandler";
 import { clearForm } from "../redux/slices/formSlice";
-import { showToast } from "../redux/slices/toastSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signUpFormFields } from "../utils/signUpFormFields";
-import { validation } from "../utils/validation";
+
+// const signUpHandler = async ({ formData, dispatch, navigate }) => {
+//   const valid = validation(signUpFormFields);
+//   if (valid) {
+//     const config = {
+//       url: "users/SignUp",
+//       data: formData,
+//       method: "POST",
+//     };
+//     const response = await dispatch(api({ name: "signUp", config }));
+
+//     const { statusCode } = response?.payload?.data ?? {};
+
+//     if (statusCode === SUCCESS_CODE) {
+//       navigate("/sign-in");
+//       dispatch(
+//         showToast({
+//           type: "info",
+//           message: "Please, Check you mail box for verification!",
+//         })
+//       );
+//     }
+//   }
+// };
 
 const SignUp = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   useEffect(() => {
     return () => {
       dispatch(clearForm());
     };
   }, [dispatch]);
-
-  const signUpHandler = async () => {
-    const valid = validation(signUpFormFields);
-    if (valid) {
-      const config = {
-        url: "users/SignUp",
-        data: formData,
-        method: "POST",
-      };
-      const response = await dispatch(api({ name: "signUp", config }));
-
-      const { statusCode } = response?.payload?.data ?? {};
-
-      if (statusCode === SUCCESS_CODE) {
-        navigate("/sign-in");
-        dispatch(
-          showToast({
-            type: "info",
-            message: "Please, Check you mail box for verification!",
-          })
-        );
-      }
-    }
-  };
 
   return (
     <>
@@ -54,8 +49,8 @@ const SignUp = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signUpFormFields} />
           <CustomButton
-            text={loading.signUp === true ? "Signing Up" : "Sign Up"}
-            onClick={signUpHandler}
+            text={loading.signUp === true ? "Signing Up..." : "Sign Up"}
+            onClick={() => signUpHandler({ formData, dispatch, navigate })}
             disabled={loading.signUp}
           />
           <p>

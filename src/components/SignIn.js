@@ -1,41 +1,38 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { SUCCESS_CODE } from "../constants";
-import api from "../redux/actions/apiAction";
+import { signInHandler } from "../container/signInHandler";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { signInFormFields } from "../utils/signInFormFIelds";
-import { validation } from "../utils/validation";
+
+// const signInHandler = async ({ formData, dispatch, navigate }) => {
+//   const valid = validation(signInFormFields);
+//   if (valid) {
+//     const config = {
+//       url: "users/Login",
+//       data: formData,
+//       method: "POST",
+//     };
+//     const response = await dispatch(api({ name: "signIn", config }));
+//     const { data, statusCode } = response?.payload?.data ?? {};
+
+//     statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
+//   }
+// };
 
 const SignIn = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   useEffect(() => {
     return () => {
       dispatch(clearForm());
     };
   }, [dispatch]);
 
-  const signInHandler = async () => {
-    const valid = validation(signInFormFields);
-    if (valid) {
-      const config = {
-        url: "users/Login",
-        data: formData,
-        method: "POST",
-      };
-      const response = await dispatch(api({ name: "signIn", config }));
-      const { data, statusCode } = response?.payload?.data ?? {};
-
-      statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
-    }
-  };
   return (
     <div>
       <h1 style={{ textAlign: "center", marginTop: 200 }}>Sign In</h1>
@@ -43,8 +40,8 @@ const SignIn = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signInFormFields} />
           <CustomButton
-            text={loading.signIn === true ? "Signing In" : "Sign In"}
-            onClick={signInHandler}
+            text={loading.signIn === true ? "Signing In..." : "Sign In"}
+            onClick={() => signInHandler({ formData, dispatch, navigate })}
             disabled={loading.signIn}
           />
           <p>

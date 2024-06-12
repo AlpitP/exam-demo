@@ -1,38 +1,36 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../redux/actions/apiAction";
+import { forgotPasswordHandler } from "../container/forgotPasswordHandler";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { forgotPasswordFormFields } from "../utils/forgotPasswordFormFields";
-import { validation } from "../utils/validation";
+
+// const clickHandler = async ({ formData, dispatch, navigate }) => {
+//   const valid = validation(forgotPasswordFormFields);
+//   if (valid) {
+//     const config = {
+//       url: "users/ForgotPassword",
+//       method: "post",
+//       data: formData,
+//     };
+//     await dispatch(api({ name: "forgotPassword", config }));
+//     navigate(`/sign-in`);
+//   }
+// };
 
 const ForgotPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   useEffect(() => {
     return () => {
       dispatch(clearForm());
     };
   }, [dispatch]);
 
-  const clickHandler = async () => {
-    const valid = validation(forgotPasswordFormFields);
-    if (valid) {
-      const config = {
-        url: "users/ForgotPassword",
-        method: "post",
-        data: formData,
-      };
-      await dispatch(api({ name: "forgotPassword", config }));
-      navigate(`/sign-in`);
-    }
-  };
   return (
     <div>
       <h1 style={{ textAlign: "center", marginTop: 200 }}>Forgot Password</h1>
@@ -40,8 +38,10 @@ const ForgotPassword = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={forgotPasswordFormFields} />
           <CustomButton
-            text={loading.forgotPassword === true ? "Forgoting" : "Submit"}
-            onClick={clickHandler}
+            text={loading.forgotPassword === true ? "Submitting..." : "Submit"}
+            onClick={() =>
+              forgotPasswordHandler({ formData, dispatch, navigate })
+            }
             disabled={loading.forgotPassword}
           />
           <p>

@@ -6,7 +6,7 @@ export const newPasswordFormFields = [
     isRequired: "Please Enter New Password",
     pattern: {
       value: /^[a-zA-Z0-9@]{6,}$/,
-      message: "Password must have more than 8 characters.",
+      message: "Password must have more than 6 characters.",
     },
   },
   {
@@ -16,7 +16,7 @@ export const newPasswordFormFields = [
     isRequired: "Please Enter Confirm Password",
     pattern: {
       value: /^[a-zA-Z0-9@]{6,}$/,
-      message: "Password must have more than 8 characters.",
+      message: "Password must have more than 6 characters.",
     },
     customValidations: (value, compare) => {
       if (value !== compare) {

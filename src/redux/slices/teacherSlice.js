@@ -11,7 +11,10 @@ const teacherSlice = createSlice({
       state.examData = action.payload;
     },
     addQuestion: (state, action) => {
-      state.examData?.questions.push(action.payload);
+      const { subjectName, question, note } = action.payload;
+      state.examData?.questions.push(question);
+      state.examData.subjectName = subjectName ?? state.examData.subjectName;
+      note && state.examData?.notes.push(note);
     },
   },
 });

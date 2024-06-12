@@ -1,32 +1,33 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import api from "../redux/actions/apiAction";
-import { clearForm } from "../redux/slices/formSlice";
+import { resetPasswordHandler } from "../container/resetPasswordHandler";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { resetPasswordFormFields } from "../utils/resetPasswordFormFields";
-import { validation } from "../utils/validation";
 import Sidebar from "./Sidebar";
+import { clearForm } from "../redux/slices/formSlice";
+
+// const resetPasswordHandler = async ({formData,dispatch}) => {
+//   const valid = validation(resetPasswordFormFields);
+//   if (valid) {
+//     const config = {
+//       url: `users/ResetPassword`,
+//       method: "post",
+//       data: formData,
+//     };
+//     await dispatch(api({ name: "resetPassword", config }));
+//     dispatch(clearForm());
+//   }
+// };
 
 const ResetPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
 
   const dispatch = useDispatch();
-
-  const resetPasswordHandler = async () => {
-    const valid = validation(resetPasswordFormFields);
-    if (valid) {
-      const config = {
-        url: `users/ResetPassword`,
-        method: "post",
-        data: formData,
-      };
-      await dispatch(api({ name: "resetPassword", config }));
-      dispatch(clearForm());
-    }
-  };
-
+  useEffect(() => {
+    return () => dispatch(clearForm());
+  }, [dispatch]);
   return (
     <div>
       <Sidebar />
@@ -34,8 +35,8 @@ const ResetPassword = () => {
       <form onSubmit={(e) => e.preventDefault()}>
         <Form formFields={resetPasswordFormFields} />
         <CustomButton
-          text={loading.resetPassword ? "Loading" : "Submit"}
-          onClick={resetPasswordHandler}
+          text={loading.resetPassword ? "Submitting.." : "Submit"}
+          onClick={() => resetPasswordHandler({ formData, dispatch })}
           disabled={loading.resetPassword}
         />
       </form>

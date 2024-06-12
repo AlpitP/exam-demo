@@ -1,13 +1,26 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { SUCCESS_CODE } from "../constants";
-import api from "../redux/actions/apiAction";
+import { newPasswordHandler } from "../container/newPasswordHandler";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { newPasswordFormFields } from "../utils/newPasswordFormFields";
-import { validation } from "../utils/validation";
+
+// const clickHandler = async ({formData,dispatch,search,navigate}) => {
+//   const valid = validation(newPasswordFormFields);
+//   if (valid) {
+//     const config = {
+//       url: `users/ForgotPassword/Verify${search}`,
+//       method: "post",
+//       data: formData,
+//     };
+//     const response = await dispatch(api({ name: "newPassword", config }));
+//     const { statusCode } = response?.payload?.data ?? {};
+
+//     statusCode === SUCCESS_CODE && navigate(`/sign-in`);
+//   }
+// };
 
 const NewPassword = () => {
   const { formData } = useSelector((state) => state.formData);
@@ -23,20 +36,6 @@ const NewPassword = () => {
     };
   }, [dispatch]);
 
-  const clickHandler = async () => {
-    const valid = validation(newPasswordFormFields);
-    if (valid) {
-      const config = {
-        url: `users/ForgotPassword/Verify${search}`,
-        method: "post",
-        data: formData,
-      };
-      const response = await dispatch(api({ name: "newPassword", config }));
-      const { statusCode } = response?.payload?.data ?? {};
-
-      statusCode === SUCCESS_CODE && navigate(`/sign-in`);
-    }
-  };
   return (
     <div>
       <h1 style={{ textAlign: "center", marginTop: 200 }}>New Password</h1>
@@ -44,8 +43,10 @@ const NewPassword = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={newPasswordFormFields} />
           <CustomButton
-            text={loading.newPassword === true ? "Loading" : "Submit"}
-            onClick={clickHandler}
+            text={loading.newPassword === true ? "Submitting..." : "Submit"}
+            onClick={() =>
+              newPasswordHandler({ formData, dispatch, search, navigate })
+            }
             disabled={loading.newPassword}
           />
           <p>
