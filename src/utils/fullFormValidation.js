@@ -28,12 +28,27 @@ export const allFormFieldValidation = (formFields) => {
     } else if (
       isRequired &&
       customValidations &&
-      customValidations(data.Password, data[name])
+      customValidations({
+        value: data.Password,
+        compare: data[name],
+        opt1: data.ans1,
+        opt2: data.ans2,
+        opt3: data.ans3,
+        opt4: data.ans4,
+      })
     ) {
       dispatch(
         setError({
           name,
-          error: customValidations(data.Password, data[name]) || DEFAULT_ERROR,
+          error:
+            customValidations({
+              value: data.Password,
+              compare: data[name],
+              opt1: data.ans1,
+              opt2: data.ans2,
+              opt3: data.ans3,
+              opt4: data.ans4,
+            }) || DEFAULT_ERROR,
         })
       );
       valid = false;

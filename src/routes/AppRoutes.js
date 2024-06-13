@@ -15,6 +15,7 @@ import SignUp from "../components/SignUp";
 import HomePage from "../dashboard/HomePage";
 import ProtectedRoute from "./ProtectedRoutes";
 import AuthRoute from "./AuthRoutes";
+import ViewExam from "../Teacher/ViewExam";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -29,6 +30,7 @@ const AppRoutes = () => {
         { path: "newPassword", element: <NewPassword /> },
       ],
     },
+    { path: "/teacher/create-exam", element: <CreateExam /> },
     {
       path: "/",
       element: <ProtectedRoute />,
@@ -40,7 +42,7 @@ const AppRoutes = () => {
             { path: "", element: <HomePage /> },
             { path: "students", element: <AllStudents /> },
             { path: "viewStudentDetail", element: <Student /> },
-            { path: "create-exam", element: <CreateExam /> },
+            { path: "view-exam", element: <ViewExam /> },
             { path: "resetPassword", element: <ResetPassword /> },
           ],
         },

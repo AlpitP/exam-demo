@@ -6,26 +6,7 @@ import Input from "./Input";
 import Radio from "./Radio";
 import SelectOptions from "./Select";
 
-// export const currentQuestionHandler = ({
-//   currentQuestion,
-//   setCurrentQuestion,
-//   index,
-//   examData,
-// }) => {
-//   setCurrentQuestion({
-//     ...currentQuestion,
-//     subjectName: examData?.subjectName,
-//     question: examData?.questions?.[index]?.question,
-//     ans1: examData?.questions?.[index]?.options?.[0],
-//     ans2: examData?.questions?.[index]?.options?.[1],
-//     ans3: examData?.questions?.[index]?.options?.[2],
-//     ans4: examData?.questions?.[index]?.options?.[3],
-//     ans: examData?.questions?.[index]?.ans,
-//     notes: examData?.notes?.[index],
-//   });
-// };
-
-const Form = ({ formFields, value, ...rest }) => {
+const Form = ({ formFields, ...rest }) => {
   const { formData } = useSelector((state) => state.formData);
   const { examData } = useSelector((state) => state.teacher);
   const { error } = useSelector((state) => state.formData);
@@ -90,7 +71,12 @@ const Form = ({ formFields, value, ...rest }) => {
                 label={label}
                 key={index}
                 name={name}
-                value={formData[name] ?? ""}
+                value={
+                  formData[name] ??
+                  rest?.currentQuestion?.[name] ??
+                  // examData[name] ??
+                  ""
+                }
                 errorMessage={error[name]}
                 onChange={(e) => dispatch(changeHandler(e))}
                 disabled={disabled}

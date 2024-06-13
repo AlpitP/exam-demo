@@ -9,8 +9,8 @@ const formSlice = createSlice({
   initialState,
   reducers: {
     onChange: (state, action) => {
-      const { name, value } = action.payload;
-      state.formData[name] = value;
+      const { name, value, data } = action.payload;
+      data ? (state.formData = data) : (state.formData[name] = value);
     },
     setError: (state, action) => {
       const { name, error } = action.payload;

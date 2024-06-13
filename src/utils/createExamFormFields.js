@@ -19,7 +19,7 @@ export const createExamFormFields = (index) => {
       name: "ans1",
       label: "Ans 1 ",
       isRequired: "Please Enter Option1.",
-      optionsValidations: (opt1, opt2, opt3, opt4) => {
+      customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt1 === opt2 || opt1 === opt3 || opt1 === opt4) {
           console.log("a");
           return "Not Add Same Options.";
@@ -33,7 +33,7 @@ export const createExamFormFields = (index) => {
       name: "ans2",
       label: "Ans 2",
       isRequired: "Please Enter Option2.",
-      optionsValidations: (opt1, opt2, opt3, opt4) => {
+      customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt2 === opt1 || opt2 === opt3 || opt2 === opt4) {
           return "Not Add Same Options.";
         }
@@ -46,7 +46,7 @@ export const createExamFormFields = (index) => {
       name: "ans3",
       label: "Ans 3",
       isRequired: "Please Enter Option3.",
-      optionsValidations: (opt1, opt2, opt3, opt4) => {
+      customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt3 === opt2 || opt3 === opt1 || opt3 === opt4) {
           return "Not Add Same Options.";
         }
@@ -59,7 +59,7 @@ export const createExamFormFields = (index) => {
       name: "ans4",
       label: "Ans 4",
       isRequired: "Please Enter Option4.",
-      optionsValidations: (opt1, opt2, opt3, opt4) => {
+      customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt4 === opt2 || opt4 === opt3 || opt4 === opt1) {
           return "Not Add Same Options.";
         }
