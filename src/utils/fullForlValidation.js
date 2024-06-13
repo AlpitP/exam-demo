@@ -2,7 +2,7 @@ import { DEFAULT_ERROR } from "../constants";
 import { removeError, setError } from "../redux/slices/formSlice";
 import store from "../redux/store/store";
 
-export const fullFormValidation = (formFields) => {
+export const allFormFieldValidation = (formFields) => {
   const { formData } = store.getState("formData");
   const { formData: data } = formData;
   const dispatch = store.dispatch;

@@ -6,6 +6,9 @@ import { addExam, addQuestion } from "../redux/slices/teacherSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { createExamFormFields } from "../utils/createExamFormFields";
+import { allFormFieldValidation } from "../utils/fullForlValidation";
+import { objectKeys } from "../utils/javascript";
+import { toast } from "react-toastify";
 
 const CreateExam = () => {
   const [index, setIndex] = useState(0);
@@ -23,27 +26,34 @@ const CreateExam = () => {
   };
 
   const submitHandler = () => {
-    dispatch(
-      addQuestion({
-        subjectName: subjectName,
-        question: examData.questions[0],
-        note: notes,
-      })
-    );
+    const valid = allFormFieldValidation(createExamFormFields(index));
+    if (valid && objectKeys(formData).includes("ans")) {
+      dispatch(
+        addQuestion({
+          question: examData.questions[0],
+          note: notes,
+        })
+      );
+    }
   };
 
   const nextHandler = () => {
-    index === 0
-      ? dispatch(addExam(examData))
-      : dispatch(
-          addQuestion({
-            subjectName: subjectName,
-            question: examData.questions[0],
-            note: notes,
-          })
-        );
-    setIndex((index) => (index += 1));
-    dispatch(clearForm());
+    const valid = allFormFieldValidation(createExamFormFields(index));
+    if (valid && objectKeys(formData).includes("ans")) {
+      console.log("valid");
+      index === 0
+        ? dispatch(addExam(examData))
+        : dispatch(
+            addQuestion({
+              question: examData.questions[0],
+              note: notes,
+            })
+          );
+      setIndex((index) => (index += 1));
+      dispatch(clearForm());
+    } else {
+      toast.error("Please Select Ans");
+    }
   };
 
   const previousHandler = () => {
@@ -52,6 +62,7 @@ const CreateExam = () => {
   };
   const skipHandler = () => {
     setIndex((index) => (index += 1));
+    dispatch(clearForm());
   };
 
   return (

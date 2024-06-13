@@ -1,6 +1,6 @@
 import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
-import { fullFormValidation } from "../utils/fullForlValidation";
+import { allFormFieldValidation } from "../utils/fullForlValidation";
 import { newPasswordFormFields } from "../utils/newPasswordFormFields";
 
 export const newPasswordHandler = async ({
@@ -9,7 +9,7 @@ export const newPasswordHandler = async ({
   search,
   navigate,
 }) => {
-  const valid = fullFormValidation(newPasswordFormFields);
+  const valid = allFormFieldValidation(newPasswordFormFields);
   if (valid) {
     const config = {
       url: `users/ForgotPassword/Verify${search}`,
