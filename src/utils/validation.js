@@ -7,14 +7,10 @@ export const validation = (formFields) => {
   const { formData } = store.getState("formData");
   const { formData: data } = formData;
   const dispatch = store.dispatch;
-
   let valid = true;
 
   formFields.forEach(({ name, isRequired, pattern, customValidations }) => {
-    if (
-      objectKeys(formData.formData).includes(name) ||
-      !objectKeys(formData.formData).length
-    ) {
+    if (objectKeys(data).includes(name) || !objectKeys(data).length) {
       if (pattern && !pattern.value.test(data[name]) && data[name]) {
         dispatch(
           setError({

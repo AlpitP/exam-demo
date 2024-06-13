@@ -1,10 +1,10 @@
 import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
+import { fullFormValidation } from "../utils/fullForlValidation";
 import { signInFormFields } from "../utils/signInFormFIelds";
-import { validation } from "../utils/validation";
 
 export const signInHandler = async ({ formData, dispatch, navigate }) => {
-  const valid = validation(signInFormFields);
+  const valid = fullFormValidation(signInFormFields);
   if (valid) {
     const config = {
       url: "users/Login",

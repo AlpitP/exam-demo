@@ -9,7 +9,6 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const logoutHandler = () => {
-    console.log("Logout");
     dispatch(removeUserInfo());
     navigate(`/sign-in`);
     toast.success("Successfully Logout.");

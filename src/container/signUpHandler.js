@@ -1,11 +1,11 @@
 import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
 import { showToast } from "../redux/slices/toastSlice";
+import { fullFormValidation } from "../utils/fullForlValidation";
 import { signUpFormFields } from "../utils/signUpFormFields";
-import { validation } from "../utils/validation";
 
 export const signUpHandler = async ({ formData, dispatch, navigate }) => {
-  const valid = validation(signUpFormFields);
+  const valid = fullFormValidation(signUpFormFields);
   if (valid) {
     const config = {
       url: "users/SignUp",

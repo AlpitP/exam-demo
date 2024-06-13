@@ -1,10 +1,10 @@
 import api from "../redux/actions/apiAction";
 import { clearForm } from "../redux/slices/formSlice";
+import { fullFormValidation } from "../utils/fullForlValidation";
 import { resetPasswordFormFields } from "../utils/resetPasswordFormFields";
-import { validation } from "../utils/validation";
 
 export const resetPasswordHandler = async ({ formData, dispatch }) => {
-  const valid = validation(resetPasswordFormFields);
+  const valid = fullFormValidation(resetPasswordFormFields);
   if (valid) {
     const config = {
       url: `users/ResetPassword`,
