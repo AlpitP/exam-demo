@@ -1,9 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { removeUserInfo } from "../redux/slices/userSlice";
+import { useDispatch } from "react-redux";
 
 const Sidebar = () => {
+  const dispatch = useDispatch();
   const logoutHandler = () => {
     console.log("Logout");
+    dispatch(removeUserInfo());
   };
   return (
     <div
@@ -17,7 +21,7 @@ const Sidebar = () => {
           Create Exam
         </Link>
       </div>
-      {/* <button onClick={logoutHandler}>Log Out</button> */}
+      <button onClick={logoutHandler}>Log Out</button>
     </div>
   );
 };

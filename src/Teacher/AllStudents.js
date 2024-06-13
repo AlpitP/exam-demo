@@ -2,8 +2,9 @@ import React, { useEffect } from "react";
 import api from "../redux/actions/apiAction";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../shared/Loader";
-import Sidebar from "./Sidebar";
+
 import { useNavigate } from "react-router-dom";
+import Sidebar from "../Student/Sidebar";
 
 const AllStudents = () => {
   const { data, loading } = useSelector((state) => state.api);
@@ -16,13 +17,12 @@ const AllStudents = () => {
         url: "dashboard/Teachers",
         method: "get",
       };
-      await dispatch(api({ name: "all students", config }));
+      await dispatch(api({ name: "allStudents", config }));
     };
-    fetch();
-  }, [dispatch]);
+    !data.allStudents && fetch();
+  }, [dispatch, data]);
 
   const viewStudentDetailHandler = (e, id) => {
-    console.log(e, id);
     navigate(`/teacher/viewStudentDetail?id=${id}`);
   };
   return (
@@ -41,8 +41,8 @@ const AllStudents = () => {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(data).length > 0 &&
-              data?.map((ele, index) => {
+            {data &&
+              data.allStudents?.map((ele, index) => {
                 return (
                   <tr key={index}>
                     <td>{index + 1}</td>
@@ -61,10 +61,10 @@ const AllStudents = () => {
               })}
           </tbody>
         </table>
-        <Loader loading={loading} />
+        <Loader loading={loading.allStudents} />
       </div>
     </div>
   );
 };
 
-export default AllStudents;
+export default React.memo(AllStudents);

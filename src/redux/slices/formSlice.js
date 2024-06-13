@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  formData: {},
+  error: {},
+};
 const formSlice = createSlice({
   name: "form",
-  initialState: {
-    formData: {},
-    error: {},
-  },
+  initialState,
   reducers: {
     onChange: (state, action) => {
       const { name, value } = action.payload;
@@ -15,12 +16,15 @@ const formSlice = createSlice({
       const { name, error } = action.payload;
       state.error[name] = error;
     },
-    clearForm: (state) => {
-      state.formData = {};
-      state.error = {};
+    removeError: (state, action) => {
+      const { name } = action.payload;
+      delete state.error[name];
+    },
+    clearForm: () => {
+      return initialState;
     },
   },
 });
 
-export const { onChange, setError, clearForm } = formSlice.actions;
+export const { onChange, setError, clearForm, removeError } = formSlice.actions;
 export default formSlice.reducer;

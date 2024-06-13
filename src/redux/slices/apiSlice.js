@@ -13,23 +13,24 @@ const apiSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(api.pending, (state, action) => {
-        state.loading = true;
-        state.error = "";
+        const { name } = action.meta.arg;
+        state.loading[name] = true;
+        state.error[name] = "";
       })
 
       .addCase(api.fulfilled, (state, action) => {
-        const { data } = action?.payload?.data;
+        const { data, name } = action?.payload;
 
-        state.loading = false;
-        state.data = data;
-        state.error = "";
+        state.loading[name] = false;
+        state.data[name] = data?.data;
+        state.error[name] = "";
       })
 
       .addCase(api.rejected, (state, action) => {
-        const { message } = action?.payload?.data;
+        const { message, name } = action?.payload;
 
-        state.loading = false;
-        state.error = message;
+        state.loading[name] = false;
+        state.error[name] = message;
       });
   },
 });

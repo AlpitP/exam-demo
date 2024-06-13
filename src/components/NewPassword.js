@@ -1,42 +1,53 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import api from "../redux/actions/apiAction";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { newPasswordHandler } from "../container/newPasswordHandler";
 import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { getLocalStorage } from "../utils/javascript";
 import { newPasswordFormFields } from "../utils/newPasswordFormFields";
+
+// const clickHandler = async ({formData,dispatch,search,navigate}) => {
+//   const valid = validation(newPasswordFormFields);
+//   if (valid) {
+//     const config = {
+//       url: `users/ForgotPassword/Verify${search}`,
+//       method: "post",
+//       data: formData,
+//     };
+//     const response = await dispatch(api({ name: "newPassword", config }));
+//     const { statusCode } = response?.payload?.data ?? {};
+
+//     statusCode === SUCCESS_CODE && navigate(`/sign-in`);
+//   }
+// };
 
 const NewPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
+
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { search } = useLocation();
 
   useEffect(() => {
     return () => {
       dispatch(clearForm());
     };
   }, [dispatch]);
-  const token = getLocalStorage("token");
-  console.log(token);
-  const clickHandler = async () => {
-    const config = {
-      url: `users/ForgotPassword/Verify?token=${token}`,
-      method: "post",
-      data: formData,
-    };
-    await dispatch(api({ name: "new password", config }));
-  };
+
   return (
     <div>
-      <h1 style={{ textAlign: "center", marginTop: 200 }}>Forgot Password</h1>
+      <h1 style={{ textAlign: "center", marginTop: 200 }}>New Password</h1>
       <div style={forgotPasswordStyle}>
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={newPasswordFormFields} />
           <CustomButton
-            text={loading === true ? "Loading" : "Submit"}
-            onClick={clickHandler}
+            text={loading.newPassword === true ? "Submitting..." : "Submit"}
+            onClick={() =>
+              newPasswordHandler({ formData, dispatch, search, navigate })
+            }
+            disabled={loading.newPassword}
           />
           <p>
             Want to Sign in? <Link to="/sign-in">Sign In</Link>

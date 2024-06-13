@@ -1,10 +1,24 @@
 import React from "react";
 
-const Input = ({ label, errorMessage, type, value, name, ...rest }) => {
+const Input = ({
+  label,
+  errorMessage,
+  type,
+  value,
+  name,
+  disabled,
+  ...rest
+}) => {
   return (
     <div style={inputStyle}>
       {label && <label>{label} :</label>}
-      <input type={type} name={name} {...rest} value={value} />
+      <input
+        type={type}
+        name={name}
+        {...rest}
+        value={value}
+        disabled={disabled}
+      />
       <br />
       {errorMessage && (
         <span style={{ color: "red", fontSize: 13 }}>{errorMessage}</span>

@@ -1,21 +1,20 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
 import { isLoggedIn } from "../utils/authentication";
-import Dashboard from "../dashboard/Dashboard";
 import { getLocalStorage } from "../utils/javascript";
+import Dashboard from "../dashboard/Dashboard";
 
-const ProtectedRoute = ({ role }) => {
+const AuthRoute = ({ role }) => {
   const currentRole = getLocalStorage("role");
 
-  if (!isLoggedIn()) {
-    return <Navigate to="/sign-in" />;
+  if (isLoggedIn()) {
+    return <Navigate to={`/${currentRole}`} />;
   }
 
   if (role && role !== currentRole) {
     return <Navigate to={`/${currentRole}`} />;
   }
 
-  return <Dashboard role={currentRole} />;
+  return <Dashboard />;
 };
 
-export default ProtectedRoute;
+export default AuthRoute;

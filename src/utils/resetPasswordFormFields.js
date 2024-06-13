@@ -1,4 +1,14 @@
-export const newPasswordFormFields = [
+export const resetPasswordFormFields = [
+  {
+    type: "password",
+    label: "Enter Old Password",
+    name: "oldPassword",
+    isRequired: "Please Enter Old Password",
+    pattern: {
+      value: /^[a-zA-Z0-9@]{6,}$/,
+      message: "Password must have more than 6 characters.",
+    },
+  },
   {
     type: "password",
     label: "Enter New Password",
