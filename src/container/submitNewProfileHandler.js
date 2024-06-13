@@ -1,6 +1,6 @@
 import api from "../redux/actions/apiAction";
 import { editProfileFormFields } from "../utils/editProfileFormFields";
-import { allFormFieldValidation } from "../utils/fullForlValidation";
+import { allFormFieldValidation } from "../utils/fullFormValidation";
 
 export const submitProfile = async ({ setIsEdit, formData, dispatch }) => {
   const valid = allFormFieldValidation(editProfileFormFields);

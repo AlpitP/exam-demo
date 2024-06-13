@@ -45,7 +45,7 @@ const Form = ({ formFields, value, ...rest }) => {
       dispatch(onChange(data ?? { name, value }));
     };
   };
-  console.log(rest);
+
   return (
     <div>
       {formFields.map((ele, index) => {
@@ -69,7 +69,6 @@ const Form = ({ formFields, value, ...rest }) => {
                 label={label}
                 key={index}
                 name={name}
-                id={id}
                 onChange={(e) => {
                   setAns(formData[id]);
                   dispatch(

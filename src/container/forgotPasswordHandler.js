@@ -1,7 +1,7 @@
 import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
 import { forgotPasswordFormFields } from "../utils/forgotPasswordFormFields";
-import { allFormFieldValidation } from "../utils/fullForlValidation";
+import { allFormFieldValidation } from "../utils/fullFormValidation";
 
 export const forgotPasswordHandler = async ({
   formData,

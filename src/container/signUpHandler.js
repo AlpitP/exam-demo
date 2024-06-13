@@ -1,7 +1,7 @@
 import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
 import { showToast } from "../redux/slices/toastSlice";
-import { allFormFieldValidation } from "../utils/fullForlValidation";
+import { allFormFieldValidation } from "../utils/fullFormValidation";
 import { signUpFormFields } from "../utils/signUpFormFields";
 
 export const signUpHandler = async ({ formData, dispatch, navigate }) => {

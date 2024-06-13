@@ -1,6 +1,6 @@
 import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
-import { allFormFieldValidation } from "../utils/fullForlValidation";
+import { allFormFieldValidation } from "../utils/fullFormValidation";
 import { signInFormFields } from "../utils/signInFormFIelds";
 
 export const signInHandler = async ({ formData, dispatch, navigate }) => {

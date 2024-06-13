@@ -6,7 +6,7 @@ import { addExam, addQuestion } from "../redux/slices/teacherSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { createExamFormFields } from "../utils/createExamFormFields";
-import { allFormFieldValidation } from "../utils/fullForlValidation";
+import { allFormFieldValidation } from "../utils/fullFormValidation";
 import { objectKeys } from "../utils/javascript";
 import { toast } from "react-toastify";
 

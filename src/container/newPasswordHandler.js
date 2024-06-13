@@ -1,6 +1,6 @@
 import { SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
-import { allFormFieldValidation } from "../utils/fullForlValidation";
+import { allFormFieldValidation } from "../utils/fullFormValidation";
 import { newPasswordFormFields } from "../utils/newPasswordFormFields";
 
 export const newPasswordHandler = async ({
