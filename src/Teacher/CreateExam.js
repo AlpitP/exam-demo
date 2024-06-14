@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../Student/Sidebar";
 import {
   nextHandler,
@@ -17,6 +17,7 @@ const CreateExam = ({ type }) => {
   const [index, setIndex] = useState(0);
   // let currentQue = 0;
   const navigate = useNavigate();
+
   const { formData } = useSelector((state) => state.formData);
   const { examData: data } = useSelector((state) => state.teacher);
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ const CreateExam = ({ type }) => {
     answer: "",
     notes: "",
   });
-
   const { subjectName, notes, question, answer, ans1, ans2, ans3, ans4 } =
     formData;
 
@@ -38,6 +38,7 @@ const CreateExam = ({ type }) => {
     dispatch(onChange({ data: currentQuestion }));
     return () => dispatch(clearForm());
   }, [dispatch, currentQuestion]);
+
   const examData = {
     subjectName: subjectName,
     questions: [
