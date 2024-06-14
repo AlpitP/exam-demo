@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../Student/Sidebar";
 import {
-  currentQuestionHandler,
   nextHandler,
   previousHandler,
   skipHandler,
@@ -12,10 +12,8 @@ import { clearForm, onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { createExamFormFields } from "../utils/createExamFormFields";
-import { useNavigate } from "react-router-dom";
 
 const CreateExam = ({ type }) => {
-  console.log(type);
   const [index, setIndex] = useState(0);
   // let currentQue = 0;
   const navigate = useNavigate();

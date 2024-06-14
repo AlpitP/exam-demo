@@ -1,11 +1,12 @@
 import { Fragment, lazy } from "react";
-import { useLocation, useRoutes } from "react-router-dom";
+import { useRoutes } from "react-router-dom";
 import AllExams from "../Student/AllExams";
 import GiveExam from "../Student/GiveExam";
 // import Profile from "../Student/Profile";
 import ResetPassword from "../Student/ResetPassword";
 import AllStudents from "../Teacher/AllStudents";
 import CreateExam from "../Teacher/CreateExam";
+import EditExam from "../Teacher/EditExam";
 import Student from "../Teacher/Student";
 import ViewExam from "../Teacher/ViewExam";
 import ErrorElement from "../components/ErrorElement";
@@ -16,12 +17,9 @@ import SignUp from "../components/SignUp";
 import HomePage from "../dashboard/HomePage";
 import AuthRoute from "./AuthRoutes";
 import ProtectedRoute from "./ProtectedRoutes";
-import EditExam from "../Teacher/EditExam";
 const Profile = lazy(() => import("../Student/Profile"));
 
 const AppRoutes = () => {
-  const { search } = useLocation();
-  console.log(search);
   const routes = useRoutes([
     { path: "*", element: <ErrorElement /> },
     {

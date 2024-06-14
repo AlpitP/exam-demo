@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { SUCCESS_CODE } from "../../constants";
 import { axiosInstance } from "../api";
 import { showToast } from "../slices/toastSlice";
-import { addUserInfo } from "../slices/userSlice";
+import { addUserInfo, removeUserInfo } from "../slices/userSlice";
 
 const api = createAsyncThunk(
   "api",
@@ -16,8 +16,10 @@ const api = createAsyncThunk(
         data,
         ...rest,
       });
-
       const { statusCode, message } = response?.data ?? {};
+      if (statusCode === 401) {
+        dispatch(removeUserInfo());
+      }
 
       if (statusCode !== SUCCESS_CODE) {
         throw new Error(message);
@@ -27,7 +29,6 @@ const api = createAsyncThunk(
         statusCode === SUCCESS_CODE &&
           dispatch(addUserInfo(response?.data?.data));
       }
-
       toast && dispatch(showToast({ type: "success", message: message }));
       return { name, data: response?.data };
     } catch (error) {
