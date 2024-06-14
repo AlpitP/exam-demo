@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Sidebar from "../Student/Sidebar";
 import {
+  currentQuestionHandler,
   nextHandler,
   previousHandler,
   skipHandler,
@@ -11,37 +12,13 @@ import { clearForm, onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { createExamFormFields } from "../utils/createExamFormFields";
+import { useNavigate } from "react-router-dom";
 
-const currentQuestionHandler = ({ setCurrentQuestion, index, data, type }) => {
-  setCurrentQuestion((currentQuestion) => {
-    return {
-      ...currentQuestion,
-      subjectName: data?.subjectName ?? "",
-      question:
-        data?.questions?.[type === "prev" ? index - 1 : +1]?.question ?? "",
-      ans1:
-        data?.questions?.[type === "prev" ? index - 1 : index + 1]
-          ?.options?.[0] ?? "",
-      ans2:
-        data?.questions?.[type === "prev" ? index - 1 : index + 1]
-          ?.options?.[1] ?? "",
-      ans3:
-        data?.questions?.[type === "prev" ? index - 1 : index + 1]
-          ?.options?.[2] ?? "",
-      ans4:
-        data?.questions?.[type === "prev" ? index - 1 : index + 1]
-          ?.options?.[3] ?? "",
-      ans:
-        data?.questions?.[type === "prev" ? index - 1 : index + 1]?.ans ?? "",
-      notes: data?.notes?.[type === "prev" ? index - 1 : index + 1] ?? "",
-    };
-  });
-};
-
-const CreateExam = () => {
+const CreateExam = ({ type }) => {
+  console.log(type);
   const [index, setIndex] = useState(0);
-  const [edit, setEdit] = useState(false);
-  let currentQue = index;
+  // let currentQue = 0;
+  const navigate = useNavigate();
   const { formData } = useSelector((state) => state.formData);
   const { examData: data } = useSelector((state) => state.teacher);
   const dispatch = useDispatch();
@@ -52,29 +29,28 @@ const CreateExam = () => {
     ans2: "",
     ans3: "",
     ans4: "",
-    ans: "",
+    answer: "",
     notes: "",
   });
+
+  const { subjectName, notes, question, answer, ans1, ans2, ans3, ans4 } =
+    formData;
 
   useEffect(() => {
     dispatch(onChange({ data: currentQuestion }));
     return () => dispatch(clearForm());
   }, [dispatch, currentQuestion]);
-
-  const { subjectName, notes, question, ans, ans1, ans2, ans3, ans4 } =
-    formData;
-
   const examData = {
     subjectName: subjectName,
     questions: [
-      { question: question, options: [ans1, ans2, ans3, ans4], ans: ans },
+      { question: question, options: [ans1, ans2, ans3, ans4], answer: answer },
     ],
-    notes: [notes],
+    notes: [],
   };
-  console.log(formData);
+
   // const submitHandler = async () => {
   //   const valid = allFormFieldValidation(createExamFormFields(index));
-  //   if (valid && formData.ans !== "") {
+  //   if (valid && formData.answer !== "") {
   //     dispatch(
   //       addQuestion({
   //         question: examData.questions[0],
@@ -95,7 +71,7 @@ const CreateExam = () => {
 
   // const nextHandler = () => {
   //   const valid = allFormFieldValidation(createExamFormFields(index));
-  //   if (valid && formData.ans !== "") {
+  //   if (valid && formData.answer !== "") {
   //     edit
   //       ? dispatch(
   //           editQuestion({
@@ -150,19 +126,18 @@ const CreateExam = () => {
       <form onSubmit={(e) => e.preventDefault()}>
         <Form
           formFields={createExamFormFields(index)}
-          index={currentQue}
-          currentQuestion={currentQuestion}
+          index={index}
+          currentQuestion={formData}
         />
         <CustomButton
           text="Previous"
           onClick={() =>
             previousHandler({
-              setEdit,
               setIndex,
-              currentQuestionHandler,
               setCurrentQuestion,
               index,
               data,
+              subjectName: examData.subjectName,
             })
           }
           disabled={index <= 0}
@@ -170,13 +145,30 @@ const CreateExam = () => {
         <CustomButton
           text="Submit"
           onClick={() =>
-            submitHandler({ index, formData, dispatch, examData, notes })
+            submitHandler({
+              index,
+              formData,
+              data,
+              dispatch,
+              examData,
+              notes,
+              navigate,
+            })
           }
           disabled={index !== 14}
         />
         <CustomButton
           text="Skip"
-          onClick={() => skipHandler({ setIndex, dispatch })}
+          onClick={() =>
+            skipHandler({
+              setIndex,
+              dispatch,
+              setCurrentQuestion,
+              index,
+              data,
+              subjectName: examData.subjectName,
+            })
+          }
           disabled={index === 14}
         />
         <CustomButton
@@ -185,16 +177,13 @@ const CreateExam = () => {
             nextHandler({
               index,
               formData,
-              edit,
               dispatch,
               examData,
               notes,
-              currentQue,
               setIndex,
-              setEdit,
               setCurrentQuestion,
               data,
-              currentQuestionHandler,
+              subjectName: examData.subjectName,
             })
           }
           disabled={index >= 14}

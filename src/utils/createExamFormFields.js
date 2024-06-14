@@ -17,11 +17,10 @@ export const createExamFormFields = (index) => {
     {
       type: "text",
       name: "ans1",
-      label: "Ans 1 ",
+      label: "Opt 1 ",
       isRequired: "Please Enter Option1.",
       customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt1 === opt2 || opt1 === opt3 || opt1 === opt4) {
-          console.log("a");
           return "Not Add Same Options.";
         }
       },
@@ -31,7 +30,7 @@ export const createExamFormFields = (index) => {
     {
       type: "text",
       name: "ans2",
-      label: "Ans 2",
+      label: "Opt 2",
       isRequired: "Please Enter Option2.",
       customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt2 === opt1 || opt2 === opt3 || opt2 === opt4) {
@@ -44,7 +43,7 @@ export const createExamFormFields = (index) => {
     {
       type: "text",
       name: "ans3",
-      label: "Ans 3",
+      label: "Opt 3",
       isRequired: "Please Enter Option3.",
       customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt3 === opt2 || opt3 === opt1 || opt3 === opt4) {
@@ -57,7 +56,7 @@ export const createExamFormFields = (index) => {
     {
       type: "text",
       name: "ans4",
-      label: "Ans 4",
+      label: "Opt 4",
       isRequired: "Please Enter Option4.",
       customValidations: ({ opt1, opt2, opt3, opt4 }) => {
         if (opt4 === opt2 || opt4 === opt3 || opt4 === opt1) {

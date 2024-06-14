@@ -8,13 +8,15 @@ import SelectOptions from "./Select";
 
 const Form = ({ formFields, ...rest }) => {
   const { formData } = useSelector((state) => state.formData);
-  const { examData } = useSelector((state) => state.teacher);
+  // const { examData } = useSelector((state) => state.teacher);
   const { error } = useSelector((state) => state.formData);
   const [isValid, setIsValid] = useState(false);
-  const [ans, setAns] = useState(examData?.questions?.[rest.index]?.ans ?? "");
+  let answer = formData?.answer ?? "";
 
   const dispatch = useDispatch();
+
   useEffect(() => {
+    answer = formData?.answer;
     isValid && validation(formFields);
   });
 
@@ -51,16 +53,18 @@ const Form = ({ formFields, ...rest }) => {
                 key={index}
                 name={name}
                 onChange={(e) => {
-                  setAns(formData[id]);
+                  answer = formData[name];
                   dispatch(
                     changeHandler(e, {
-                      name: "ans",
+                      name: "answer",
                       value: formData[id],
                     })
                   );
                 }}
                 checked={
-                  formData[id] === ans && ans !== "" && ans !== undefined
+                  formData[id] === answer &&
+                  answer !== "" &&
+                  answer !== undefined
                 }
               />
             );
@@ -73,7 +77,7 @@ const Form = ({ formFields, ...rest }) => {
                 name={name}
                 value={
                   formData[name] ??
-                  rest?.currentQuestion?.[name] ??
+                  // rest?.currentQuestion?.[name] ??
                   // examData[name] ??
                   ""
                 }
