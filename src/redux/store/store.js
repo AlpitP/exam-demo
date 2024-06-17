@@ -4,6 +4,7 @@ import formReducer from "../slices/formSlice";
 import toastSlice from "../slices/toastSlice";
 import userSlice from "../slices/userSlice";
 import teacherSlice from "../slices/teacherSlice";
+import studentSlice from "../slices/studentSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     api: apiSlice,
     user: userSlice,
     teacher: teacherSlice,
+    student: studentSlice,
   },
 });
 export default store;

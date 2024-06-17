@@ -5,48 +5,51 @@ import api from "../redux/actions/apiAction";
 import { addQuestion } from "../redux/slices/teacherSlice";
 import CreateExam from "./CreateExam";
 
+export const fetchEditExam = async ({ search, dispatch, id }) => {
+  if (id) {
+    search = `?id=${id}`;
+  } else {
+    search = `${search}`;
+  }
+  const config = {
+    url: `dashboard/Teachers/examDetail${search}`,
+    method: "GET",
+  };
+  await dispatch(api({ name: "editExam", config }));
+};
 const EditExam = () => {
   const dispatch = useDispatch();
-  const { search } = useLocation();
+  const { search, state } = useLocation();
   const { data } = useSelector((state) => state.api);
-  const { examData } = useSelector((state) => state.teacher);
-
-  const fetchExamData = async () => {
-    const config = {
-      url: `dashboard/Teachers/viewExam`,
-      method: "GET",
-    };
-    await dispatch(api({ name: "viewExam", config }));
-  };
 
   useEffect(() => {
-    const fetchExam = async () => {
-      const config = {
-        url: `dashboard/Teachers/examDetail${search}`,
-        method: "GET",
-      };
-      await dispatch(api({ name: "editExam", config }));
-    };
-    !data.editExam && fetchExam();
-    !data.viewExam && fetchExamData();
+    !data.editExam && fetchEditExam({ search, dispatch });
     dispatch(
       addQuestion({
         data: data?.editExam?.questions ?? [],
-        subjectName: data?.viewExam?.[0].subjectName,
-        notes: data?.viewExam?.[0].notes,
+        subjectName: state?.subjectName,
+        notes: state?.notes,
       })
     );
-  }, [search, dispatch, data]);
+    return () =>
+      dispatch(
+        addQuestion({
+          data: [],
+          subjectName: "",
+          notes: [],
+        })
+      );
+  }, [dispatch, data.editExam, state, search]);
 
   const formData = {
-    subjectName: examData?.subjectName ?? "",
-    question: examData?.questions?.[0]?.question ?? "",
-    answer: examData?.questions?.[0]?.answer ?? "",
-    ans1: examData?.questions?.[0]?.options?.[0] ?? "",
-    ans2: examData?.questions?.[0]?.options?.[1] ?? "",
-    ans3: examData?.questions?.[0]?.options?.[2] ?? "",
-    ans4: examData?.questions?.[0]?.options?.[3] ?? "",
-    notes: examData?.notes?.[0] ?? "",
+    subjectName: state.subjectName ?? "",
+    question: data?.editExam?.questions?.[0]?.question ?? "",
+    answer: data?.editExam?.questions?.[0]?.answer ?? "",
+    ans1: data?.editExam?.questions?.[0]?.options?.[0] ?? "",
+    ans2: data?.editExam?.questions?.[0]?.options?.[1] ?? "",
+    ans3: data?.editExam?.questions?.[0]?.options?.[2] ?? "",
+    ans4: data?.editExam?.questions?.[0]?.options?.[3] ?? "",
+    notes: state?.notes?.[0] ?? "",
   };
   return (
     <div>

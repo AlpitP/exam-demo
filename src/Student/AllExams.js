@@ -4,10 +4,12 @@ import api from "../redux/actions/apiAction";
 import "./allExam.css";
 import Sidebar from "./Sidebar";
 import Loader from "../shared/Loader";
+import { useNavigate } from "react-router-dom";
 
 const AllExams = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
+  const navigate = useNavigate();
   const { allExam } = data;
   const { allExam: allExamLoader } = loading;
 
@@ -45,7 +47,13 @@ const AllExams = () => {
                     <td>{ele.subjectName}</td>
                     <td>{ele.email}</td>
                     <td>
-                      <button>Give Exam</button>
+                      <button
+                        onClick={() =>
+                          navigate(`/student/give-exam?id=${ele._id}`)
+                        }
+                      >
+                        Give Exam
+                      </button>
                     </td>
                   </tr>
                 );

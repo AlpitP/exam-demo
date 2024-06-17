@@ -6,13 +6,12 @@ import Input from "./Input";
 import Radio from "./Radio";
 import SelectOptions from "./Select";
 
-const Form = ({ formFields, ...rest }) => {
+const Form = ({ formFields, value, ...rest }) => {
   const { formData } = useSelector((state) => state.formData);
   // const { examData } = useSelector((state) => state.teacher);
   const { error } = useSelector((state) => state.formData);
   const [isValid, setIsValid] = useState(false);
   let answer = formData?.answer ?? "";
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -32,7 +31,8 @@ const Form = ({ formFields, ...rest }) => {
   return (
     <div>
       {formFields.map((ele, index) => {
-        const { name, label, list, type, disabled, id } = ele;
+        const { name, label, list, type, disabled, id, text, error } = ele;
+        console.log(formData[id]);
         switch (type) {
           case "select":
             return (
@@ -57,7 +57,7 @@ const Form = ({ formFields, ...rest }) => {
                   dispatch(
                     changeHandler(e, {
                       name: "answer",
-                      value: formData[id],
+                      value: formData[id] ?? text,
                     })
                   );
                 }}
@@ -66,6 +66,7 @@ const Form = ({ formFields, ...rest }) => {
                   answer !== "" &&
                   answer !== undefined
                 }
+                text={text}
               />
             );
           default:
@@ -77,11 +78,12 @@ const Form = ({ formFields, ...rest }) => {
                 name={name}
                 value={
                   formData[name] ??
+                  value ??
                   // rest?.currentQuestion?.[name] ??
                   // examData[name] ??
                   ""
                 }
-                errorMessage={error[name]}
+                errorMessage={error?.[name]}
                 onChange={(e) => dispatch(changeHandler(e))}
                 disabled={disabled}
               />

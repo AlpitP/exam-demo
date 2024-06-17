@@ -54,7 +54,8 @@ export const submitHandler = async ({
   if (
     valid &&
     formData.answer !== "" &&
-    data.questions.find((ele) => ele === null)
+    data.questions.length === 14
+    // data.questions.find((ele) => ele === null)
   ) {
     dispatch(
       addQuestion({
@@ -70,6 +71,47 @@ export const submitHandler = async ({
       method: "POST",
     };
     const response = await dispatch(api({ name: "createExam", config }));
+    const { statusCode } = response?.payload?.data ?? {};
+
+    statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
+  } else if (formData.answer === "") {
+    toast.error("Please Select Ans.");
+  } else {
+    toast.error(`Please Fill All Questions.`);
+  }
+};
+
+export const updateHandler = async ({
+  index,
+  formData,
+  dispatch,
+  examData,
+  data,
+  notes,
+  navigate,
+  search,
+}) => {
+  const valid = allFormFieldValidation(createExamFormFields(index));
+  if (
+    valid &&
+    formData.answer !== "" &&
+    data.questions.length === 15
+    // data.questions.find((ele) => ele === null)
+  ) {
+    dispatch(
+      addQuestion({
+        subjectName: examData?.subjectName,
+        question: examData?.questions?.[0],
+        note: notes,
+        currentQue: index,
+      })
+    );
+    const config = {
+      url: `dashboard/Teachers/editExam${search}`,
+      data: store.getState().teacher.examData,
+      method: "PUT",
+    };
+    const response = await dispatch(api({ name: "updateExam", config }));
     const { statusCode } = response?.payload?.data ?? {};
 
     statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
@@ -141,9 +183,7 @@ export const skipHandler = ({
   data,
   subjectName,
 }) => {
-  if (index === 0) {
-    toast.error("You can not skip First question.");
-  } else {
+  if (data.subjectName) {
     currentQuestionHandler({
       setCurrentQuestion,
       index,
@@ -153,5 +193,7 @@ export const skipHandler = ({
     });
     setIndex((index) => (index += 1));
     dispatch(clearForm());
+  } else {
+    toast.error("You can not skip First question.");
   }
 };

@@ -10,28 +10,31 @@ export const fetch = async ({ dispatch }) => {
     url: "dashboard/Teachers/viewExam",
     method: "GET",
   };
-  const response = await dispatch(api({ name: "viewExam", config }));
-  const { data } = response?.payload?.data ?? {};
-  console.log(data);
-  // statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
+  await dispatch(api({ name: "viewExam", config }));
 };
 
 const ViewExam = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
+  // const { examData } = useSelector((state) => state.teacher);
 
   useEffect(() => {
-    !data.viewExam && fetch({ dispatch });
-  }, [dispatch, data]);
+    fetch({ dispatch });
+  }, [dispatch]);
 
   return (
     <div>
       <Sidebar />
-      <h3>View Exams</h3>
-      {loading && <Loader loading={loading.viewExam} />}
-      {data?.viewExam?.map((ele, index) => {
-        return <ViewExamContainer examsData={ele} key={index} />;
-      })}
+      <h1 style={{ textAlign: "center" }}>View Exams</h1>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+        {loading.viewExam ? (
+          <Loader loading={loading.viewExam} />
+        ) : (
+          data?.viewExam?.map((ele, index) => {
+            return <ViewExamContainer examsData={ele} key={index} />;
+          })
+        )}
+      </div>
     </div>
   );
 };
