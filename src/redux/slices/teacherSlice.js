@@ -6,6 +6,7 @@ const initialState = {
     questions: [],
     notes: [],
   },
+  currentQuestion: {},
 };
 const teacherSlice = createSlice({
   name: "teacher",
@@ -24,8 +25,11 @@ const teacherSlice = createSlice({
         state.examData.notes[currentQue] = note ? note : " ";
       }
     },
+    currentQuestionFormData: (state, action) => {
+      state.currentQuestion = action.payload.data;
+    },
   },
 });
 
 export default teacherSlice.reducer;
-export const { addQuestion } = teacherSlice.actions;
+export const { addQuestion, currentQuestionFormData } = teacherSlice.actions;

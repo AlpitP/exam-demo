@@ -26,15 +26,22 @@ const ViewExam = () => {
     <div>
       <Sidebar />
       <h1 style={{ textAlign: "center" }}>View Exams</h1>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-        {loading.viewExam ? (
-          <Loader loading={loading.viewExam} />
-        ) : (
-          data?.viewExam?.map((ele, index) => {
+      {loading.viewExam ? (
+        <Loader loading={loading.viewExam} />
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 10,
+            justifyContent: "center",
+          }}
+        >
+          {data?.viewExam?.map((ele, index) => {
             return <ViewExamContainer examsData={ele} key={index} />;
-          })
-        )}
-      </div>
+          })}
+        </div>
+      )}
     </div>
   );
 };

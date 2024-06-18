@@ -51,15 +51,12 @@ export const submitHandler = async ({
   navigate,
 }) => {
   const valid = allFormFieldValidation(createExamFormFields(index));
-  if (
-    valid &&
-    formData.answer !== "" &&
-    data.questions.length === 14
-    // data.questions.find((ele) => ele === null)
-  ) {
+  const filter = data.questions.filter((ele) => ele !== null);
+  console.log(filter.length);
+  if (valid && formData.answer !== "" && filter.length === 14) {
     dispatch(
       addQuestion({
-        subjectName: examData?.subjectName,
+        subjectName: data?.subjectName,
         question: examData?.questions?.[0],
         note: notes,
         currentQue: index,
@@ -134,10 +131,10 @@ export const nextHandler = ({
   subjectName,
 }) => {
   const valid = allFormFieldValidation(createExamFormFields(index));
-  if (valid && formData?.answer !== "") {
+  if (valid && formData.answer) {
     dispatch(
       addQuestion({
-        subjectName: examData?.subjectName,
+        subjectName: subjectName,
         question: examData?.questions?.[0],
         note: notes,
         currentQue: index,
@@ -151,8 +148,9 @@ export const nextHandler = ({
       type: "next",
       subjectName,
     });
+    // dispatch(onChange({ data: store.getState().teacher.currentQuestion }));
     dispatch(clearForm());
-  } else {
+  } else if (!formData.answer) {
     toast.error("Please Select Ans");
   }
 };
@@ -172,7 +170,6 @@ export const previousHandler = ({
     type: "prev",
     subjectName,
   });
-  // dispatch(onChange(currentQuestion));
 };
 
 export const skipHandler = ({

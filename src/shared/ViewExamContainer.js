@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import { fetchEditExam } from "../Teacher/EditExam";
@@ -7,6 +7,7 @@ import { fetchEditExam } from "../Teacher/EditExam";
 const ViewExamContainer = ({ examsData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.api);
   return (
     <div style={{ border: "1px solid black", width: "auto", padding: 10 }}>
       <h2>Subject : {examsData.subjectName}</h2>
@@ -41,7 +42,7 @@ const ViewExamContainer = ({ examsData }) => {
             await dispatch(api({ name: "deleteExam", config }));
           }}
         >
-          Delete
+          {loading.deleteExam ? "Deleting..." : "Delete"}
         </button>
       </div>
     </div>

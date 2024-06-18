@@ -9,11 +9,13 @@ import {
   submitHandler,
   updateHandler,
 } from "../container/createExamHandlers";
-import { clearForm, onChange } from "../redux/slices/formSlice";
+import { clearForm } from "../redux/slices/formSlice";
+import { currentQuestionFormData } from "../redux/slices/teacherSlice";
+import store from "../redux/store/store";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { createExamFormFields } from "../utils/createExamFormFields";
 import Loader from "../shared/Loader";
+import { createExamFormFields } from "../utils/createExamFormFields";
 
 const CreateExam = ({ type, exam }) => {
   const [index, setIndex] = useState(0);
@@ -23,6 +25,9 @@ const CreateExam = ({ type, exam }) => {
   const { search } = useLocation();
   const { formData } = useSelector((state) => state.formData);
   const { examData: data } = useSelector((state) => state.teacher);
+  const { currentFormData } = useSelector(
+    (state) => state.teacher.currentQuestion
+  );
   const dispatch = useDispatch();
   const [currentQuestion, setCurrentQuestion] = useState({
     subjectName: "",
@@ -34,15 +39,22 @@ const CreateExam = ({ type, exam }) => {
     answer: "",
     notes: "",
   });
+
   const { subjectName, notes, question, answer, ans1, ans2, ans3, ans4 } =
     formData;
 
   useEffect(() => {
     dispatch(
-      onChange({
+      currentQuestionFormData({
         data: exam ? (index === 0 ? exam : currentQuestion) : currentQuestion,
       })
     );
+    dispatch(clearForm());
+    // dispatch(
+    //   onChange({
+    //     data: exam ? (index === 0 ? exam : currentQuestion) : currentQuestion,
+    //   })
+    // );
     return () => dispatch(clearForm());
   }, [dispatch, currentQuestion, exam, index]);
 
@@ -136,7 +148,8 @@ const CreateExam = ({ type, exam }) => {
           <Form
             formFields={createExamFormFields(index)}
             index={index}
-            currentQuestion={formData}
+            currentQuestion={store.getState().teacher.currentQuestion}
+            type={type}
           />
           <CustomButton
             text="Previous"
@@ -146,7 +159,7 @@ const CreateExam = ({ type, exam }) => {
                 setCurrentQuestion,
                 index,
                 data,
-                subjectName: examData.subjectName,
+                subjectName: data?.subjectName,
               })
             }
             disabled={index <= 0 || loading.updateExam || loading.createExam}
@@ -194,7 +207,7 @@ const CreateExam = ({ type, exam }) => {
                 setCurrentQuestion,
                 index,
                 data,
-                subjectName: examData.subjectName,
+                subjectName: data?.subjectName ?? examData?.subjectName,
               })
             }
             disabled={index === 14}
@@ -211,7 +224,8 @@ const CreateExam = ({ type, exam }) => {
                 setIndex,
                 setCurrentQuestion,
                 data,
-                subjectName: examData.subjectName,
+                subjectName:
+                  index === 0 ? examData?.subjectName : data.subjectName,
               })
             }
             disabled={index >= 14}

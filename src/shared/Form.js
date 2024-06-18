@@ -1,21 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { onChange } from "../redux/slices/formSlice";
+import { clearForm, onChange, setError } from "../redux/slices/formSlice";
 import { validation } from "../utils/validation";
 import Input from "./Input";
 import Radio from "./Radio";
 import SelectOptions from "./Select";
+import store from "../redux/store/store";
+import { objectKeys } from "../utils/javascript";
+import { isRejected } from "@reduxjs/toolkit";
 
 const Form = ({ formFields, value, ...rest }) => {
   const { formData } = useSelector((state) => state.formData);
   // const { examData } = useSelector((state) => state.teacher);
   const { error } = useSelector((state) => state.formData);
   const [isValid, setIsValid] = useState(false);
-  let answer = formData?.answer ?? "";
+  // let answer = formData?.answer ?? "";
+  const [answer, setAnswer] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
-    answer = formData?.answer;
+    setAnswer(formData?.answer ?? rest?.currentQuestion?.answer);
+    rest?.currentQuestion?.question?.length > 0
+      ? dispatch(
+          onChange({
+            data:
+              objectKeys(formData).length > 0
+                ? formData
+                : rest?.currentQuestion,
+          })
+        )
+      : dispatch(onChange({ data: "" }));
+
+    // answer = rest?.currentQuestion?.answer ?? formData?.answer;
     isValid && validation(formFields);
   });
 
@@ -31,8 +47,7 @@ const Form = ({ formFields, value, ...rest }) => {
   return (
     <div>
       {formFields.map((ele, index) => {
-        const { name, label, list, type, disabled, id, text, error } = ele;
-        console.log(formData[id]);
+        const { name, label, list, type, disabled, id, text, isRequired } = ele;
         switch (type) {
           case "select":
             return (
@@ -53,19 +68,16 @@ const Form = ({ formFields, value, ...rest }) => {
                 key={index}
                 name={name}
                 onChange={(e) => {
-                  answer = formData[name];
+                  // answer = formData[name];
+                  setAnswer(formData[name] ?? "");
                   dispatch(
                     changeHandler(e, {
                       name: "answer",
-                      value: formData[id] ?? text,
+                      value: id ?? text ?? "",
                     })
                   );
                 }}
-                checked={
-                  formData[id] === answer &&
-                  answer !== "" &&
-                  answer !== undefined
-                }
+                checked={id === answer}
                 text={text}
               />
             );
@@ -77,13 +89,13 @@ const Form = ({ formFields, value, ...rest }) => {
                 key={index}
                 name={name}
                 value={
-                  formData[name] ??
+                  formData?.[name] ??
+                  rest?.currentQuestion?.[name] ??
                   value ??
-                  // rest?.currentQuestion?.[name] ??
                   // examData[name] ??
                   ""
                 }
-                errorMessage={error?.[name]}
+                errorMessage={error[name]}
                 onChange={(e) => dispatch(changeHandler(e))}
                 disabled={disabled}
               />

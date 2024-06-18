@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import Sidebar from "../Student/Sidebar";
+import Loader from "../shared/Loader";
 
 const Student = () => {
   const { data, loading } = useSelector((state) => state.api);
@@ -18,8 +19,8 @@ const Student = () => {
       };
       await dispatch(api({ name: "viewStudentDetail", config }));
     };
-    !viewStudentDetail && fetch();
-  }, [dispatch, search, viewStudentDetail]);
+    fetch();
+  }, [dispatch, search]);
   return (
     <div>
       <Sidebar />
@@ -33,12 +34,12 @@ const Student = () => {
         }}
       >
         {loading.viewStudentDetail ? (
-          <h1>Loading.</h1>
+          <Loader loading={loading.viewStudentDetail} />
         ) : (
           <>
             <h2>Name: {viewStudentDetail && viewStudentDetail[0].name}</h2>
             <h2>Email: {viewStudentDetail && viewStudentDetail[0].email}</h2>
-            {viewStudentDetail && (
+            {viewStudentDetail[0]?.Result.length > 0 && (
               <h2>Rank:{viewStudentDetail[0]?.Result[0]?.rank}</h2>
             )}
           </>
