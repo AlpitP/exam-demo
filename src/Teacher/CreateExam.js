@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import Sidebar from "../Student/Sidebar";
-import {
-  nextHandler,
-  previousHandler,
-  skipHandler,
-  submitHandler,
-  updateHandler,
-} from "../container/createExamHandlers";
+import { nextHandler } from "../container/createExam/nextHandler";
+import { previousHandler } from "../container/createExam/previousHandler";
+import { skipHandler } from "../container/createExam/skipHandler";
+import { submitHandler } from "../container/createExam/submitHandler";
+import { updateHandler } from "../container/createExam/updateHandler";
 import { clearForm } from "../redux/slices/formSlice";
 import { currentQuestionFormData } from "../redux/slices/teacherSlice";
 import store from "../redux/store/store";
@@ -19,15 +17,11 @@ import { createExamFormFields } from "../utils/createExamFormFields";
 
 const CreateExam = ({ type, exam }) => {
   const [index, setIndex] = useState(0);
-  // let currentQue = 0;
   const { loading } = useSelector((state) => state.api);
   const navigate = useNavigate();
   const { search } = useLocation();
   const { formData } = useSelector((state) => state.formData);
   const { examData: data } = useSelector((state) => state.teacher);
-  const { currentFormData } = useSelector(
-    (state) => state.teacher.currentQuestion
-  );
   const dispatch = useDispatch();
   const [currentQuestion, setCurrentQuestion] = useState({
     subjectName: "",
@@ -140,97 +134,103 @@ const CreateExam = ({ type, exam }) => {
   return (
     <div>
       <Sidebar />
-      <h2>{type === "editExam" ? "Edit" : "Create"} Exam</h2>
+      <h1 style={{ textAlign: "center" }}>
+        {type === "editExam" ? "Edit" : "Create"} Exam
+      </h1>
       {loading.editExam ? (
         <Loader loading={loading.editExam} />
       ) : (
-        <form onSubmit={(e) => e.preventDefault()}>
-          <Form
-            formFields={createExamFormFields(index)}
-            index={index}
-            currentQuestion={store.getState().teacher.currentQuestion}
-            type={type}
-          />
-          <CustomButton
-            text="Previous"
-            onClick={() =>
-              previousHandler({
-                setIndex,
-                setCurrentQuestion,
-                index,
-                data,
-                subjectName: data?.subjectName,
-              })
-            }
-            disabled={index <= 0 || loading.updateExam || loading.createExam}
-          />
-          <CustomButton
-            text={
-              type === "editExam"
-                ? loading.updateExam
-                  ? "Updating.."
-                  : "Update"
-                : loading.createExam
-                ? "Submitting.."
-                : "Submit"
-            }
-            onClick={() => {
-              type === "editExam"
-                ? updateHandler({
-                    index,
-                    formData,
-                    data,
-                    dispatch,
-                    examData,
-                    notes,
-                    navigate,
-                    search,
-                  })
-                : submitHandler({
-                    index,
-                    formData,
-                    data,
-                    dispatch,
-                    examData,
-                    notes,
-                    navigate,
-                  });
-            }}
-            disabled={index !== 14 || loading.updateExam || loading.createExam}
-          />
-          <CustomButton
-            text="Skip"
-            onClick={() =>
-              skipHandler({
-                setIndex,
-                dispatch,
-                setCurrentQuestion,
-                index,
-                data,
-                subjectName: data?.subjectName ?? examData?.subjectName,
-              })
-            }
-            disabled={index === 14}
-          />
-          <CustomButton
-            text="Next"
-            onClick={() =>
-              nextHandler({
-                index,
-                formData,
-                dispatch,
-                examData,
-                notes,
-                setIndex,
-                setCurrentQuestion,
-                data,
-                subjectName:
-                  index === 0 ? examData?.subjectName : data.subjectName,
-              })
-            }
-            disabled={index >= 14}
-          />
-        </form>
+        <div style={{ marginLeft: "40%" }}>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <Form
+              formFields={createExamFormFields(index)}
+              index={index}
+              currentQuestion={store.getState().teacher.currentQuestion}
+              type={type}
+            />
+            <CustomButton
+              text="Previous"
+              onClick={() =>
+                previousHandler({
+                  setIndex,
+                  setCurrentQuestion,
+                  index,
+                  data,
+                  subjectName: data?.subjectName,
+                })
+              }
+              disabled={index <= 0 || loading.updateExam || loading.createExam}
+            />
+            <CustomButton
+              text={
+                type === "editExam"
+                  ? loading.updateExam
+                    ? "Updating.."
+                    : "Update"
+                  : loading.createExam
+                  ? "Submitting.."
+                  : "Submit"
+              }
+              onClick={() => {
+                type === "editExam"
+                  ? updateHandler({
+                      index,
+                      formData,
+                      data,
+                      dispatch,
+                      examData,
+                      notes,
+                      navigate,
+                      search,
+                    })
+                  : submitHandler({
+                      index,
+                      formData,
+                      data,
+                      dispatch,
+                      examData,
+                      notes,
+                      navigate,
+                    });
+              }}
+              disabled={
+                index !== 14 || loading.updateExam || loading.createExam
+              }
+            />
+            <CustomButton
+              text="Skip"
+              onClick={() =>
+                skipHandler({
+                  setIndex,
+                  dispatch,
+                  setCurrentQuestion,
+                  index,
+                  data,
+                  subjectName: data?.subjectName ?? examData?.subjectName,
+                })
+              }
+              disabled={index === 14}
+            />
+            <CustomButton
+              text="Next"
+              onClick={() =>
+                nextHandler({
+                  index,
+                  formData,
+                  dispatch,
+                  examData,
+                  notes,
+                  setIndex,
+                  setCurrentQuestion,
+                  data,
+                  subjectName:
+                    index === 0 ? examData?.subjectName : data.subjectName,
+                })
+              }
+              disabled={index >= 14}
+            />
+          </form>
+        </div>
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import { addQuestion } from "../redux/slices/teacherSlice";
 import CreateExam from "./CreateExam";
+import { GET } from "../constants";
 
 export const fetchEditExam = async ({ search, dispatch, id }) => {
   if (id) {
@@ -13,7 +14,7 @@ export const fetchEditExam = async ({ search, dispatch, id }) => {
   }
   const config = {
     url: `dashboard/Teachers/examDetail${search}`,
-    method: "GET",
+    method: GET,
   };
   await dispatch(api({ name: "editExam", config }));
 };

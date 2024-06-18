@@ -7,3 +7,9 @@ export const SIGN_UP = "Sign Up";
 export const FORGOT_PASSWORD = "Forgot Password";
 
 export const DEFAULT_ERROR = "Please Enter Valid Input.";
+
+// method name constants
+export const GET = "GET";
+export const POST = "POST";
+export const PUT = "PUT";
+export const DELETE = "DELETE";

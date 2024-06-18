@@ -16,4 +16,5 @@ const store = configureStore({
     student: studentSlice,
   },
 });
+
 export default store;

@@ -5,6 +5,7 @@ import "./allExam.css";
 import Sidebar from "./Sidebar";
 import Loader from "../shared/Loader";
 import { useNavigate } from "react-router-dom";
+import { GET } from "../constants";
 
 const AllExams = () => {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ const AllExams = () => {
     const fetch = async () => {
       const config = {
         url: "student/studentExam",
-        method: "get",
+        method: GET,
       };
       await dispatch(api({ name: "allExam", config }));
     };

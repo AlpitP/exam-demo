@@ -1,3 +1,4 @@
+import { PUT } from "../constants";
 import api from "../redux/actions/apiAction";
 import { editProfileFormFields } from "../utils/editProfileFormFields";
 import { allFormFieldValidation } from "../utils/fullFormValidation";
@@ -8,7 +9,7 @@ export const submitProfile = async ({ setIsEdit, formData, dispatch }) => {
     setIsEdit(false);
     const config = {
       url: "student/studentProfile",
-      method: "put",
+      method: PUT,
       data: formData,
     };
     await dispatch(api({ name: "editedProfile", config }));

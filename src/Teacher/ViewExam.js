@@ -4,11 +4,12 @@ import { useDispatch, useSelector } from "react-redux";
 import api from "../redux/actions/apiAction";
 import ViewExamContainer from "../shared/ViewExamContainer";
 import Loader from "../shared/Loader";
+import { GET } from "../constants";
 
 export const fetch = async ({ dispatch }) => {
   const config = {
     url: "dashboard/Teachers/viewExam",
-    method: "GET",
+    method: GET,
   };
   await dispatch(api({ name: "viewExam", config }));
 };

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import { fetchEditExam } from "../Teacher/EditExam";
+import { DELETE } from "../constants";
 
 const ViewExamContainer = ({ examsData }) => {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const ViewExamContainer = ({ examsData }) => {
             });
             fetchEditExam({ id: examsData._id, dispatch });
           }}
+          disabled={loading.deleteExam}
         >
           Edit
         </button>
@@ -37,10 +39,11 @@ const ViewExamContainer = ({ examsData }) => {
           onClick={async () => {
             const config = {
               url: `dashboard/Teachers/deleteExam?id=${examsData._id}`,
-              method: "DELETE",
+              method: DELETE,
             };
             await dispatch(api({ name: "deleteExam", config }));
           }}
+          disabled={loading.deleteExam}
         >
           {loading.deleteExam ? "Deleting..." : "Delete"}
         </button>

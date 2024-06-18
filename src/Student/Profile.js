@@ -8,6 +8,7 @@ import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { editProfileFormFields } from "../utils/editProfileFormFields";
 import Sidebar from "./Sidebar";
+import { GET } from "../constants";
 
 const Profile = () => {
   const { formData } = useSelector((state) => state.formData);
@@ -22,7 +23,7 @@ const Profile = () => {
     const fetch = async () => {
       const config = {
         url: "student/getStudentDetail",
-        method: "get",
+        method: GET,
       };
       await dispatch(api({ name: "studentProfile", config }));
     };
@@ -75,7 +76,7 @@ const Profile = () => {
             : editProfile({ setName, editedProfile, studentProfile, setIsEdit })
         }
         disabled={editLoader}
-        text={isEdit ? "Submit" : editLoader ? "Editing..." : "Edit Profile"}
+        text={isEdit ? "Submit" : editLoader ? "Updating..." : "Edit Profile"}
       />
     </div>
   );

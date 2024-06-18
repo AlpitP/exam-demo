@@ -12,6 +12,16 @@ export const createExamFormFields = (index) => {
       name: "question",
       label: `Question ${index + 1}`,
       isRequired: "Please Enter Question.",
+      customValidations: ({ compareQuestionsArray, question }) => {
+        if (
+          compareQuestionsArray?.find((ele) => ele?.question === question) &&
+          compareQuestionsArray?.findIndex(
+            (ele) => ele?.question === question
+          ) !== index
+        ) {
+          return "You can not Add Same Questions.";
+        }
+      },
     },
     { type: "radio", name: "opt1", label: "A", id: "ans1" },
     {

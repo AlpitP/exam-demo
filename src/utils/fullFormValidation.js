@@ -5,6 +5,7 @@ import store from "../redux/store/store";
 export const allFormFieldValidation = (formFields) => {
   const { formData } = store.getState("formData");
   const { formData: data } = formData;
+  const { questions } = store.getState().teacher.examData;
   const dispatch = store.dispatch;
   let valid = true;
 
@@ -29,12 +30,14 @@ export const allFormFieldValidation = (formFields) => {
       isRequired &&
       customValidations &&
       customValidations({
-        value: data.Password,
-        compare: data[name],
+        value: data?.Password,
+        compare: data?.[name],
         opt1: data.ans1,
         opt2: data.ans2,
         opt3: data.ans3,
         opt4: data.ans4,
+        compareQuestionsArray: questions,
+        question: data?.question,
       })
     ) {
       dispatch(
@@ -42,12 +45,14 @@ export const allFormFieldValidation = (formFields) => {
           name,
           error:
             customValidations({
-              value: data.Password,
-              compare: data[name],
+              value: data?.Password,
+              compare: data?.[name],
               opt1: data.ans1,
               opt2: data.ans2,
               opt3: data.ans3,
               opt4: data.ans4,
+              compareQuestionsArray: questions,
+              question: data?.question,
             }) || DEFAULT_ERROR,
         })
       );

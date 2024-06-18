@@ -1,4 +1,4 @@
-import { SUCCESS_CODE } from "../constants";
+import { POST, SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
 import { allFormFieldValidation } from "../utils/fullFormValidation";
 import { newPasswordFormFields } from "../utils/newPasswordFormFields";
@@ -13,7 +13,7 @@ export const newPasswordHandler = async ({
   if (valid) {
     const config = {
       url: `users/ForgotPassword/Verify${search}`,
-      method: "post",
+      method: POST,
       data: formData,
     };
     const response = await dispatch(api({ name: "newPassword", config }));

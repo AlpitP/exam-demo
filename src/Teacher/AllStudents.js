@@ -5,6 +5,7 @@ import Loader from "../shared/Loader";
 
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../Student/Sidebar";
+import { GET } from "../constants";
 
 const AllStudents = () => {
   const { data, loading } = useSelector((state) => state.api);
@@ -15,7 +16,7 @@ const AllStudents = () => {
     const fetch = async () => {
       const config = {
         url: "dashboard/Teachers",
-        method: "get",
+        method: GET,
       };
       await dispatch(api({ name: "allStudents", config }));
     };

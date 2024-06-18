@@ -18,8 +18,12 @@ const studentSlice = createSlice({
       const { data, index } = action.payload;
       state.exam.questions[index] = data;
     },
+    clearExam: (state, action) => {
+      state.exam.exam = [];
+      state.exam.questions = [];
+    },
   },
 });
 
 export default studentSlice.reducer;
-export const { addExam, addAnswer } = studentSlice.actions;
+export const { addExam, addAnswer, clearExam } = studentSlice.actions;

@@ -28,8 +28,8 @@ const api = createAsyncThunk(
       if (["signIn", "signUp"].includes(name)) {
         statusCode === SUCCESS_CODE &&
           dispatch(addUserInfo(response?.data?.data));
+        toast && dispatch(showToast({ type: "success", message: message }));
       }
-      toast && dispatch(showToast({ type: "success", message: message }));
       return { name, data: response?.data };
     } catch (error) {
       let errorMessage = "Unknown Error Occurred!";

@@ -4,6 +4,7 @@ import { useLocation } from "react-router-dom";
 import api from "../redux/actions/apiAction";
 import Sidebar from "../Student/Sidebar";
 import Loader from "../shared/Loader";
+import { GET } from "../constants";
 
 const Student = () => {
   const { data, loading } = useSelector((state) => state.api);
@@ -15,7 +16,7 @@ const Student = () => {
     const fetch = async () => {
       const config = {
         url: `dashboard/Teachers/viewStudentDetail${search}`,
-        method: "get",
+        method: GET,
       };
       await dispatch(api({ name: "viewStudentDetail", config }));
     };
@@ -37,9 +38,9 @@ const Student = () => {
           <Loader loading={loading.viewStudentDetail} />
         ) : (
           <>
-            <h2>Name: {viewStudentDetail && viewStudentDetail[0].name}</h2>
-            <h2>Email: {viewStudentDetail && viewStudentDetail[0].email}</h2>
-            {viewStudentDetail[0]?.Result.length > 0 && (
+            <h2>Name: {viewStudentDetail && viewStudentDetail?.[0]?.name}</h2>
+            <h2>Email: {viewStudentDetail && viewStudentDetail?.[0]?.email}</h2>
+            {viewStudentDetail?.[0]?.Result?.length > 0 && (
               <h2>Rank:{viewStudentDetail[0]?.Result[0]?.rank}</h2>
             )}
           </>

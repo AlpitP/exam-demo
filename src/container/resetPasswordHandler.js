@@ -1,3 +1,4 @@
+import { POST } from "../constants";
 import api from "../redux/actions/apiAction";
 import { clearForm } from "../redux/slices/formSlice";
 import { allFormFieldValidation } from "../utils/fullFormValidation";
@@ -8,7 +9,7 @@ export const resetPasswordHandler = async ({ formData, dispatch }) => {
   if (valid) {
     const config = {
       url: `users/ResetPassword`,
-      method: "post",
+      method: POST,
       data: formData,
     };
     await dispatch(api({ name: "resetPassword", config }));

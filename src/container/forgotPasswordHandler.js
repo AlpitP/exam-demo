@@ -1,4 +1,4 @@
-import { SUCCESS_CODE } from "../constants";
+import { POST, SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
 import { forgotPasswordFormFields } from "../utils/forgotPasswordFormFields";
 import { allFormFieldValidation } from "../utils/fullFormValidation";
@@ -12,7 +12,7 @@ export const forgotPasswordHandler = async ({
   if (valid) {
     const config = {
       url: "users/ForgotPassword",
-      method: "post",
+      method: POST,
       data: formData,
     };
     const response = await dispatch(api({ name: "forgotPassword", config }));

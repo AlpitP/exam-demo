@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { clearForm, onChange, setError } from "../redux/slices/formSlice";
+import { onChange, removeError } from "../redux/slices/formSlice";
+import { objectKeys } from "../utils/javascript";
 import { validation } from "../utils/validation";
 import Input from "./Input";
 import Radio from "./Radio";
 import SelectOptions from "./Select";
-import store from "../redux/store/store";
-import { objectKeys } from "../utils/javascript";
-import { isRejected } from "@reduxjs/toolkit";
 
 const Form = ({ formFields, value, ...rest }) => {
   const { formData } = useSelector((state) => state.formData);
@@ -31,8 +29,8 @@ const Form = ({ formFields, value, ...rest }) => {
         )
       : dispatch(onChange({ data: "" }));
 
-    // answer = rest?.currentQuestion?.answer ?? formData?.answer;
     isValid && validation(formFields);
+    formData?.answer && dispatch(removeError({ name: "error" }));
   });
 
   const changeHandler = (event, data) => {
@@ -47,7 +45,7 @@ const Form = ({ formFields, value, ...rest }) => {
   return (
     <div>
       {formFields.map((ele, index) => {
-        const { name, label, list, type, disabled, id, text, isRequired } = ele;
+        const { name, label, list, type, disabled, id, text } = ele;
         switch (type) {
           case "select":
             return (

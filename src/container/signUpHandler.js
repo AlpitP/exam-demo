@@ -1,4 +1,4 @@
-import { SUCCESS_CODE } from "../constants";
+import { POST, SUCCESS_CODE } from "../constants";
 import api from "../redux/actions/apiAction";
 import { showToast } from "../redux/slices/toastSlice";
 import { allFormFieldValidation } from "../utils/fullFormValidation";
@@ -10,7 +10,7 @@ export const signUpHandler = async ({ formData, dispatch, navigate }) => {
     const config = {
       url: "users/SignUp",
       data: formData,
-      method: "POST",
+      method: POST,
     };
     const response = await dispatch(api({ name: "signUp", config }));
 
