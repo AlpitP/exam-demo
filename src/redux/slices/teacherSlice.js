@@ -28,8 +28,12 @@ const teacherSlice = createSlice({
     currentQuestionFormData: (state, action) => {
       state.currentQuestion = action.payload.data;
     },
+    clearExam: () => {
+      return initialState;
+    },
   },
 });
 
 export default teacherSlice.reducer;
-export const { addQuestion, currentQuestionFormData } = teacherSlice.actions;
+export const { addQuestion, currentQuestionFormData, clearExam } =
+  teacherSlice.actions;

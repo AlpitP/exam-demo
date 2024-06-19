@@ -12,15 +12,14 @@ const studentSlice = createSlice({
   reducers: {
     addExam: (state, action) => {
       const { data } = action.payload;
-      state.exam.exam.push(data);
+      state.exam.exam = data;
     },
     addAnswer: (state, action) => {
       const { data, index } = action.payload;
-      state.exam.questions[index] = data;
+      state.exam.questions[index - 1] = data;
     },
-    clearExam: (state, action) => {
-      state.exam.exam = [];
-      state.exam.questions = [];
+    clearExam: () => {
+      return initialState;
     },
   },
 });

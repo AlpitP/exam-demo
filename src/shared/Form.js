@@ -12,26 +12,24 @@ const Form = ({ formFields, value, ...rest }) => {
   // const { examData } = useSelector((state) => state.teacher);
   const { error } = useSelector((state) => state.formData);
   const [isValid, setIsValid] = useState(false);
-  // let answer = formData?.answer ?? "";
   const [answer, setAnswer] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
     setAnswer(formData?.answer ?? rest?.currentQuestion?.answer);
-    rest?.currentQuestion?.question?.length > 0
-      ? dispatch(
-          onChange({
-            data:
-              objectKeys(formData).length > 0
-                ? formData
-                : rest?.currentQuestion,
-          })
-        )
-      : dispatch(onChange({ data: "" }));
-
+    if (rest?.currentQuestion?.question?.length > 0) {
+      dispatch(
+        onChange({
+          data:
+            objectKeys(formData).length > 0 ? formData : rest?.currentQuestion,
+        })
+      );
+    } else {
+      dispatch(onChange({ data: "" }));
+    }
     isValid && validation(formFields);
     formData?.answer && dispatch(removeError({ name: "error" }));
-  });
+  }, [setAnswer, dispatch, formData, formFields, isValid, rest]);
 
   const changeHandler = (event, data) => {
     setIsValid(true);
@@ -41,7 +39,6 @@ const Form = ({ formFields, value, ...rest }) => {
       dispatch(onChange(data ?? { name, value }));
     };
   };
-
   return (
     <div>
       {formFields.map((ele, index) => {
@@ -66,7 +63,6 @@ const Form = ({ formFields, value, ...rest }) => {
                 key={index}
                 name={name}
                 onChange={(e) => {
-                  // answer = formData[name];
                   setAnswer(formData[name] ?? "");
                   dispatch(
                     changeHandler(e, {
@@ -90,7 +86,6 @@ const Form = ({ formFields, value, ...rest }) => {
                   formData?.[name] ??
                   rest?.currentQuestion?.[name] ??
                   value ??
-                  // examData[name] ??
                   ""
                 }
                 errorMessage={error[name]}

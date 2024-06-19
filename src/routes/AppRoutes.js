@@ -17,6 +17,7 @@ import SignUp from "../components/SignUp";
 import HomePage from "../dashboard/HomePage";
 import AuthRoute from "./AuthRoutes";
 import ProtectedRoute from "./ProtectedRoutes";
+import ViewResult from "../Student/ViewResult";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -31,7 +32,6 @@ const AppRoutes = () => {
         { path: "newPassword", element: <NewPassword /> },
       ],
     },
-    { path: "/teacher/create-exam", element: <CreateExam /> },
     {
       path: "/",
       element: <ProtectedRoute />,
@@ -41,6 +41,7 @@ const AppRoutes = () => {
           element: <ProtectedRoute role="teacher" />,
           children: [
             { path: "", element: <HomePage /> },
+            { path: "create-exam", element: <CreateExam /> },
             { path: "students", element: <AllStudents /> },
             { path: "viewStudentDetail", element: <Student /> },
             { path: "view-exam", element: <ViewExam /> },
@@ -55,7 +56,15 @@ const AppRoutes = () => {
           children: [
             { path: "", element: <HomePage /> },
             { path: "Exams", element: <AllExams /> },
-            { path: "give-exam", element: <GiveExam /> },
+            { path: "view-result", element: <ViewResult /> },
+            // { path: "give-exam", element: <GiveExam /> },
+            { path: "give-exam/question1", element: <GiveExam id={1} /> },
+            { path: "give-exam/question2", element: <GiveExam id={2} /> },
+            { path: "give-exam/question3", element: <GiveExam id={3} /> },
+            { path: "give-exam/question4", element: <GiveExam id={4} /> },
+            { path: "give-exam/question5", element: <GiveExam id={5} /> },
+            { path: "give-exam/question6", element: <GiveExam id={6} /> },
+            { path: "give-exam/question7", element: <GiveExam id={7} /> },
             { path: "profile", element: <Profile /> },
             { path: "resetPassword", element: <ResetPassword /> },
           ],

@@ -28,6 +28,18 @@ const api = createAsyncThunk(
       if (["signIn", "signUp"].includes(name)) {
         statusCode === SUCCESS_CODE &&
           dispatch(addUserInfo(response?.data?.data));
+      }
+      if (
+        [
+          "signIn",
+          "signUp",
+          "resetPassword",
+          "forgotPassword",
+          "newPassword",
+          "editedProfile",
+          "giveExam",
+        ].includes(name)
+      ) {
         toast && dispatch(showToast({ type: "success", message: message }));
       }
       return { name, data: response?.data };

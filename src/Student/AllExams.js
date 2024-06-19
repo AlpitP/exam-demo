@@ -6,6 +6,7 @@ import Sidebar from "./Sidebar";
 import Loader from "../shared/Loader";
 import { useNavigate } from "react-router-dom";
 import { GET } from "../constants";
+import { toast } from "react-toastify";
 
 const AllExams = () => {
   const dispatch = useDispatch();
@@ -22,8 +23,8 @@ const AllExams = () => {
       };
       await dispatch(api({ name: "allExam", config }));
     };
-    !allExam && fetch();
-  }, [dispatch, allExam]);
+    fetch();
+  }, [dispatch]);
 
   return (
     <>
@@ -50,10 +51,16 @@ const AllExams = () => {
                     <td>
                       <button
                         onClick={() =>
-                          navigate(`/student/give-exam?id=${ele._id}`)
+                          ele?.Result?.length > 0
+                            ? navigate("/student/view-result", {
+                                state: ele?.Result?.[0],
+                              })
+                            : navigate(
+                                `/student/give-exam/question${1}?id=${ele._id}`
+                              )
                         }
                       >
-                        Give Exam
+                        {ele?.Result?.length > 0 ? "View Result" : "Give Exam"}
                       </button>
                     </td>
                   </tr>

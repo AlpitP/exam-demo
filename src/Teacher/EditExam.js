@@ -2,9 +2,11 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import api from "../redux/actions/apiAction";
-import { addQuestion } from "../redux/slices/teacherSlice";
+import { addQuestion, clearExam } from "../redux/slices/teacherSlice";
 import CreateExam from "./CreateExam";
 import { GET } from "../constants";
+import { clearForm } from "../redux/slices/formSlice";
+import store from "../redux/store/store";
 
 export const fetchEditExam = async ({ search, dispatch, id }) => {
   if (id) {
@@ -18,10 +20,12 @@ export const fetchEditExam = async ({ search, dispatch, id }) => {
   };
   await dispatch(api({ name: "editExam", config }));
 };
+
 const EditExam = () => {
   const dispatch = useDispatch();
   const { search, state } = useLocation();
   const { data } = useSelector((state) => state.api);
+  const { examData } = useSelector((state) => state.teacher);
 
   useEffect(() => {
     !data.editExam && fetchEditExam({ search, dispatch });
@@ -32,24 +36,20 @@ const EditExam = () => {
         notes: state?.notes,
       })
     );
-    return () =>
-      dispatch(
-        addQuestion({
-          data: [],
-          subjectName: "",
-          notes: [],
-        })
-      );
+    return () => {
+      dispatch(clearForm());
+      dispatch(clearExam());
+    };
   }, [dispatch, data.editExam, state, search]);
 
   const formData = {
     subjectName: state.subjectName ?? "",
-    question: data?.editExam?.questions?.[0]?.question ?? "",
-    answer: data?.editExam?.questions?.[0]?.answer ?? "",
-    ans1: data?.editExam?.questions?.[0]?.options?.[0] ?? "",
-    ans2: data?.editExam?.questions?.[0]?.options?.[1] ?? "",
-    ans3: data?.editExam?.questions?.[0]?.options?.[2] ?? "",
-    ans4: data?.editExam?.questions?.[0]?.options?.[3] ?? "",
+    question: examData?.questions?.[0]?.question ?? "",
+    answer: examData?.questions?.[0]?.answer ?? "",
+    ans1: examData?.questions?.[0]?.options?.[0] ?? "",
+    ans2: examData?.questions?.[0]?.options?.[1] ?? "",
+    ans3: examData?.questions?.[0]?.options?.[2] ?? "",
+    ans4: examData?.questions?.[0]?.options?.[3] ?? "",
     notes: state?.notes?.[0] ?? "",
   };
   return (

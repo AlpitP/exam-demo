@@ -1,32 +1,33 @@
-export const giveExamFormFields = ({ index, exam }) => {
+export const giveExamFormFields = ({ index, examData }) => {
+  console.log("examData", examData);
   return [
     {
       type: "radio",
       name: `opt1`,
       label: "A",
       id: "ans1",
-      text: exam?.[index]?.options?.[0],
+      text: examData?.exam?.[index - 1]?.options?.[0],
     },
     {
       type: "radio",
       name: `opt2`,
       label: "B",
       id: "ans2",
-      text: exam?.[index]?.options?.[1],
+      text: examData?.exam?.[index - 1]?.options?.[1],
     },
     {
       type: "radio",
       name: `opt3`,
       label: "C",
       id: "ans3",
-      text: exam?.[index]?.options?.[2],
+      text: examData?.exam?.[index - 1]?.options?.[2],
     },
     {
       type: "radio",
       name: `opt4`,
       label: "D",
       id: "ans4",
-      text: exam?.[index]?.options?.[3],
+      text: examData?.exam?.[index - 1]?.options?.[3],
     },
   ];
 };

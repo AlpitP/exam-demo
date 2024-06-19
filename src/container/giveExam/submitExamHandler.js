@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { POST, SUCCESS_CODE } from "../../constants";
 import api from "../../redux/actions/apiAction";
 import { removeError, setError } from "../../redux/slices/formSlice";
@@ -10,8 +11,9 @@ export const submitExamHandler = async ({
   formData,
   index,
   search,
+  examData,
 }) => {
-  if (formData.answer) {
+  if (formData.answer && examData.questions.length === 6) {
     dispatch(
       addAnswer({
         data: {
@@ -30,7 +32,9 @@ export const submitExamHandler = async ({
     const { statusCode } = response?.payload?.data ?? {};
     statusCode === SUCCESS_CODE && navigate("/student/exams");
     dispatch(removeError({ name: "error" }));
-  } else {
+  } else if (!formData?.answer) {
     dispatch(setError({ name: "error", error: "Please Select Ans." }));
+  } else {
+    toast.error("Please Attempt all questions.");
   }
 };

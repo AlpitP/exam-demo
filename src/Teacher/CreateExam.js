@@ -15,6 +15,17 @@ import Form from "../shared/Form";
 import Loader from "../shared/Loader";
 import { createExamFormFields } from "../utils/createExamFormFields";
 
+const initialState = {
+  subjectName: "",
+  question: "",
+  ans1: "",
+  ans2: "",
+  ans3: "",
+  ans4: "",
+  answer: "",
+  notes: "",
+};
+
 const CreateExam = ({ type, exam }) => {
   const [index, setIndex] = useState(0);
   const { loading } = useSelector((state) => state.api);
@@ -23,16 +34,7 @@ const CreateExam = ({ type, exam }) => {
   const { formData } = useSelector((state) => state.formData);
   const { examData: data } = useSelector((state) => state.teacher);
   const dispatch = useDispatch();
-  const [currentQuestion, setCurrentQuestion] = useState({
-    subjectName: "",
-    question: "",
-    ans1: "",
-    ans2: "",
-    ans3: "",
-    ans4: "",
-    answer: "",
-    notes: "",
-  });
+  const [currentQuestion, setCurrentQuestion] = useState(initialState);
 
   const { subjectName, notes, question, answer, ans1, ans2, ans3, ans4 } =
     formData;
@@ -40,17 +42,24 @@ const CreateExam = ({ type, exam }) => {
   useEffect(() => {
     dispatch(
       currentQuestionFormData({
-        data: exam ? (index === 0 ? exam : currentQuestion) : currentQuestion,
+        data: exam
+          ? index === 0
+            ? exam
+            : currentQuestion
+          : {
+              subjectName: data?.subjectName,
+              question: data?.questions?.[index]?.question,
+              ans1: data?.questions?.[index]?.options?.[0],
+              ans2: data?.questions?.[index]?.options?.[1],
+              ans3: data?.questions?.[index]?.options?.[2],
+              ans4: data?.questions?.[index]?.options?.[3],
+              answer: data?.questions?.[index]?.answer,
+              notes: data?.notes?.[index],
+            },
       })
     );
     dispatch(clearForm());
-    // dispatch(
-    //   onChange({
-    //     data: exam ? (index === 0 ? exam : currentQuestion) : currentQuestion,
-    //   })
-    // );
-    return () => dispatch(clearForm());
-  }, [dispatch, currentQuestion, exam, index]);
+  }, [dispatch, currentQuestion, index, data]);
 
   const examData = {
     subjectName: subjectName,
@@ -145,7 +154,7 @@ const CreateExam = ({ type, exam }) => {
             <Form
               formFields={createExamFormFields(index)}
               index={index}
-              currentQuestion={store.getState().teacher.currentQuestion}
+              currentQuestion={store.getState()?.teacher?.currentQuestion}
               type={type}
             />
             <CustomButton

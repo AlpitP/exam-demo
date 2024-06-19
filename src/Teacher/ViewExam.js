@@ -5,6 +5,7 @@ import api from "../redux/actions/apiAction";
 import ViewExamContainer from "../shared/ViewExamContainer";
 import Loader from "../shared/Loader";
 import { GET } from "../constants";
+import { clearExam } from "../redux/slices/teacherSlice";
 
 export const fetch = async ({ dispatch }) => {
   const config = {

@@ -5,7 +5,7 @@ import api from "../redux/actions/apiAction";
 import { fetchEditExam } from "../Teacher/EditExam";
 import { DELETE } from "../constants";
 
-const ViewExamContainer = ({ examsData }) => {
+const ViewExamContainer = ({ examsData, index }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.api);
@@ -45,7 +45,7 @@ const ViewExamContainer = ({ examsData }) => {
           }}
           disabled={loading.deleteExam}
         >
-          {loading.deleteExam ? "Deleting..." : "Delete"}
+          {loading.deleteExam && index ? "Deleting..." : "Delete"}
         </button>
       </div>
     </div>
