@@ -3,7 +3,6 @@ import { clearForm } from "../../redux/slices/formSlice";
 import { addQuestion } from "../../redux/slices/teacherSlice";
 import { createExamFormFields } from "../../utils/createExamFormFields";
 import { allFormFieldValidation } from "../../utils/fullFormValidation";
-import { currentQuestionHandler } from "../createExamHandlers";
 
 export const nextHandler = ({
   index,
@@ -12,8 +11,6 @@ export const nextHandler = ({
   examData,
   notes,
   setIndex,
-  setCurrentQuestion,
-  data,
   subjectName,
   navigate,
   type,
@@ -30,13 +27,13 @@ export const nextHandler = ({
       })
     );
     setIndex((index) => index + 1);
-    currentQuestionHandler({
-      setCurrentQuestion,
-      index,
-      data,
-      type: "next",
-      subjectName,
-    });
+    // currentQuestionHandler({
+    //   setCurrentQuestion,
+    //   index,
+    //   data,
+    //   type: "next",
+    //   subjectName,
+    // });
     dispatch(clearForm());
     type === "editExam"
       ? navigate(`/teacher/examDetail/question${index + 1}${search}`)

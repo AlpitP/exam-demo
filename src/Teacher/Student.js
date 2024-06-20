@@ -40,9 +40,27 @@ const Student = () => {
           <>
             <h2>Name: {viewStudentDetail && viewStudentDetail?.[0]?.name}</h2>
             <h2>Email: {viewStudentDetail && viewStudentDetail?.[0]?.email}</h2>
-            {viewStudentDetail?.[0]?.Result?.length > 0 && (
-              <h2>Rank:{viewStudentDetail[0]?.Result[0]?.rank}</h2>
-            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 10,
+                marginBlock: 10,
+                flexWrap: "wrap",
+              }}
+            >
+              {viewStudentDetail?.[0]?.Result?.length > 0 &&
+                viewStudentDetail?.[0]?.Result.map((ele, index) => {
+                  return (
+                    <div style={{ border: "1px solid black", padding: 10 }}>
+                      <h3>Subject : {ele.subjectName}</h3>
+                      <h3>Score : {ele.score}</h3>
+                      <h3>Rank : {ele.rank}</h3>
+                      <h3>Result Status : {ele.resultStatus}</h3>
+                    </div>
+                  );
+                })}
+            </div>
           </>
         )}
       </div>

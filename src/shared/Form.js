@@ -9,7 +9,6 @@ import SelectOptions from "./Select";
 
 const Form = ({ formFields, value, ...rest }) => {
   const { formData } = useSelector((state) => state.formData);
-  // const { examData } = useSelector((state) => state.teacher);
   const { error } = useSelector((state) => state.formData);
   const [isValid, setIsValid] = useState(false);
   const [answer, setAnswer] = useState("");
@@ -29,7 +28,7 @@ const Form = ({ formFields, value, ...rest }) => {
     }
     isValid && validation(formFields);
     formData?.answer && dispatch(removeError({ name: "error" }));
-  }, [setAnswer, dispatch, formData, formFields, isValid, rest]);
+  }, [formData, formFields, isValid, rest]);
 
   const changeHandler = (event, data) => {
     setIsValid(true);

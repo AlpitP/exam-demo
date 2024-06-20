@@ -1,17 +1,21 @@
 import React, { useEffect } from "react";
-import api from "../redux/actions/apiAction";
 import { useDispatch, useSelector } from "react-redux";
+import api from "../redux/actions/apiAction";
 import Loader from "../shared/Loader";
 
-import { useNavigate } from "react-router-dom";
 import Sidebar from "../Student/Sidebar";
 import { GET } from "../constants";
+import Table from "../shared/Table";
+import { useNavigate } from "react-router-dom";
 
 const AllStudents = () => {
   const { data, loading } = useSelector((state) => state.api);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const viewStudentDetailHandler = (e, id) => {
+    navigate(`/teacher/viewStudentDetail?id=${id}`);
+  };
   useEffect(() => {
     const fetch = async () => {
       const config = {
@@ -23,15 +27,35 @@ const AllStudents = () => {
     !data.allStudents && fetch();
   }, [dispatch, data]);
 
-  const viewStudentDetailHandler = (e, id) => {
-    navigate(`/teacher/viewStudentDetail?id=${id}`);
-  };
   return (
     <div>
       <Sidebar />
       <h1 style={{ textAlign: "center" }}>All Students Details.</h1>
       <div className="table">
-        <table>
+        <Table
+          tableHeading={["No.", "Name", "Email", "Status", "Action"]}
+          tableBody={data}
+        >
+          {data &&
+            data.allStudents?.map((ele, index) => {
+              return (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{ele.name}</td>
+                  <td>{ele.email}</td>
+                  <td>{ele.status}</td>
+                  <td>
+                    <button
+                      onClick={(e) => viewStudentDetailHandler(e, ele._id)}
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+        </Table>
+        {/* <table>
           <thead>
             <tr>
               <th>No.</th>
@@ -61,7 +85,7 @@ const AllStudents = () => {
                 );
               })}
           </tbody>
-        </table>
+        </table> */}
         <Loader loading={loading.allStudents} />
       </div>
     </div>

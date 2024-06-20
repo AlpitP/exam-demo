@@ -1,9 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import api from "../redux/actions/apiAction";
 import { fetchEditExam } from "../Teacher/EditExam";
 import { DELETE } from "../constants";
+import api from "../redux/actions/apiAction";
+import CustomButton from "./Button";
 
 const ViewExamContainer = ({ examsData }) => {
   const navigate = useNavigate();
@@ -14,9 +15,9 @@ const ViewExamContainer = ({ examsData }) => {
       <h2>Subject : {examsData.subjectName}</h2>
       <h3>Email : {examsData.email}</h3>
       <h3>Notes : {examsData.notes[0]}</h3>
-      <div style={{ marginLeft: "33%" }}>
-        <button
-          style={{ marginRight: 10 }}
+      <div style={{ marginLeft: "30%" }}>
+        <CustomButton
+          text="Edit"
           onClick={() => {
             navigate(`/teacher/examDetail/question1?id=${examsData._id}`, {
               state: {
@@ -27,21 +28,19 @@ const ViewExamContainer = ({ examsData }) => {
             fetchEditExam({ id: examsData._id, dispatch });
           }}
           disabled={loading.deleteExam}
-        >
-          Edit
-        </button>
-        <button
+          style={{ marginInline: 10 }}
+        />
+        <CustomButton
+          text={loading.deleteExam ? "Deleting..." : "Delete"}
           onClick={async () => {
             const config = {
               url: `dashboard/Teachers/deleteExam?id=${examsData._id}`,
               method: DELETE,
             };
-            await dispatch(api({ name: "deleteExam", config }));
+            await dispatch(api({ name: `deleteExam`, config }));
           }}
           disabled={loading.deleteExam}
-        >
-          {loading.deleteExam ? "Deleting..." : "Delete"}
-        </button>
+        />
       </div>
     </div>
   );

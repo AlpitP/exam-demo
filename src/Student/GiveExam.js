@@ -2,18 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { GET } from "../constants";
-import { nextQuestionHandler } from "../container/giveExam/nextQuestionHandler";
-import { previousQuestionHandler } from "../container/giveExam/previousQuestionHandler";
-import { skipQuestionHandler } from "../container/giveExam/skipQuestionHandler";
-import { submitExamHandler } from "../container/giveExam/submitExamHandler";
 import api from "../redux/actions/apiAction";
 import { onChange } from "../redux/slices/formSlice";
 import { addExam, clearExam } from "../redux/slices/studentSlice";
+import ButtonGroup from "../shared/ButtonGroup";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
 import { giveExamFormFields } from "../utils/giveExamFormFields";
 import Sidebar from "./Sidebar";
-import CustomButton from "../shared/Button";
 
 const GiveExam = ({ id }) => {
   const { search } = useLocation();
@@ -26,7 +22,6 @@ const GiveExam = ({ id }) => {
   const [index, setIndex] = useState(id);
   const { formData, error } = useSelector((state) => state.formData);
   const { exam: examData } = useSelector((state) => state.student);
-  console.log("examData", examData);
 
   useEffect(() => {
     dispatch(
@@ -44,7 +39,6 @@ const GiveExam = ({ id }) => {
   }, [examData, index]);
 
   useEffect(() => {
-    console.log("useEffect");
     const fetchExam = async () => {
       const config = {
         url: `student/examPaper${search}`,
@@ -78,7 +72,15 @@ const GiveExam = ({ id }) => {
           {error?.error && (
             <p style={{ color: "red", fontSize: 14 }}>Please Select Ans.</p>
           )}
-          <CustomButton
+          <ButtonGroup
+            index={index}
+            setIndex={setIndex}
+            formData={formData}
+            examData={examData}
+            giveExam={giveExam}
+          />
+
+          {/* <CustomButton
             text="Previous"
             onClick={() => {
               previousQuestionHandler({
@@ -140,7 +142,7 @@ const GiveExam = ({ id }) => {
               });
             }}
             disabled={index === 7}
-          />
+          /> */}
         </>
       )}
     </div>

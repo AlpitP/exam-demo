@@ -7,6 +7,7 @@ import Loader from "../shared/Loader";
 import Sidebar from "./Sidebar";
 import "./allExam.css";
 import CustomButton from "../shared/Button";
+import Table from "../shared/Table";
 
 const AllExams = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,39 @@ const AllExams = () => {
       <Sidebar />
       <h1 style={{ textAlign: "center" }}>All Exams</h1>
       <div className="table" style={{ marginTop: 20 }}>
-        <table>
+        <Table
+          tableHeading={["No.", "Subject", "Teacher Email", "Action"]}
+          // tableBody={allExam}
+          // type="exam"
+        >
+          {allExam &&
+            allExam?.map((ele, index) => {
+              return (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td>{ele.subjectName}</td>
+                  <td>{ele.email}</td>
+                  <td>
+                    <CustomButton
+                      text={
+                        ele?.Result?.length > 0 ? "View Result" : "Give Exam"
+                      }
+                      onClick={() =>
+                        ele?.Result?.length > 0
+                          ? navigate("/student/view-result", {
+                              state: ele?.Result?.[0],
+                            })
+                          : navigate(
+                              `/student/give-exam/question${1}?id=${ele._id}`
+                            )
+                      }
+                    />
+                  </td>
+                </tr>
+              );
+            })}
+        </Table>
+        {/* <table>
           <thead>
             <tr>
               <th>No.</th>
@@ -68,7 +101,7 @@ const AllExams = () => {
                 );
               })}
           </tbody>
-        </table>
+        </table> */}
         <Loader loading={allExamLoader} />
       </div>
     </>

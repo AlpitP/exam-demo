@@ -3,11 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { GET } from "../constants";
 import api from "../redux/actions/apiAction";
-import {
-  addQuestion,
-  clearExam,
-  currentQuestionFormData,
-} from "../redux/slices/teacherSlice";
+import { addQuestion, clearExam } from "../redux/slices/teacherSlice";
 import CreateExam from "./CreateExam";
 
 export const fetchEditExam = async ({ search, dispatch, id }) => {
@@ -38,18 +34,18 @@ const EditExam = ({ id }) => {
         notes: state?.notes ?? examData?.notes,
       })
     );
-    dispatch(
-      currentQuestionFormData({
-        question: examData?.questions?.[id - 1]?.question ?? "",
-        answer: examData?.questions?.[id - 1]?.answer ?? "",
-        ans1: examData?.questions?.[id - 1]?.options?.[0] ?? "",
-        ans2: examData?.questions?.[id - 1]?.options?.[1] ?? "",
-        ans3: examData?.questions?.[id - 1]?.options?.[2] ?? "",
-        ans4: examData?.questions?.[id - 1]?.options?.[3] ?? "",
-        subjectName: examData?.subjectName,
-        notes: examData?.notes,
-      })
-    );
+    // dispatch(
+    //   currentQuestionFormData({
+    //     question: examData?.questions?.[id - 1]?.question ?? "",
+    //     answer: examData?.questions?.[id - 1]?.answer ?? "",
+    //     ans1: examData?.questions?.[id - 1]?.options?.[0] ?? "",
+    //     ans2: examData?.questions?.[id - 1]?.options?.[1] ?? "",
+    //     ans3: examData?.questions?.[id - 1]?.options?.[2] ?? "",
+    //     ans4: examData?.questions?.[id - 1]?.options?.[3] ?? "",
+    //     subjectName: examData?.subjectName,
+    //     notes: examData?.notes,
+    //   })
+    // );
   }, [data]);
 
   useEffect(() => {

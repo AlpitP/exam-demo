@@ -19,7 +19,6 @@ const ViewResult = () => {
       >
         <h3>Subject :- {state?.subjectName}</h3>
         <h3>Rank :- {state?.rank}</h3>
-        <h3>Score :- {state?.score}</h3>
         <h3>Status :- {state?.resultStatus}</h3>
       </div>
     </div>

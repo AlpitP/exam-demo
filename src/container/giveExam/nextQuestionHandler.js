@@ -1,9 +1,4 @@
-import {
-  clearForm,
-  onChange,
-  removeError,
-  setError,
-} from "../../redux/slices/formSlice";
+import { removeError, setError } from "../../redux/slices/formSlice";
 import { addAnswer } from "../../redux/slices/studentSlice";
 
 export const nextQuestionHandler = ({
@@ -11,14 +6,9 @@ export const nextQuestionHandler = ({
   formData,
   setIndex,
   index,
-  exam,
-  examData,
   navigate,
   search,
 }) => {
-  console.log("exam", exam);
-  console.log("examData", examData);
-  console.log("index", index);
   if (formData.answer) {
     // dispatch(
     //   onChange({

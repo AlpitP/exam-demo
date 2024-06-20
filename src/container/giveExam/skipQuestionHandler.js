@@ -1,15 +1,12 @@
-import { onChange, removeError } from "../../redux/slices/formSlice";
+import { removeError } from "../../redux/slices/formSlice";
 
 export const skipQuestionHandler = ({
   dispatch,
   setIndex,
-  exam,
   index,
-  examData,
   navigate,
   search,
 }) => {
-  console.log(index);
   //   dispatch(
   //     onChange({
   //       data: {

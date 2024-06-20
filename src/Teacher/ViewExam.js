@@ -23,7 +23,7 @@ const ViewExam = () => {
   useEffect(() => {
     fetch({ dispatch });
     return () => dispatch(clearExam());
-  }, [dispatch]);
+  }, [data.deleteExam]);
 
   return (
     <div>
@@ -40,11 +40,15 @@ const ViewExam = () => {
             justifyContent: "center",
           }}
         >
-          {data?.viewExam?.map((ele, index) => {
-            return (
-              <ViewExamContainer examsData={ele} key={index} index={index} />
-            );
-          })}
+          {data?.viewExam?.length !== 0 ? (
+            data?.viewExam?.map((ele, index) => {
+              return (
+                <ViewExamContainer examsData={ele} key={index} id={index} />
+              );
+            })
+          ) : (
+            <h1>Exam Not Found.</h1>
+          )}
         </div>
       )}
     </div>

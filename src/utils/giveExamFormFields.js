@@ -1,5 +1,4 @@
 export const giveExamFormFields = ({ index, examData }) => {
-  console.log("examData", examData);
   return [
     {
       type: "radio",
