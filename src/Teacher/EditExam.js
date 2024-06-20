@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import api from "../redux/actions/apiAction";
-import { addQuestion, clearExam } from "../redux/slices/teacherSlice";
-import CreateExam from "./CreateExam";
 import { GET } from "../constants";
-import { clearForm } from "../redux/slices/formSlice";
-import store from "../redux/store/store";
+import api from "../redux/actions/apiAction";
+import {
+  addQuestion,
+  clearExam,
+  currentQuestionFormData,
+} from "../redux/slices/teacherSlice";
+import CreateExam from "./CreateExam";
 
 export const fetchEditExam = async ({ search, dispatch, id }) => {
   if (id) {
@@ -21,40 +23,53 @@ export const fetchEditExam = async ({ search, dispatch, id }) => {
   await dispatch(api({ name: "editExam", config }));
 };
 
-const EditExam = () => {
+const EditExam = ({ id }) => {
   const dispatch = useDispatch();
   const { search, state } = useLocation();
+
   const { data } = useSelector((state) => state.api);
   const { examData } = useSelector((state) => state.teacher);
 
   useEffect(() => {
-    !data.editExam && fetchEditExam({ search, dispatch });
     dispatch(
       addQuestion({
         data: data?.editExam?.questions ?? [],
-        subjectName: state?.subjectName,
-        notes: state?.notes,
+        subjectName: state?.subjectName ?? examData?.subjectName,
+        notes: state?.notes ?? examData?.notes,
       })
     );
-    return () => {
-      dispatch(clearForm());
-      dispatch(clearExam());
-    };
-  }, [dispatch, data.editExam, state, search]);
+    dispatch(
+      currentQuestionFormData({
+        question: examData?.questions?.[id - 1]?.question ?? "",
+        answer: examData?.questions?.[id - 1]?.answer ?? "",
+        ans1: examData?.questions?.[id - 1]?.options?.[0] ?? "",
+        ans2: examData?.questions?.[id - 1]?.options?.[1] ?? "",
+        ans3: examData?.questions?.[id - 1]?.options?.[2] ?? "",
+        ans4: examData?.questions?.[id - 1]?.options?.[3] ?? "",
+        subjectName: examData?.subjectName,
+        notes: examData?.notes,
+      })
+    );
+  }, [data]);
 
-  const formData = {
-    subjectName: state.subjectName ?? "",
-    question: examData?.questions?.[0]?.question ?? "",
-    answer: examData?.questions?.[0]?.answer ?? "",
-    ans1: examData?.questions?.[0]?.options?.[0] ?? "",
-    ans2: examData?.questions?.[0]?.options?.[1] ?? "",
-    ans3: examData?.questions?.[0]?.options?.[2] ?? "",
-    ans4: examData?.questions?.[0]?.options?.[3] ?? "",
-    notes: state?.notes?.[0] ?? "",
-  };
+  useEffect(() => {
+    fetchEditExam({ search, dispatch });
+    return () => dispatch(clearExam());
+  }, []);
+
+  // const formData = {
+  //   subjectName: examData?.subjectName ?? "",
+  //   question: examData?.questions?.[0]?.question ?? "",
+  //   answer: examData?.questions?.[0]?.answer ?? "",
+  //   ans1: examData?.questions?.[0]?.options?.[0] ?? "",
+  //   ans2: examData?.questions?.[0]?.options?.[1] ?? "",
+  //   ans3: examData?.questions?.[0]?.options?.[2] ?? "",
+  //   ans4: examData?.questions?.[0]?.options?.[3] ?? "",
+  //   notes: examData?.notes?.[0] ?? "",
+  // };
   return (
     <div>
-      <CreateExam type="editExam" exam={formData} />
+      <CreateExam type="editExam" id={id} />
     </div>
   );
 };

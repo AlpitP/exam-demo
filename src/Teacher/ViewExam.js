@@ -22,6 +22,7 @@ const ViewExam = () => {
 
   useEffect(() => {
     fetch({ dispatch });
+    return () => dispatch(clearExam());
   }, [dispatch]);
 
   return (
@@ -40,7 +41,9 @@ const ViewExam = () => {
           }}
         >
           {data?.viewExam?.map((ele, index) => {
-            return <ViewExamContainer examsData={ele} key={index} />;
+            return (
+              <ViewExamContainer examsData={ele} key={index} index={index} />
+            );
           })}
         </div>
       )}

@@ -15,7 +15,7 @@ export const submitHandler = async ({
   notes,
   navigate,
 }) => {
-  const valid = allFormFieldValidation(createExamFormFields(index));
+  const valid = allFormFieldValidation(createExamFormFields(index - 1));
   const filter = data.questions.filter((ele) => ele !== null);
   if (valid && formData.answer !== "" && filter.length === 14) {
     dispatch(

@@ -5,7 +5,7 @@ import api from "../redux/actions/apiAction";
 import { fetchEditExam } from "../Teacher/EditExam";
 import { DELETE } from "../constants";
 
-const ViewExamContainer = ({ examsData, index }) => {
+const ViewExamContainer = ({ examsData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.api);
@@ -13,20 +13,15 @@ const ViewExamContainer = ({ examsData, index }) => {
     <div style={{ border: "1px solid black", width: "auto", padding: 10 }}>
       <h2>Subject : {examsData.subjectName}</h2>
       <h3>Email : {examsData.email}</h3>
-      <h3>
-        Notes :
-        {examsData.notes.map((ele) => {
-          return ele;
-        })}
-      </h3>
+      <h3>Notes : {examsData.notes[0]}</h3>
       <div style={{ marginLeft: "33%" }}>
         <button
           style={{ marginRight: 10 }}
           onClick={() => {
-            navigate(`/teacher/examDetail?id=${examsData._id}`, {
+            navigate(`/teacher/examDetail/question1?id=${examsData._id}`, {
               state: {
-                subjectName: examsData.subjectName,
-                notes: examsData.notes,
+                subjectName: examsData?.subjectName,
+                notes: examsData?.notes,
               },
             });
             fetchEditExam({ id: examsData._id, dispatch });
@@ -45,7 +40,7 @@ const ViewExamContainer = ({ examsData, index }) => {
           }}
           disabled={loading.deleteExam}
         >
-          {loading.deleteExam && index ? "Deleting..." : "Delete"}
+          {loading.deleteExam ? "Deleting..." : "Delete"}
         </button>
       </div>
     </div>

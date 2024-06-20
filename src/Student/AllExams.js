@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import api from "../redux/actions/apiAction";
-import "./allExam.css";
-import Sidebar from "./Sidebar";
-import Loader from "../shared/Loader";
 import { useNavigate } from "react-router-dom";
 import { GET } from "../constants";
-import { toast } from "react-toastify";
+import api from "../redux/actions/apiAction";
+import Loader from "../shared/Loader";
+import Sidebar from "./Sidebar";
+import "./allExam.css";
+import CustomButton from "../shared/Button";
 
 const AllExams = () => {
   const dispatch = useDispatch();
@@ -49,7 +49,10 @@ const AllExams = () => {
                     <td>{ele.subjectName}</td>
                     <td>{ele.email}</td>
                     <td>
-                      <button
+                      <CustomButton
+                        text={
+                          ele?.Result?.length > 0 ? "View Result" : "Give Exam"
+                        }
                         onClick={() =>
                           ele?.Result?.length > 0
                             ? navigate("/student/view-result", {
@@ -59,9 +62,7 @@ const AllExams = () => {
                                 `/student/give-exam/question${1}?id=${ele._id}`
                               )
                         }
-                      >
-                        {ele?.Result?.length > 0 ? "View Result" : "Give Exam"}
-                      </button>
+                      />
                     </td>
                   </tr>
                 );

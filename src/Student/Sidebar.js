@@ -36,7 +36,10 @@ const Sidebar = () => {
             <Link to="/teacher/students" style={{ marginInline: 10 }}>
               View All Students
             </Link>
-            <Link to="/teacher/create-exam" style={{ marginInline: 10 }}>
+            <Link
+              to="/teacher/create-exam/question1"
+              style={{ marginInline: 10 }}
+            >
               Create Exam
             </Link>
             <Link to="/teacher/view-exam" style={{ marginInline: 10 }}>

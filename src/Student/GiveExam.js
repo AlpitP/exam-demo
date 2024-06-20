@@ -13,6 +13,7 @@ import Form from "../shared/Form";
 import Loader from "../shared/Loader";
 import { giveExamFormFields } from "../utils/giveExamFormFields";
 import Sidebar from "./Sidebar";
+import CustomButton from "../shared/Button";
 
 const GiveExam = ({ id }) => {
   const { search } = useLocation();
@@ -60,7 +61,7 @@ const GiveExam = ({ id }) => {
   }, []);
 
   return (
-    <div>
+    <div style={{ textAlign: "center" }}>
       <Sidebar />
       <h1>Exam</h1>
       {examLoader ? (
@@ -77,7 +78,8 @@ const GiveExam = ({ id }) => {
           {error?.error && (
             <p style={{ color: "red", fontSize: 14 }}>Please Select Ans.</p>
           )}
-          <button
+          <CustomButton
+            text="Previous"
             onClick={() => {
               previousQuestionHandler({
                 dispatch,
@@ -90,10 +92,10 @@ const GiveExam = ({ id }) => {
               });
             }}
             disabled={index === 1 || giveExam}
-          >
-            Previous
-          </button>
-          <button
+          />
+
+          <CustomButton
+            text={giveExam ? "Submitting..." : " Submit"}
             onClick={() => {
               submitExamHandler({
                 dispatch,
@@ -105,10 +107,10 @@ const GiveExam = ({ id }) => {
               });
             }}
             disabled={index !== 7 || giveExam}
-          >
-            {giveExam ? "Submitting..." : " Submit"}
-          </button>
-          <button
+          />
+
+          <CustomButton
+            text="Skip"
             onClick={() => {
               skipQuestionHandler({
                 dispatch,
@@ -121,10 +123,10 @@ const GiveExam = ({ id }) => {
               });
             }}
             disabled={index === 7}
-          >
-            Skip
-          </button>
-          <button
+          />
+
+          <CustomButton
+            text="Next"
             onClick={() => {
               nextQuestionHandler({
                 dispatch,
@@ -138,9 +140,7 @@ const GiveExam = ({ id }) => {
               });
             }}
             disabled={index === 7}
-          >
-            Next
-          </button>
+          />
         </>
       )}
     </div>

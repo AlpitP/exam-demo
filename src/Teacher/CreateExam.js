@@ -26,8 +26,8 @@ const initialState = {
   notes: "",
 };
 
-const CreateExam = ({ type, exam }) => {
-  const [index, setIndex] = useState(0);
+const CreateExam = ({ type, exam, id }) => {
+  const [index, setIndex] = useState(id);
   const { loading } = useSelector((state) => state.api);
   const navigate = useNavigate();
   const { search } = useLocation();
@@ -38,28 +38,28 @@ const CreateExam = ({ type, exam }) => {
 
   const { subjectName, notes, question, answer, ans1, ans2, ans3, ans4 } =
     formData;
-
+  console.log("exam", exam);
   useEffect(() => {
     dispatch(
       currentQuestionFormData({
         data: exam
-          ? index === 0
+          ? index === 1
             ? exam
             : currentQuestion
           : {
               subjectName: data?.subjectName,
-              question: data?.questions?.[index]?.question,
-              ans1: data?.questions?.[index]?.options?.[0],
-              ans2: data?.questions?.[index]?.options?.[1],
-              ans3: data?.questions?.[index]?.options?.[2],
-              ans4: data?.questions?.[index]?.options?.[3],
-              answer: data?.questions?.[index]?.answer,
-              notes: data?.notes?.[index],
+              question: data?.questions?.[index - 1]?.question,
+              ans1: data?.questions?.[index - 1]?.options?.[0],
+              ans2: data?.questions?.[index - 1]?.options?.[1],
+              ans3: data?.questions?.[index - 1]?.options?.[2],
+              ans4: data?.questions?.[index - 1]?.options?.[3],
+              answer: data?.questions?.[index - 1]?.answer,
+              notes: data?.notes?.[index - 1],
             },
       })
     );
     dispatch(clearForm());
-  }, [dispatch, currentQuestion, index, data]);
+  }, [index, data]);
 
   const examData = {
     subjectName: subjectName,
@@ -152,7 +152,7 @@ const CreateExam = ({ type, exam }) => {
         <div style={{ marginLeft: "40%" }}>
           <form onSubmit={(e) => e.preventDefault()}>
             <Form
-              formFields={createExamFormFields(index)}
+              formFields={createExamFormFields(index - 1)}
               index={index}
               currentQuestion={store.getState()?.teacher?.currentQuestion}
               type={type}
@@ -166,9 +166,12 @@ const CreateExam = ({ type, exam }) => {
                   index,
                   data,
                   subjectName: data?.subjectName,
+                  navigate,
+                  type,
+                  search,
                 })
               }
-              disabled={index <= 0 || loading.updateExam || loading.createExam}
+              disabled={index <= 1 || loading.updateExam || loading.createExam}
             />
             <CustomButton
               text={
@@ -203,7 +206,9 @@ const CreateExam = ({ type, exam }) => {
                     });
               }}
               disabled={
-                index !== 14 || loading.updateExam || loading.createExam
+                (type !== "editExam" && index !== 15) ||
+                loading.updateExam ||
+                loading.createExam
               }
             />
             <CustomButton
@@ -216,9 +221,12 @@ const CreateExam = ({ type, exam }) => {
                   index,
                   data,
                   subjectName: data?.subjectName ?? examData?.subjectName,
+                  navigate,
+                  type,
+                  search,
                 })
               }
-              disabled={index === 14}
+              disabled={index === 15 || loading.updateExam}
             />
             <CustomButton
               text="Next"
@@ -233,10 +241,13 @@ const CreateExam = ({ type, exam }) => {
                   setCurrentQuestion,
                   data,
                   subjectName:
-                    index === 0 ? examData?.subjectName : data.subjectName,
+                    index === 1 ? examData?.subjectName : data.subjectName,
+                  navigate,
+                  type,
+                  search,
                 })
               }
-              disabled={index >= 14}
+              disabled={index >= 15 || loading.updateExam}
             />
           </form>
         </div>

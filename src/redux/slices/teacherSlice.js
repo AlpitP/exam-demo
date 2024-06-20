@@ -17,16 +17,16 @@ const teacherSlice = createSlice({
         action.payload;
       if (data) {
         state.examData.subjectName = subjectName;
-        state.examData.questions = data;
-        state.examData.notes = notes;
+        state.examData.questions = data ?? [];
+        state.examData.notes = notes ?? [];
       } else {
         state.examData.subjectName = subjectName;
-        state.examData.questions[currentQue] = question;
-        state.examData.notes[currentQue] = note ? note : " ";
+        state.examData.questions[currentQue - 1] = question;
+        state.examData.notes[currentQue - 1] = note ? note : " ";
       }
     },
     currentQuestionFormData: (state, action) => {
-      state.currentQuestion = action.payload.data;
+      state.currentQuestion = action?.payload?.data;
     },
     clearExam: () => {
       return initialState;

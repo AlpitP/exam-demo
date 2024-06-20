@@ -15,8 +15,11 @@ export const nextHandler = ({
   setCurrentQuestion,
   data,
   subjectName,
+  navigate,
+  type,
+  search,
 }) => {
-  const valid = allFormFieldValidation(createExamFormFields(index));
+  const valid = allFormFieldValidation(createExamFormFields(index - 1));
   if (valid && formData.answer) {
     dispatch(
       addQuestion({
@@ -35,6 +38,9 @@ export const nextHandler = ({
       subjectName,
     });
     dispatch(clearForm());
+    type === "editExam"
+      ? navigate(`/teacher/examDetail/question${index + 1}${search}`)
+      : navigate(`/teacher/create-exam/question${index + 1}`);
   } else if (!formData.answer) {
     toast.error("Please Select Ans");
   }

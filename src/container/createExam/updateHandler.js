@@ -16,13 +16,12 @@ export const updateHandler = async ({
   navigate,
   search,
 }) => {
-  const valid = allFormFieldValidation(createExamFormFields(index));
-  if (
-    valid &&
-    formData.answer !== "" &&
-    data.questions.length === 15
-    // data.questions.find((ele) => ele === null)
-  ) {
+  const valid = allFormFieldValidation(createExamFormFields(index - 1));
+  console.log(valid);
+  const filter = data.questions.filter((ele) => ele !== null);
+  console.log(filter.length);
+  if (valid && formData.answer !== "" && filter.length === 15) {
+    console.log("if run");
     dispatch(
       addQuestion({
         subjectName: examData?.subjectName,

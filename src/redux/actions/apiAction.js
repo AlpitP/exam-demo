@@ -38,6 +38,8 @@ const api = createAsyncThunk(
           "newPassword",
           "editedProfile",
           "giveExam",
+          "updateExam",
+          "createExam",
         ].includes(name)
       ) {
         toast && dispatch(showToast({ type: "success", message: message }));

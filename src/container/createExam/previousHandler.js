@@ -6,6 +6,9 @@ export const previousHandler = ({
   index,
   data,
   subjectName,
+  navigate,
+  type,
+  search,
 }) => {
   setIndex((index) => index - 1);
   currentQuestionHandler({
@@ -15,4 +18,7 @@ export const previousHandler = ({
     type: "prev",
     subjectName,
   });
+  type === "editExam"
+    ? navigate(`/teacher/examDetail/question${index - 1}${search}`)
+    : navigate(`/teacher/create-exam/question${index - 1}`);
 };
