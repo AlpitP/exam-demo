@@ -29,6 +29,7 @@ const CreateExam = ({ type, exam, id }) => {
   const { examData: data } = useSelector((state) => state.teacher);
   const dispatch = useDispatch();
   // const [currentQuestion, setCurrentQuestion] = useState(initialState);
+  const [ans, setAns] = useState(formData?.answer ?? "");
 
   const { subjectName, notes, question, answer, ans1, ans2, ans3, ans4 } =
     formData;
@@ -63,7 +64,8 @@ const CreateExam = ({ type, exam, id }) => {
     <div>
       <Sidebar />
       <h1 style={{ textAlign: "center" }}>
-        {type === "editExam" ? "Edit" : "Create"} Exam
+        {type === "editExam" ? "Edit" : type === "viewExam" ? "View" : "Create"}{" "}
+        Exam
       </h1>
       {loading.editExam ? (
         <Loader loading={loading.editExam} />
@@ -75,6 +77,8 @@ const CreateExam = ({ type, exam, id }) => {
               index={index}
               currentQuestion={store.getState()?.teacher?.currentQuestion}
               type={type}
+              answer={ans}
+              setAnswer={setAns}
             />
             <ButtonGroup
               index={index}

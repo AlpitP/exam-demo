@@ -15,11 +15,24 @@ const ViewExamContainer = ({ examsData }) => {
       <h2>Subject : {examsData.subjectName}</h2>
       <h3>Email : {examsData.email}</h3>
       <h3>Notes : {examsData.notes[0]}</h3>
-      <div style={{ marginLeft: "30%" }}>
+      <div style={{ marginLeft: "25%" }}>
         <CustomButton
           text="Edit"
           onClick={() => {
-            navigate(`/teacher/examDetail/question1?id=${examsData._id}`, {
+            navigate(`/teacher/editDetail/question1?id=${examsData._id}`, {
+              state: {
+                subjectName: examsData?.subjectName,
+                notes: examsData?.notes,
+              },
+            });
+            fetchEditExam({ id: examsData._id, dispatch });
+          }}
+          disabled={loading.deleteExam}
+        />
+        <CustomButton
+          text="View"
+          onClick={() => {
+            navigate(`/teacher/viewExam/question1?id=${examsData._id}`, {
               state: {
                 subjectName: examsData?.subjectName,
                 notes: examsData?.notes,

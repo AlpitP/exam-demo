@@ -7,15 +7,15 @@ import Input from "./Input";
 import Radio from "./Radio";
 import SelectOptions from "./Select";
 
-const Form = ({ formFields, value, ...rest }) => {
-  const { formData } = useSelector((state) => state.formData);
-  const { error } = useSelector((state) => state.formData);
-  const [isValid, setIsValid] = useState(false);
-  const [answer, setAnswer] = useState("");
+const Form = ({ formFields, value, answer, setAnswer, ...rest }) => {
+  const { formData, error } = useSelector((state) => state.formData);
+  // const { error } = useSelector((state) => state.formData);
+  const [inValid, setIsValid] = useState(false);
+  // const [answer, setAnswer] = useState("");
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setAnswer(formData?.answer ?? rest?.currentQuestion?.answer);
+    setAnswer && setAnswer(formData?.answer ?? rest?.currentQuestion?.answer);
     if (rest?.currentQuestion?.question?.length > 0) {
       dispatch(
         onChange({
@@ -26,9 +26,9 @@ const Form = ({ formFields, value, ...rest }) => {
     } else {
       dispatch(onChange({ data: "" }));
     }
-    isValid && validation(formFields);
+    inValid && validation(formFields);
     formData?.answer && dispatch(removeError({ name: "error" }));
-  }, [formData, formFields, isValid, rest]);
+  }, [formData, formFields, inValid, rest]);
 
   const changeHandler = (event, data) => {
     setIsValid(true);
@@ -62,16 +62,17 @@ const Form = ({ formFields, value, ...rest }) => {
                 key={index}
                 name={name}
                 onChange={(e) => {
-                  setAnswer(formData[name] ?? "");
+                  setAnswer(formData[id] ?? "");
                   dispatch(
                     changeHandler(e, {
                       name: "answer",
-                      value: id ?? text ?? "",
+                      value: formData[id] ?? text ?? "",
                     })
                   );
                 }}
-                checked={id === answer}
+                checked={formData[id] === answer && answer !== undefined}
                 text={text}
+                disabled={rest.type === "viewExam"}
               />
             );
           default:
@@ -89,7 +90,7 @@ const Form = ({ formFields, value, ...rest }) => {
                 }
                 errorMessage={error[name]}
                 onChange={(e) => dispatch(changeHandler(e))}
-                disabled={disabled}
+                disabled={disabled || rest.type === "viewExam"}
               />
             );
         }

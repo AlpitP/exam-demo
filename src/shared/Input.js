@@ -17,7 +17,7 @@ const Input = ({
         name={name}
         {...rest}
         value={value}
-        readOnly={disabled}
+        disabled={disabled}
       />
       <br />
       {errorMessage && (

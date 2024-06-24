@@ -55,86 +55,91 @@ const ButtonGroup = ({
             : index === 1 || giveExam
         }
       />
-      <CustomButton
-        text={
-          action === "createExam"
-            ? type === "editExam"
-              ? loading.updateExam
-                ? "Updating..."
-                : "Update"
-              : loading.createExam
-              ? "Submitting..."
-              : "Submit"
-            : giveExam
-            ? "Submitting..."
-            : "Submit"
-        }
-        onClick={() => {
-          action === "createExam"
-            ? type === "editExam"
-              ? updateHandler({
-                  index,
-                  formData,
-                  data,
-                  dispatch,
-                  examData,
-                  notes,
-                  navigate,
-                  search,
-                })
-              : submitHandler({
-                  index,
-                  formData,
-                  data,
-                  dispatch,
-                  examData,
-                  notes,
-                  navigate,
-                })
-            : submitExamHandler({
-                dispatch,
-                navigate,
-                formData,
-                index,
-                search,
-                examData,
-              });
-        }}
-        disabled={
-          action === "createExam"
-            ? (type !== "editExam" && index !== 15) ||
-              loading.updateExam ||
-              loading.createExam
-            : index !== 7 || giveExam
-        }
-      />
-      <CustomButton
-        text="Skip"
-        onClick={() =>
-          action === "createExam"
-            ? skipHandler({
-                setIndex,
-                dispatch,
-                index,
-                data,
-                navigate,
-                type,
-                search,
-              })
-            : skipQuestionHandler({
-                dispatch,
-                setIndex,
-                index,
-                navigate,
-                search,
-              })
-        }
-        disabled={
-          action === "createExam"
-            ? index === 15 || loading.updateExam
-            : index === 7
-        }
-      />
+      {type !== "viewExam" && (
+        <>
+          <CustomButton
+            text={
+              action === "createExam"
+                ? type === "editExam"
+                  ? loading.updateExam
+                    ? "Updating..."
+                    : "Update"
+                  : loading.createExam
+                  ? "Submitting..."
+                  : "Submit"
+                : giveExam
+                ? "Submitting..."
+                : "Submit"
+            }
+            onClick={() => {
+              action === "createExam"
+                ? type === "editExam"
+                  ? updateHandler({
+                      index,
+                      formData,
+                      data,
+                      dispatch,
+                      examData,
+                      notes,
+                      navigate,
+                      search,
+                    })
+                  : submitHandler({
+                      index,
+                      formData,
+                      data,
+                      dispatch,
+                      examData,
+                      notes,
+                      navigate,
+                    })
+                : submitExamHandler({
+                    dispatch,
+                    navigate,
+                    formData,
+                    index,
+                    search,
+                    examData,
+                  });
+            }}
+            disabled={
+              action === "createExam"
+                ? (type !== "editExam" && index !== 15) ||
+                  loading.updateExam ||
+                  loading.createExam
+                : index !== 7 || giveExam
+            }
+          />
+
+          <CustomButton
+            text="Skip"
+            onClick={() =>
+              action === "createExam"
+                ? skipHandler({
+                    setIndex,
+                    dispatch,
+                    index,
+                    data,
+                    navigate,
+                    type,
+                    search,
+                  })
+                : skipQuestionHandler({
+                    dispatch,
+                    setIndex,
+                    index,
+                    navigate,
+                    search,
+                  })
+            }
+            disabled={
+              action === "createExam"
+                ? index === 15 || loading.updateExam
+                : index === 7
+            }
+          />
+        </>
+      )}
       <CustomButton
         text="Next"
         onClick={() =>

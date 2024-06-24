@@ -21,7 +21,7 @@ export const fetchEditExam = async ({ search, dispatch, id }) => {
 
 const EditExam = ({ id }) => {
   const dispatch = useDispatch();
-  const { search, state } = useLocation();
+  const { search, state, pathname } = useLocation();
 
   const { data } = useSelector((state) => state.api);
   const { examData } = useSelector((state) => state.teacher);
@@ -65,7 +65,10 @@ const EditExam = ({ id }) => {
   // };
   return (
     <div>
-      <CreateExam type="editExam" id={id} />
+      <CreateExam
+        type={pathname.includes("viewExam") ? "viewExam" : "editExam"}
+        id={id}
+      />
     </div>
   );
 };

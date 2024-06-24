@@ -36,9 +36,11 @@ export const nextHandler = ({
     // });
     dispatch(clearForm());
     type === "editExam"
-      ? navigate(`/teacher/examDetail/question${index + 1}${search}`)
+      ? navigate(`/teacher/editDetail/question${index + 1}${search}`)
+      : type === "viewExam"
+      ? navigate(`/teacher/viewExam/question${index + 1}${search}`)
       : navigate(`/teacher/create-exam/question${index + 1}`);
-  } else if (!formData.answer) {
+  } else if (valid && !formData.answer) {
     toast.error("Please Select Ans");
   }
 };
