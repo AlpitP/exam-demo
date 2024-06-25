@@ -9,11 +9,10 @@ const SelectOptions = ({ label, list, name, value, errorMessage, ...rest }) => {
         </label>
       )}
       <select {...rest} name={name} value={value}>
-        <option value={""}>Select</option>
         {list &&
           list.map((ele, index) => {
             return (
-              <option value={ele} key={index}>
+              <option value={ele === "select" ? "" : ele} key={index}>
                 {ele}
               </option>
             );

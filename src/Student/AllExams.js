@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GET } from "../constants";
 import api from "../redux/actions/apiAction";
-import Loader from "../shared/Loader";
-import Sidebar from "./Sidebar";
-import "./allExam.css";
 import CustomButton from "../shared/Button";
+import Loader from "../shared/Loader";
 import Table from "../shared/Table";
+import "./allExam.css";
 
 const AllExams = () => {
   const dispatch = useDispatch();
@@ -17,52 +16,45 @@ const AllExams = () => {
   const { allExam: allExamLoader } = loading;
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetch = () => {
       const config = {
         url: "student/studentExam",
         method: GET,
       };
-      await dispatch(api({ name: "allExam", config }));
+      dispatch(api({ name: "allExam", config }));
     };
     fetch();
   }, [dispatch]);
 
+  const examHandler = (ele) => {
+    ele?.Result?.length > 0
+      ? navigate("/student/view-result", {
+          state: ele?.Result?.[0],
+        })
+      : navigate(`/student/give-exam/question${1}?id=${ele._id}`);
+  };
   return (
     <>
-      <Sidebar />
       <h1 style={{ textAlign: "center" }}>All Exams</h1>
       <div className="table" style={{ marginTop: 20 }}>
-        <Table
-          tableHeading={["No.", "Subject", "Teacher Email", "Action"]}
-          // tableBody={allExam}
-          // type="exam"
-        >
-          {allExam &&
-            allExam?.map((ele, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{ele.subjectName}</td>
-                  <td>{ele.email}</td>
-                  <td>
-                    <CustomButton
-                      text={
-                        ele?.Result?.length > 0 ? "View Result" : "Give Exam"
-                      }
-                      onClick={() =>
-                        ele?.Result?.length > 0
-                          ? navigate("/student/view-result", {
-                              state: ele?.Result?.[0],
-                            })
-                          : navigate(
-                              `/student/give-exam/question${1}?id=${ele._id}`
-                            )
-                      }
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+        <Table tableHeadings={["No.", "Subject", "Teacher Email", "Action"]}>
+          {allExam?.map((ele, index) => {
+            return (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{ele.subjectName}</td>
+                <td>{ele.email}</td>
+                <td>
+                  <CustomButton
+                    value={
+                      ele?.Result?.length > 0 ? "View Result" : "Give Exam"
+                    }
+                    onClick={() => examHandler(ele)}
+                  />
+                </td>
+              </tr>
+            );
+          })}
         </Table>
         {/* <table>
           <thead>

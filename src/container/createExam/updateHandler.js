@@ -17,11 +17,8 @@ export const updateHandler = async ({
   search,
 }) => {
   const valid = allFormFieldValidation(createExamFormFields(index - 1));
-  console.log(valid);
   const filter = data.questions.filter((ele) => ele !== null);
-  console.log(filter.length);
   if (valid && formData.answer !== "" && filter.length === 15) {
-    console.log("if run");
     dispatch(
       addQuestion({
         subjectName: examData?.subjectName,
@@ -39,8 +36,6 @@ export const updateHandler = async ({
     const { statusCode } = response?.payload?.data ?? {};
 
     statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
-  } else if (formData.answer === "") {
-    toast.error("Please Select Ans.");
   } else {
     toast.error(`Please Fill All Questions.`);
   }

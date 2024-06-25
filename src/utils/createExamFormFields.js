@@ -4,7 +4,7 @@ export const createExamFormFields = (index) => {
       type: "text",
       name: "subjectName",
       label: "Subject",
-      disabled: index === 0 ? false : true,
+      readonly: index === 0 ? false : true,
       isRequired: index === 0 && "Please Enter Subject.",
     },
     {
@@ -23,7 +23,14 @@ export const createExamFormFields = (index) => {
         }
       },
     },
-    { type: "radio", name: "opt1", label: "A", id: "ans1" },
+    {
+      type: "radio",
+      name: "answer",
+      label: "A",
+      id: "ans1",
+      checked: (value, compare) =>
+        value === compare && compare ? true : false,
+    },
     {
       type: "text",
       name: "ans1",
@@ -36,7 +43,14 @@ export const createExamFormFields = (index) => {
       },
     },
 
-    { type: "radio", name: "otp2", label: "B", id: "ans2" },
+    {
+      type: "radio",
+      name: "answer",
+      label: "B",
+      id: "ans2",
+      checked: (value, compare) =>
+        value === compare && compare ? true : false,
+    },
     {
       type: "text",
       name: "ans2",
@@ -49,7 +63,14 @@ export const createExamFormFields = (index) => {
       },
     },
 
-    { type: "radio", name: "opt3", label: "C", id: "ans3" },
+    {
+      type: "radio",
+      name: "answer",
+      label: "C",
+      id: "ans3",
+      checked: (value, compare) =>
+        value === compare && compare ? true : false,
+    },
     {
       type: "text",
       name: "ans3",
@@ -62,7 +83,14 @@ export const createExamFormFields = (index) => {
       },
     },
 
-    { type: "radio", name: "opt4", label: "D", id: "ans4" },
+    {
+      type: "radio",
+      name: "answer",
+      label: "D",
+      id: "ans4",
+      checked: (value, compare) =>
+        value === compare && compare ? true : false,
+    },
     {
       type: "text",
       name: "ans4",

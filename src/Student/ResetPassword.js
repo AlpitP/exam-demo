@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { resetPasswordHandler } from "../container/resetPasswordHandler";
+import { clearForm } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import { resetPasswordFormFields } from "../utils/resetPasswordFormFields";
-import Sidebar from "./Sidebar";
-import { clearForm } from "../redux/slices/formSlice";
 
 // const resetPasswordHandler = async ({formData,dispatch}) => {
 //   const valid = validation(resetPasswordFormFields);
@@ -30,12 +29,11 @@ const ResetPassword = () => {
   }, [dispatch]);
   return (
     <div>
-      <Sidebar />
       <h1>Reset Password</h1>
       <form onSubmit={(e) => e.preventDefault()}>
         <Form formFields={resetPasswordFormFields} />
         <CustomButton
-          text={loading.resetPassword ? "Submitting.." : "Submit"}
+          value={loading.resetPassword ? "Submitting.." : "Submit"}
           onClick={() => resetPasswordHandler({ formData, dispatch })}
           disabled={loading.resetPassword}
         />

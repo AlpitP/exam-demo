@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import Sidebar from "../Student/Sidebar";
 import { useDispatch, useSelector } from "react-redux";
-import api from "../redux/actions/apiAction";
-import ViewExamContainer from "../shared/ViewExamContainer";
-import Loader from "../shared/Loader";
 import { GET } from "../constants";
+import api from "../redux/actions/apiAction";
 import { clearExam } from "../redux/slices/teacherSlice";
+import Loader from "../shared/Loader";
+import ViewExamContainer from "./ViewExamContainer";
 
 export const fetch = async ({ dispatch }) => {
   const config = {
@@ -23,11 +22,10 @@ const ViewExam = () => {
   useEffect(() => {
     fetch({ dispatch });
     return () => dispatch(clearExam());
-  }, [data.deleteExam]);
+  }, [data.deleteExam, dispatch]);
 
   return (
     <div>
-      <Sidebar />
       <h1 style={{ textAlign: "center" }}>View Exams</h1>
       {loading.viewExam ? (
         <Loader loading={loading.viewExam} />

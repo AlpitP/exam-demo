@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-import api from "../redux/actions/apiAction";
-import Sidebar from "../Student/Sidebar";
-import Loader from "../shared/Loader";
 import { GET } from "../constants";
+import api from "../redux/actions/apiAction";
+import Loader from "../shared/Loader";
 
 const Student = () => {
   const { data, loading } = useSelector((state) => state.api);
@@ -24,7 +23,6 @@ const Student = () => {
   }, [dispatch, search]);
   return (
     <div>
-      <Sidebar />
       <h1 style={{ textAlign: "center" }}>Student Detail.</h1>
       <div
         style={{

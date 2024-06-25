@@ -1,9 +1,4 @@
-export const editProfile = ({
-  setName,
-  editedProfile,
-  studentProfile,
-  setIsEdit,
-}) => {
-  setName(editedProfile?.name || studentProfile?.name);
+export const editProfile = ({ setName, name, setIsEdit }) => {
+  setName(name);
   setIsEdit(true);
 };

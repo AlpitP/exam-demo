@@ -1,13 +1,10 @@
 import React from "react";
-import Sidebar from "./Sidebar";
 import { useLocation } from "react-router-dom";
 
 const ViewResult = () => {
   const { state } = useLocation();
-  console.log(state);
   return (
     <div>
-      <Sidebar />
       <h1 style={{ textAlign: "center" }}>Result</h1>
       <div
         style={{

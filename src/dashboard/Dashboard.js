@@ -1,15 +1,19 @@
 import React from "react";
-import TeacherDashboard from "./TeacherDashboard";
-import StudentDashboard from "./StudentDashboard";
 import AuthDashboard from "./AuthDashboard";
+import StudentDashboard from "./StudentDashboard";
+import TeacherDashboard from "./TeacherDashboard";
 
 const Dashboard = ({ role }) => {
-  return role === "teacher" ? (
-    <TeacherDashboard />
-  ) : role === "student" ? (
-    <StudentDashboard />
-  ) : (
-    <AuthDashboard />
+  return (
+    <>
+      {role === "teacher" ? (
+        <TeacherDashboard />
+      ) : role === "student" ? (
+        <StudentDashboard />
+      ) : (
+        <AuthDashboard />
+      )}
+    </>
   );
 };
 

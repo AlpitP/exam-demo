@@ -40,7 +40,7 @@ const SignIn = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signInFormFields} />
           <CustomButton
-            text={loading.signIn === true ? "Signing In..." : "Sign In"}
+            value={loading.signIn === true ? "Signing In..." : "Sign In"}
             onClick={() => signInHandler({ formData, dispatch, navigate })}
             disabled={loading.signIn}
           />

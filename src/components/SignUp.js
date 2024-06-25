@@ -49,7 +49,7 @@ const SignUp = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={signUpFormFields} />
           <CustomButton
-            text={loading.signUp === true ? "Signing Up..." : "Sign Up"}
+            value={loading.signUp === true ? "Signing Up..." : "Sign Up"}
             onClick={() => signUpHandler({ formData, dispatch, navigate })}
             disabled={loading.signUp}
           />

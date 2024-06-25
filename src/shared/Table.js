@@ -1,11 +1,11 @@
 import React from "react";
 
-const Table = ({ tableHeading, children }) => {
+const Table = ({ tableHeadings, children }) => {
   return (
     <div>
       <table>
         <thead>
-          {tableHeading?.map((ele, index) => {
+          {tableHeadings?.map((ele, index) => {
             return <th key={index}>{ele}</th>;
           })}
         </thead>

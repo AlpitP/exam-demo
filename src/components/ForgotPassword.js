@@ -38,7 +38,7 @@ const ForgotPassword = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={forgotPasswordFormFields} />
           <CustomButton
-            text={loading.forgotPassword === true ? "Submitting..." : "Submit"}
+            value={loading.forgotPassword === true ? "Submitting..." : "Submit"}
             onClick={() =>
               forgotPasswordHandler({ formData, dispatch, navigate })
             }

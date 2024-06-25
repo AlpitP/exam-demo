@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import { clearForm } from "../redux/slices/formSlice";
 import { useDispatch } from "react-redux";
+import Sidebar from "../Student/Navbar";
 
 const StudentDashboard = () => {
   const dispatch = useDispatch();
@@ -11,6 +12,7 @@ const StudentDashboard = () => {
   });
   return (
     <>
+      <Sidebar />
       <Outlet />
     </>
   );

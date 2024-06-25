@@ -38,7 +38,7 @@ const AppRoutes = () => {
       children: [
         {
           path: "teacher",
-          element: <ProtectedRoute role="teacher" />,
+          // element: <ProtectedRoute role="teacher" />,
           children: [
             { path: "", element: <HomePage /> },
             // { path: "create-exam", element: <CreateExam /> },
@@ -98,7 +98,7 @@ const AppRoutes = () => {
 
         {
           path: "student",
-          element: <ProtectedRoute role="student" />,
+          // element: <ProtectedRoute role="student" />,
           children: [
             { path: "", element: <HomePage /> },
             { path: "Exams", element: <AllExams /> },

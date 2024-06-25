@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import api from "../redux/actions/apiAction";
 import Loader from "../shared/Loader";
 
-import Sidebar from "../Student/Sidebar";
-import { GET } from "../constants";
-import Table from "../shared/Table";
 import { useNavigate } from "react-router-dom";
+import { GET } from "../constants";
+import CustomButton from "../shared/Button";
+import Table from "../shared/Table";
 
 const AllStudents = () => {
   const { data, loading } = useSelector((state) => state.api);
@@ -17,25 +17,21 @@ const AllStudents = () => {
     navigate(`/teacher/viewStudentDetail?id=${id}`);
   };
   useEffect(() => {
-    const fetch = async () => {
+    const fetch = () => {
       const config = {
         url: "dashboard/Teachers",
         method: GET,
       };
-      await dispatch(api({ name: "allStudents", config }));
+      dispatch(api({ name: "allStudents", config }));
     };
-    !data.allStudents && fetch();
-  }, [dispatch, data]);
+    fetch();
+  }, [dispatch]);
 
   return (
     <div>
-      <Sidebar />
       <h1 style={{ textAlign: "center" }}>All Students Details.</h1>
       <div className="table">
-        <Table
-          tableHeading={["No.", "Name", "Email", "Status", "Action"]}
-          tableBody={data}
-        >
+        <Table tableHeadings={["No.", "Name", "Email", "Status", "Action"]}>
           {data &&
             data.allStudents?.map((ele, index) => {
               return (
@@ -45,11 +41,10 @@ const AllStudents = () => {
                   <td>{ele.email}</td>
                   <td>{ele.status}</td>
                   <td>
-                    <button
+                    <CustomButton
+                      value="View"
                       onClick={(e) => viewStudentDetailHandler(e, ele._id)}
-                    >
-                      View
-                    </button>
+                    />
                   </td>
                 </tr>
               );

@@ -9,7 +9,6 @@ export const validation = (formFields) => {
   const { questions } = store.getState().teacher.examData;
   const dispatch = store.dispatch;
   let valid = true;
-  console.log(data);
 
   formFields.forEach(({ name, isRequired, pattern, customValidations }) => {
     if (objectKeys(data).includes(name)) {

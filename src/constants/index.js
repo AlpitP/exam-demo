@@ -13,3 +13,11 @@ export const GET = "GET";
 export const POST = "POST";
 export const PUT = "PUT";
 export const DELETE = "DELETE";
+
+// Button text constant
+export const PREVIOUS = "Previous";
+
+export const FIRST_QUESTION = 1;
+export const LAST_QUESTION = 7;
+
+export const CREATE_EXAM_LAST_QUESTION = 15;

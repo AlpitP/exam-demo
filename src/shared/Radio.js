@@ -1,11 +1,11 @@
 import React from "react";
 
-const Radio = ({ label, name, value, errorMessage, text, ...rest }) => {
+const Radio = ({ label, name, value, errorMessage, ans, ...rest }) => {
   return (
     <div>
       {label && <label>{label} :</label>}
       <input type="radio" name={name} {...rest} value={value} />
-      {text && <span>{text}</span>}
+      {ans && <span>{ans}</span>}
 
       {errorMessage && (
         <span style={{ color: "red", fontSize: 13 }}>{errorMessage}</span>

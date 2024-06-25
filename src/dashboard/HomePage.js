@@ -1,11 +1,15 @@
 import React from "react";
-import Sidebar from "../Student/Sidebar";
+import { useSelector } from "react-redux";
 
 const HomePage = () => {
+  const { data } = useSelector((state) => state.api);
+  console.log(data);
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>Home Page</h1>
-      <Sidebar />
+      <h3 style={{ textAlign: "center", marginTop: "25%" }}>
+        Well Come {data.signIn?.name}
+      </h3>
     </div>
   );
 };

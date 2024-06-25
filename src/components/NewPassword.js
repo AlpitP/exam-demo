@@ -43,7 +43,7 @@ const NewPassword = () => {
         <form onSubmit={(e) => e.preventDefault()}>
           <Form formFields={newPasswordFormFields} />
           <CustomButton
-            text={loading.newPassword === true ? "Submitting..." : "Submit"}
+            value={loading.newPassword === true ? "Submitting..." : "Submit"}
             onClick={() =>
               newPasswordHandler({ formData, dispatch, search, navigate })
             }

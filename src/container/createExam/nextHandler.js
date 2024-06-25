@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { clearForm } from "../../redux/slices/formSlice";
+import { clearForm, onChange } from "../../redux/slices/formSlice";
 import { addQuestion } from "../../redux/slices/teacherSlice";
 import { createExamFormFields } from "../../utils/createExamFormFields";
 import { allFormFieldValidation } from "../../utils/fullFormValidation";
@@ -16,7 +16,9 @@ export const nextHandler = ({
   type,
   search,
 }) => {
+  console.log("subjectName", subjectName);
   const valid = allFormFieldValidation(createExamFormFields(index - 1));
+  // dispatch(onChange({ data: { subjectName: subjectName } }));
   if (valid && formData.answer) {
     dispatch(
       addQuestion({
@@ -35,6 +37,7 @@ export const nextHandler = ({
     //   subjectName,
     // });
     dispatch(clearForm());
+    dispatch(onChange({ data: { subjectName: examData?.subjectName } }));
     type === "editExam"
       ? navigate(`/teacher/editDetail/question${index + 1}${search}`)
       : type === "viewExam"
