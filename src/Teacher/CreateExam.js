@@ -19,7 +19,7 @@ import store from "../redux/store/store";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
-import { createExamFormFields } from "../discription/createExamFormFields";
+import { createExamFormFields } from "../description/createExamFormFields";
 import { objectKeys } from "../utils/javascript";
 import { validation } from "../utils/validation";
 import { setFormData } from "../container/setFormData";
@@ -40,19 +40,19 @@ const CreateExam = ({ type }) => {
     formData;
 
   useEffect(() => {
-    if (currentQuestion?.question?.length > 0) {
-      dispatch(
-        onChange({
-          data: objectKeys(formData).length > 0 ? formData : currentQuestion,
-        })
-      );
-    } else {
-      dispatch(
-        onChange({
-          data: data?.subjectName ? { subjectName: data?.subjectName } : {},
-        })
-      );
-    }
+    dispatch(
+      onChange(
+        currentQuestion?.question?.length
+          ? {
+              data:
+                objectKeys(formData).length > 0 ? formData : currentQuestion,
+            }
+          : {
+              data: data?.subjectName ? { subjectName: data?.subjectName } : {},
+            }
+      )
+    );
+
     formData?.answer && dispatch(removeError({ name: "error" }));
   }, [currentQuestion]);
 

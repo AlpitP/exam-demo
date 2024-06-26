@@ -1,8 +1,9 @@
+import { OPTIONS_LENGTH } from "../constants";
 import { onChange } from "../redux/slices/formSlice";
 
 export const setFormData = ({ dispatch, formData, data, index }) => {
   const options = {};
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < OPTIONS_LENGTH; i++) {
     options[`ans${i + 1}`] = formData[`ans${i + 1}`];
   }
   dispatch(

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { SUCCESS_CODE } from "../../constants";
 import { axiosInstance } from "../api";
 import { addUserInfo, removeUserInfo } from "../slices/userSlice";
-import { toastArray, userArray } from "../../discription/api";
+import { toastArray, userArray } from "../../description/api";
 
 const api = createAsyncThunk(
   "api",
@@ -26,19 +26,21 @@ const api = createAsyncThunk(
         throw new Error(message);
       }
 
-      if (userArray.includes(name)) {
-        statusCode === SUCCESS_CODE &&
-          dispatch(addUserInfo(response?.data?.data));
-      }
-      if (toastArray.includes(name)) {
-        toast.success(message);
-      }
+      // if (userArray.includes(name)) {
+      //   statusCode === SUCCESS_CODE &&
+      //     dispatch(addUserInfo(response?.data?.data));
+      // }
+      // if (toastArray.includes(name)) {
+      //   toast.success(message);
+      // }
       return { name, data: response?.data };
     } catch (error) {
       let errorMessage = "Unknown Error Occurred!";
 
       if (error.response) {
         errorMessage = error.response?.data?.message;
+      } else if (error.request) {
+        errorMessage = "Network Problem!";
       } else {
         errorMessage = error.message;
       }

@@ -7,8 +7,8 @@ import api from "../redux/actions/apiAction";
 import { onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
-import { signUpFormFields } from "../discription/signUpFormFields";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
+import { signUpFormFields } from "../description/signUpFormFields";
 import { validation } from "../utils/validation";
 
 const SignUp = () => {
@@ -16,7 +16,7 @@ const SignUp = () => {
   const { loading } = useSelector((state) => state.api);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useClearFormOnUnMound();
+  useClearFormOnUnMount();
 
   const signUpHandler = async (e) => {
     e.preventDefault();
@@ -39,8 +39,8 @@ const SignUp = () => {
       };
       const response = await dispatch(api({ name: "signUp", config }));
 
-      const { statusCode } = response?.payload?.data ?? {};
-
+      const { statusCode, message } = response?.payload?.data ?? {};
+      toast.success(message);
       if (statusCode === SUCCESS_CODE) {
         navigate("/sign-in");
         toast.info("Please, Check you mail box for verification!");

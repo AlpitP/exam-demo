@@ -2,10 +2,10 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "../Student/Navbar";
-import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 
 const StudentDashboard = () => {
-  useClearFormOnUnMound();
+  useClearFormOnUnMount();
   return (
     <>
       <Navbar />

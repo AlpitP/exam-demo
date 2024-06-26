@@ -6,16 +6,17 @@ import api from "../redux/actions/apiAction";
 import { onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
-import { forgotPasswordFormFields } from "../discription/forgotPasswordFormFields";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
+import { forgotPasswordFormFields } from "../description/forgotPasswordFormFields";
 import { validation } from "../utils/validation";
+import { toast } from "react-toastify";
 
 const ForgotPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useClearFormOnUnMound();
+  useClearFormOnUnMount();
 
   const forgotPassword = async (e) => {
     e.preventDefault();
@@ -34,8 +35,9 @@ const ForgotPassword = () => {
         data: formData,
       };
       const response = await dispatch(api({ name: "forgotPassword", config }));
-      const { statusCode } = response?.payload?.data ?? {};
+      const { statusCode, message } = response?.payload?.data ?? {};
       statusCode === SUCCESS_CODE && navigate(`/sign-in`);
+      toast.success(message);
     }
   };
 

@@ -16,7 +16,7 @@ import store from "../redux/store/store";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
-import { giveExamFormFields } from "../discription/giveExamFormFields";
+import { giveExamFormFields } from "../description/giveExamFormFields";
 
 const GiveExam = () => {
   const { id } = useParams();

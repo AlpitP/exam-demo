@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { getLocalStorage } from "../utils/javascript";
 import CustomButton from "../shared/Button";
-import { studentNavbar, teacherNavbar } from "../discription/navbar";
+import { studentNavbar, teacherNavbar } from "../description/navbar";
 
 const Navbar = () => {
   const dispatch = useDispatch();

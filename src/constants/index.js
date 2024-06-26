@@ -18,6 +18,8 @@ export const LAST_QUESTION = 7;
 
 export const CREATE_EXAM_LAST_QUESTION = 15;
 
+export const OPTIONS_LENGTH = 4;
+
 // url end points constant
 export const FORGOT_PASSWORD = "users/ForgotPassword";
 export const NEW_PASSWORD = "users/ForgotPassword/Verify";

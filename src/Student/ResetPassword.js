@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { POST, RESET_PASSWORD } from "../constants";
+import { resetPasswordFormFields } from "../description/resetPasswordFormFields";
 import api from "../redux/actions/apiAction";
 import { clearForm, onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { resetPasswordFormFields } from "../discription/resetPasswordFormFields";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 import { validation } from "../utils/validation";
-import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
 
 // const resetPasswordHandler = async ({formData,dispatch}) => {
 //   const valid = validation(resetPasswordFormFields);
@@ -26,7 +26,7 @@ const ResetPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
   const dispatch = useDispatch();
-  useClearFormOnUnMound();
+  useClearFormOnUnMount();
 
   const resetPasswordHandler = async (e) => {
     e.preventDefault();

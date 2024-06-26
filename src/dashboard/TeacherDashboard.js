@@ -1,10 +1,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../Student/Navbar";
-import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 
 const TeacherDashboard = () => {
-  useClearFormOnUnMound();
+  useClearFormOnUnMount();
   return (
     <>
       <Navbar />

@@ -6,9 +6,10 @@ import api from "../redux/actions/apiAction";
 import { onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { newPasswordFormFields } from "../discription/newPasswordFormFields";
+import { newPasswordFormFields } from "../description/newPasswordFormFields";
 import { validation } from "../utils/validation";
-import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
+import { toast } from "react-toastify";
 
 // const clickHandler = async ({formData,dispatch,search,navigate}) => {
 //   const valid = validation(newPasswordFormFields);
@@ -31,7 +32,7 @@ const NewPassword = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { search } = useLocation();
-  useClearFormOnUnMound();
+  useClearFormOnUnMount();
 
   const newPasswordHandler = async (e) => {
     e.preventDefault();
@@ -51,9 +52,10 @@ const NewPassword = () => {
         data: formData,
       };
       const response = await dispatch(api({ name: "newPassword", config }));
-      const { statusCode } = response?.payload?.data ?? {};
+      const { statusCode, message } = response?.payload?.data ?? {};
 
       statusCode === SUCCESS_CODE && navigate(`/sign-in`);
+      toast.success(message);
     }
   };
 
