@@ -15,23 +15,24 @@ const AllExams = () => {
   const { allExam } = data;
   const { allExam: allExamLoader } = loading;
 
-  useEffect(() => {
-    const fetch = () => {
-      const config = {
-        url: "student/studentExam",
-        method: GET,
-      };
-      dispatch(api({ name: "allExam", config }));
+  const fetch = () => {
+    const config = {
+      url: "student/studentExam",
+      method: GET,
     };
-    fetch();
-  }, [dispatch]);
+    dispatch(api({ name: "allExam", config }));
+  };
 
-  const examHandler = (ele) => {
-    ele?.Result?.length > 0
+  useEffect(() => {
+    fetch();
+  }, []);
+
+  const giveExam = ({ alreadyGiveExam, ele }) => {
+    alreadyGiveExam
       ? navigate("/student/view-result", {
           state: ele?.Result?.[0],
         })
-      : navigate(`/student/give-exam/question${1}?id=${ele._id}`);
+      : navigate(`/student/give-exam/${1}?id=${ele._id}`);
   };
   return (
     <>
@@ -39,6 +40,7 @@ const AllExams = () => {
       <div className="table" style={{ marginTop: 20 }}>
         <Table tableHeadings={["No.", "Subject", "Teacher Email", "Action"]}>
           {allExam?.map((ele, index) => {
+            const alreadyGiveExam = ele?.Result?.length;
             return (
               <tr key={index}>
                 <td>{index + 1}</td>
@@ -46,54 +48,14 @@ const AllExams = () => {
                 <td>{ele.email}</td>
                 <td>
                   <CustomButton
-                    value={
-                      ele?.Result?.length > 0 ? "View Result" : "Give Exam"
-                    }
-                    onClick={() => examHandler(ele)}
+                    value={alreadyGiveExam ? "View Result" : "Give Exam"}
+                    onClick={() => giveExam({ alreadyGiveExam, ele })}
                   />
                 </td>
               </tr>
             );
           })}
         </Table>
-        {/* <table>
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Subject</th>
-              <th>Teacher Email</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {allExam &&
-              allExam?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{ele.subjectName}</td>
-                    <td>{ele.email}</td>
-                    <td>
-                      <CustomButton
-                        text={
-                          ele?.Result?.length > 0 ? "View Result" : "Give Exam"
-                        }
-                        onClick={() =>
-                          ele?.Result?.length > 0
-                            ? navigate("/student/view-result", {
-                                state: ele?.Result?.[0],
-                              })
-                            : navigate(
-                                `/student/give-exam/question${1}?id=${ele._id}`
-                              )
-                        }
-                      />
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table> */}
         <Loader loading={allExamLoader} />
       </div>
     </>

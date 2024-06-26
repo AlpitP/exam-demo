@@ -17,7 +17,6 @@ export const fetch = async ({ dispatch }) => {
 const ViewExam = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
-  // const { examData } = useSelector((state) => state.teacher);
 
   useEffect(() => {
     fetch({ dispatch });
@@ -38,7 +37,7 @@ const ViewExam = () => {
             justifyContent: "center",
           }}
         >
-          {data?.viewExam?.length !== 0 ? (
+          {data?.viewExam?.length ? (
             data?.viewExam?.map((ele, index) => {
               return (
                 <ViewExamContainer examsData={ele} key={index} id={index} />

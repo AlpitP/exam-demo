@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { signInHandler } from "../container/signInHandler";
-import { clearForm } from "../redux/slices/formSlice";
+import { POST, SIGN_IN, SUCCESS_CODE } from "../constants";
+import api from "../redux/actions/apiAction";
+import { onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { signInFormFields } from "../utils/signInFormFIelds";
+import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
+import { signInFormFields } from "../discription/signInFormFIelds";
+import { validation } from "../utils/validation";
 
 // const signInHandler = async ({ formData, dispatch, navigate }) => {
 //   const valid = validation(signInFormFields);
@@ -27,21 +30,41 @@ const SignIn = () => {
   const { loading } = useSelector((state) => state.api);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {
-    return () => {
-      dispatch(clearForm());
-    };
-  }, [dispatch]);
+
+  useClearFormOnUnMound();
+
+  const signInHandler = async (e) => {
+    e.preventDefault();
+    dispatch(
+      onChange({
+        data: {
+          email: formData?.email ?? "",
+          password: formData?.password ?? "",
+        },
+      })
+    );
+    const valid = validation(signInFormFields);
+    if (valid) {
+      const config = {
+        url: SIGN_IN,
+        data: formData,
+        method: POST,
+      };
+      const response = await dispatch(api({ name: "signIn", config }));
+      const { data, statusCode } = response?.payload?.data ?? {};
+
+      statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
+    }
+  };
 
   return (
     <div>
       <h1 style={{ textAlign: "center", marginTop: 200 }}>Sign In</h1>
       <div style={signInStyle}>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={signInHandler}>
           <Form formFields={signInFormFields} />
           <CustomButton
-            value={loading.signIn === true ? "Signing In..." : "Sign In"}
-            onClick={() => signInHandler({ formData, dispatch, navigate })}
+            value={loading.signIn ? "Signing In..." : "Sign In"}
             disabled={loading.signIn}
           />
           <p>

@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
-import { FIRST_QUESTION, GET, LAST_QUESTION } from "../constants";
-import { nextQuestionHandler } from "../container/giveExam/nextQuestionHandler";
-import { submitExamHandler } from "../container/giveExam/submitExamHandler";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  FIRST_QUESTION,
+  GET,
+  LAST_QUESTION,
+  POST,
+  SUCCESS_CODE,
+} from "../constants";
 import api from "../redux/actions/apiAction";
-import { onChange, removeError } from "../redux/slices/formSlice";
-import { addExam, clearExam } from "../redux/slices/studentSlice";
+import { onChange, removeError, setError } from "../redux/slices/formSlice";
+import { setQuestion, setExam, clearExam } from "../redux/slices/studentSlice";
+import store from "../redux/store/store";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
-import { giveExamFormFields } from "../utils/giveExamFormFields";
+import { giveExamFormFields } from "../discription/giveExamFormFields";
 
-const GiveExam = ({ id }) => {
+const GiveExam = () => {
+  const { id } = useParams();
   const { search } = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -20,7 +27,7 @@ const GiveExam = ({ id }) => {
   const { exam: examLoader, giveExam } = useSelector(
     (state) => state.api.loading
   );
-  const [index, setIndex] = useState(id);
+  const [index, setIndex] = useState(+id);
   const { formData, error } = useSelector((state) => state.formData);
   const { exam: examData } = useSelector((state) => state.student);
 
@@ -41,25 +48,72 @@ const GiveExam = ({ id }) => {
   }, [examData, index, dispatch]);
 
   useEffect(() => {
-    dispatch(addExam({ data: exam }));
+    dispatch(setExam({ data: exam }));
     if (formData?.answer) {
       dispatch(removeError({ name: "error" }));
     }
-  });
+  }, [formData?.answer, exam]);
+
+  const fetchExam = async () => {
+    const config = {
+      url: `student/examPaper${search}`,
+      method: GET,
+    };
+    const response = await dispatch(api({ name: "exam", config }));
+    const { statusCode } = response?.payload?.data ?? {};
+    statusCode === 500 && navigate("/student/exams");
+  };
 
   useEffect(() => {
-    const fetchExam = async () => {
-      const config = {
-        url: `student/examPaper${search}`,
-        method: GET,
-      };
-      const response = await dispatch(api({ name: "exam", config }));
-      const { statusCode } = response?.payload?.data ?? {};
-      statusCode === 500 && navigate("/student/exams");
-    };
     fetchExam();
     return () => dispatch(clearExam());
   }, []);
+
+  const submitHandler = async () => {
+    if (formData.answer && examData.questions.length === 6) {
+      dispatch(
+        setQuestion({
+          data: {
+            question: formData?.question,
+            answer: formData?.answer,
+          },
+          index: index,
+        })
+      );
+      const config = {
+        url: `student/giveExam${search}`,
+        data: store.getState().student.exam.questions,
+        method: POST,
+      };
+      const response = await dispatch(api({ name: "giveExam", config }));
+      const { statusCode } = response?.payload?.data ?? {};
+      statusCode === SUCCESS_CODE && navigate("/student/exams");
+      dispatch(removeError({ name: "error" }));
+    } else if (!formData?.answer) {
+      dispatch(setError({ name: "error", error: "Please Select Ans." }));
+    } else {
+      toast.error("Please Attempt all questions.");
+    }
+  };
+
+  const nextHandler = () => {
+    if (formData.answer) {
+      dispatch(
+        setQuestion({
+          data: {
+            question: formData?.question,
+            answer: formData?.answer,
+          },
+          index: index,
+        })
+      );
+      setIndex((index) => index++);
+      dispatch(removeError({ name: "error" }));
+      navigate(`/student/give-exam/${index + 1}${search}`);
+    } else {
+      dispatch(setError({ name: "error", error: "Please Select Ans." }));
+    }
+  };
 
   const buttonAttributes = ({ index }) => {
     return [
@@ -67,53 +121,33 @@ const GiveExam = ({ id }) => {
         value: "Previous",
         type: "button",
         onClick: () => {
-          setIndex((index) => (index -= 1));
+          setIndex((index) => index--);
           dispatch(removeError({ name: "error" }));
-          navigate(`/student/give-exam/question${index - 1}${search}`);
+          navigate(`/student/give-exam/${index - 1}${search}`);
         },
-        disable: index === FIRST_QUESTION || giveExam,
+        disabled: index === FIRST_QUESTION || giveExam,
       },
       {
         value: "Skip",
         type: "button",
-        typeof: "skip",
         onClick: () => {
-          setIndex((index) => (index += 1));
+          setIndex((index) => index++);
           dispatch(removeError({ name: "error" }));
-          navigate(`/student/give-exam/question${index + 1}${search}`);
+          navigate(`/student/give-exam/${index + 1}${search}`);
         },
-        disable: index === LAST_QUESTION,
+        disabled: index === LAST_QUESTION,
       },
       {
         value: giveExam ? "Submitting..." : " Submit",
         type: "button",
-        typeof: "submit",
-        onClick: () =>
-          submitExamHandler({
-            dispatch,
-            navigate,
-            formData,
-            index,
-            search,
-            examData,
-          }),
-        disable: index !== LAST_QUESTION || giveExam,
+        onClick: submitHandler,
+        disabled: index !== LAST_QUESTION || giveExam,
       },
       {
         value: "Next",
         type: "button",
-        onClick: () =>
-          nextQuestionHandler({
-            dispatch,
-            formData,
-            setIndex,
-            index,
-            exam,
-            examData,
-            navigate,
-            search,
-          }),
-        disable: index === LAST_QUESTION,
+        onClick: nextHandler,
+        disabled: index === LAST_QUESTION,
       },
     ];
   };
@@ -133,19 +167,9 @@ const GiveExam = ({ id }) => {
             <p style={{ color: "red", fontSize: 14 }}>Please Select Ans.</p>
           )}
 
-          {buttonAttributes({ index }).map(
-            ({ value, onClick, disable, ...rest }, index) => {
-              return (
-                <CustomButton
-                  onClick={onClick}
-                  {...rest}
-                  key={index}
-                  value={value}
-                  disabled={disable}
-                />
-              );
-            }
-          )}
+          {buttonAttributes({ index }).map(({ value, ...rest }, index) => {
+            return <CustomButton key={index} value={value} {...rest} />;
+          })}
         </>
       )}
     </div>

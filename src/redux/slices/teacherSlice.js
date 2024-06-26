@@ -12,21 +12,21 @@ const teacherSlice = createSlice({
   name: "teacher",
   initialState,
   reducers: {
-    addQuestion: (state, action) => {
+    setQuestion: (state, action) => {
       const { question, note, currentQue, subjectName, data, notes } =
         action.payload;
+      state.examData.subjectName = subjectName;
       if (data) {
-        state.examData.subjectName = subjectName;
         state.examData.questions = data ?? [];
         state.examData.notes = notes ?? [];
       } else {
-        state.examData.subjectName = subjectName;
         state.examData.questions[currentQue - 1] = question;
         state.examData.notes[currentQue - 1] = note ? note : " ";
       }
     },
-    currentQuestionFormData: (state, action) => {
-      state.currentQuestion = action?.payload?.data;
+    setCurrentQuestionFormData: (state, action) => {
+      const { data } = action?.payload;
+      state.currentQuestion = data;
     },
     clearExam: () => {
       return initialState;
@@ -35,5 +35,5 @@ const teacherSlice = createSlice({
 });
 
 export default teacherSlice.reducer;
-export const { addQuestion, currentQuestionFormData, clearExam } =
+export const { setQuestion, setCurrentQuestionFormData, clearExam } =
   teacherSlice.actions;

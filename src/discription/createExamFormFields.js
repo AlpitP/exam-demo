@@ -4,7 +4,7 @@ export const createExamFormFields = (index) => {
       type: "text",
       name: "subjectName",
       label: "Subject",
-      readonly: index === 0 ? false : true,
+      readonly: index !== 0,
       isRequired: index === 0 && "Please Enter Subject.",
     },
     {
@@ -28,8 +28,8 @@ export const createExamFormFields = (index) => {
       name: "answer",
       label: "A",
       id: "ans1",
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
     {
       type: "text",
@@ -48,8 +48,8 @@ export const createExamFormFields = (index) => {
       name: "answer",
       label: "B",
       id: "ans2",
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
     {
       type: "text",
@@ -68,8 +68,8 @@ export const createExamFormFields = (index) => {
       name: "answer",
       label: "C",
       id: "ans3",
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
     {
       type: "text",
@@ -88,8 +88,8 @@ export const createExamFormFields = (index) => {
       name: "answer",
       label: "D",
       id: "ans4",
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
     {
       type: "text",

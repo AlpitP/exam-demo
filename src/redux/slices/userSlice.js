@@ -17,19 +17,13 @@ const userSlice = createSlice({
       const { name, role, token } = action.payload;
 
       token && setLoggedIn();
-      addUserLocalStorage({
-        name,
-        role,
-        token,
-      });
-
+      addUserLocalStorage({ name, role, token });
       return getStateFromLocalStorage();
     },
 
-    removeUserInfo: (state, action) => {
+    removeUserInfo: () => {
       setLoggedOut();
       removeUserLocalStorage("token", "name", "role");
-
       return getStateFromLocalStorage();
     },
   },

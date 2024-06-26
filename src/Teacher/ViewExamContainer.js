@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchEditExam } from "./EditExam";
+import { fetchExam } from "./EditExam";
 import { DELETE } from "../constants";
 import api from "../redux/actions/apiAction";
 import CustomButton from "../shared/Button";
@@ -12,22 +12,22 @@ const ViewExamContainer = ({ examsData }) => {
   const { loading } = useSelector((state) => state.api);
 
   const editExamHandler = () => {
-    navigate(`/teacher/editDetail/question1?id=${examsData._id}`, {
+    navigate(`/teacher/editExam/1?id=${examsData._id}`, {
       state: {
         subjectName: examsData?.subjectName,
         notes: examsData?.notes,
       },
     });
-    fetchEditExam({ id: examsData._id, dispatch });
+    fetchExam({ id: examsData._id, dispatch });
   };
   const viewExamHandler = () => {
-    navigate(`/teacher/viewExam/question1?id=${examsData._id}`, {
+    navigate(`/teacher/viewExam/1?id=${examsData._id}`, {
       state: {
         subjectName: examsData?.subjectName,
         notes: examsData?.notes,
       },
     });
-    fetchEditExam({ id: examsData._id, dispatch });
+    fetchExam({ id: examsData._id, dispatch });
   };
   const deleteExamHandler = () => {
     const config = {

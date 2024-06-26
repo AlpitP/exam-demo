@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   CREATE_EXAM_LAST_QUESTION,
@@ -12,19 +12,21 @@ import {
 import api from "../redux/actions/apiAction";
 import { clearForm, onChange, removeError } from "../redux/slices/formSlice";
 import {
-  addQuestion,
-  currentQuestionFormData,
+  setQuestion,
+  setCurrentQuestionFormData,
 } from "../redux/slices/teacherSlice";
 import store from "../redux/store/store";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
-import { createExamFormFields } from "../utils/createExamFormFields";
-import { allFormFieldValidation } from "../utils/fullFormValidation";
+import { createExamFormFields } from "../discription/createExamFormFields";
 import { objectKeys } from "../utils/javascript";
+import { validation } from "../utils/validation";
+import { setFormData } from "../container/setFormData";
 
-const CreateExam = ({ type, id }) => {
-  const [index, setIndex] = useState(id);
+const CreateExam = ({ type }) => {
+  const { id } = useParams();
+  const [index, setIndex] = useState(+id);
   const navigate = useNavigate();
   const { search } = useLocation();
   const { loading } = useSelector((state) => state.api);
@@ -55,7 +57,7 @@ const CreateExam = ({ type, id }) => {
   }, [currentQuestion]);
 
   useEffect(() => {
-    const a = data?.questions?.[index - 1]?.options.reduce(
+    const options = data?.questions?.[index - 1]?.options.reduce(
       (acc, ele, index) => {
         acc[`ans${index + 1}`] = ele;
         return acc;
@@ -63,18 +65,18 @@ const CreateExam = ({ type, id }) => {
       {}
     );
     dispatch(
-      currentQuestionFormData({
+      setCurrentQuestionFormData({
         data: {
           subjectName: data?.subjectName,
           question: data?.questions?.[index - 1]?.question,
           answer: data?.questions?.[index - 1]?.answer,
           notes: data?.notes?.[index - 1],
-          ...a,
+          ...options,
         },
       })
     );
     dispatch(clearForm());
-  }, [index, data]);
+  }, [index, data, dispatch]);
 
   const examData = {
     subjectName,
@@ -85,27 +87,30 @@ const CreateExam = ({ type, id }) => {
   const previousHandler = () => {
     setIndex((index) => index - 1);
     type === "editExam"
-      ? navigate(`/teacher/editDetail/question${index - 1}${search}`)
+      ? navigate(`/teacher/editExam/${index - 1}${search}`)
       : type === "viewExam"
-      ? navigate(`/teacher/viewExam/question${index - 1}${search}`)
-      : navigate(`/teacher/create-exam/question${index - 1}`);
+      ? navigate(`/teacher/viewExam/${index - 1}${search}`)
+      : navigate(`/teacher/create-exam/${index - 1}`);
   };
+
   const skipHandler = () => {
     if (data.subjectName) {
-      setIndex((index) => (index += 1));
+      setIndex((index) => index++);
       dispatch(clearForm());
       type === "editExam"
-        ? navigate(`/teacher/editDetail/question${index + 1}${search}`)
-        : navigate(`/teacher/create-exam/question${index + 1}`);
+        ? navigate(`/teacher/editExam/${index + 1}${search}`)
+        : navigate(`/teacher/create-exam/${index + 1}`);
     } else {
       toast.error("You can not skip First question.");
     }
   };
+
   const nextHandler = () => {
-    const valid = allFormFieldValidation(createExamFormFields(index - 1));
+    setFormData({ dispatch, formData, data, index });
+    const valid = validation(createExamFormFields(index - 1));
     if (valid && formData.answer) {
       dispatch(
-        addQuestion({
+        setQuestion({
           subjectName: subjectName,
           question: examData?.questions?.[0],
           note: notes,
@@ -113,23 +118,24 @@ const CreateExam = ({ type, id }) => {
         })
       );
       setIndex((index) => index + 1);
-      dispatch(clearForm());
       dispatch(onChange({ data: { subjectName: examData?.subjectName } }));
       type === "editExam"
-        ? navigate(`/teacher/editDetail/question${index + 1}${search}`)
+        ? navigate(`/teacher/editExam/${index + 1}${search}`)
         : type === "viewExam"
-        ? navigate(`/teacher/viewExam/question${index + 1}${search}`)
-        : navigate(`/teacher/create-exam/question${index + 1}`);
+        ? navigate(`/teacher/viewExam/${index + 1}${search}`)
+        : navigate(`/teacher/create-exam/${index + 1}`);
     } else if (valid && !formData.answer) {
       toast.error("Please Select Ans");
     }
   };
+
   const submitHandler = async () => {
-    const valid = allFormFieldValidation(createExamFormFields(index - 1));
+    setFormData({ dispatch, formData, data, index });
+    const valid = validation(createExamFormFields(index - 1));
     const filter = data.questions.filter((ele) => ele !== null);
     if (valid && formData.answer && filter.length === 14) {
       dispatch(
-        addQuestion({
+        setQuestion({
           subjectName: data?.subjectName,
           question: examData?.questions?.[0],
           note: notes,
@@ -151,16 +157,17 @@ const CreateExam = ({ type, id }) => {
       toast.error(`Please Fill All Questions.`);
     }
   };
+
   const updateHandler = async () => {
-    const valid = allFormFieldValidation(createExamFormFields(index - 1));
-    const filter = data.questions.filter((ele) => ele !== null);
+    const valid = validation(createExamFormFields(index - 1));
+    const filter = data.questions.filter((ele) => ele);
     if (
       valid &&
       formData.answer &&
       filter.length === CREATE_EXAM_LAST_QUESTION
     ) {
       dispatch(
-        addQuestion({
+        setQuestion({
           subjectName: examData?.subjectName,
           question: examData?.questions?.[0],
           note: notes,
@@ -180,30 +187,25 @@ const CreateExam = ({ type, id }) => {
       toast.error(`Please Fill All Questions.`);
     }
   };
-  const buttonAttributes = ({ index: i, type }) => {
+
+  const buttonAttributes = ({ index, type }) => {
     return [
       {
         value: "Previous",
         type: "button",
         onClick: previousHandler,
-        typeof: "previous",
-        disable:
-          i === FIRST_QUESTION || loading.updateExam || loading.createExam,
+        disabled:
+          index === FIRST_QUESTION || loading.updateExam || loading.createExam,
       },
       type !== "viewExam" && {
         value: "Skip",
         type: "button",
-        typeof: "skip",
         onClick: skipHandler,
-        disable:
-          type !== "editExam"
-            ? i === CREATE_EXAM_LAST_QUESTION ||
-              loading.updateExam ||
-              loading.createExam ||
-              i === FIRST_QUESTION
-            : i === CREATE_EXAM_LAST_QUESTION ||
-              loading.updateExam ||
-              loading.createExam,
+        disabled:
+          index === CREATE_EXAM_LAST_QUESTION ||
+          loading.updateExam ||
+          loading.createExam ||
+          (type !== "editExam" && index === FIRST_QUESTION),
       },
       type !== "viewExam" && {
         value:
@@ -215,19 +217,17 @@ const CreateExam = ({ type, id }) => {
             ? "Submitting.."
             : "Submit",
         type: "button",
-        typeof: "submit",
         onClick: type === "editExam" ? updateHandler : submitHandler,
-        disable:
-          (type !== "editExam" && i !== CREATE_EXAM_LAST_QUESTION) ||
+        disabled:
+          (type !== "editExam" && index !== CREATE_EXAM_LAST_QUESTION) ||
           loading.updateExam ||
           loading.createExam,
       },
       {
         value: "Next",
         type: "button",
-        typeof: "next",
         onClick: nextHandler,
-        disable: i >= CREATE_EXAM_LAST_QUESTION || loading.updateExam,
+        disabled: index >= CREATE_EXAM_LAST_QUESTION || loading.updateExam,
       },
     ];
   };
@@ -235,7 +235,7 @@ const CreateExam = ({ type, id }) => {
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>
-        {type === "editExam" ? "Edit" : type === "viewExam" ? "View" : "Create"}{" "}
+        {type === "editExam" ? "Edit" : type === "viewExam" ? "View" : "Create"}
         Exam
       </h1>
       {loading.editExam ? (
@@ -249,17 +249,9 @@ const CreateExam = ({ type, id }) => {
             />
 
             {buttonAttributes({ index, type }).map(
-              ({ value, onClick, disable, ...rest }, index) => {
+              ({ value, ...rest }, index) => {
                 return (
-                  value && (
-                    <CustomButton
-                      onClick={onClick}
-                      {...rest}
-                      key={index}
-                      value={value}
-                      disabled={disable}
-                    />
-                  )
+                  value && <CustomButton key={index} {...rest} value={value} />
                 );
               }
             )}

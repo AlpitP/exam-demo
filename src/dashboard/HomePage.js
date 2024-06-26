@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 
 const HomePage = () => {
   const { data } = useSelector((state) => state.api);
-  console.log(data);
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>Home Page</h1>

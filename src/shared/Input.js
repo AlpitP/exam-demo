@@ -15,9 +15,9 @@ const Input = ({
       <input
         type={type}
         name={name}
-        {...rest}
         value={value}
         disabled={disabled}
+        {...rest}
       />
       <br />
       {errorMessage && (

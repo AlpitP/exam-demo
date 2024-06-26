@@ -1,13 +1,7 @@
 import React from "react";
 
-const CustomButton = ({ text, value, ...rest }) => {
-  return (
-    // <div style={{ paddingLeft: 100 }}>
-    <button variant="contained" {...rest}>
-      {value}
-    </button>
-    // </div>
-  );
+const CustomButton = ({ value, ...rest }) => {
+  return <button {...rest}>{value}</button>;
 };
 
 export default CustomButton;

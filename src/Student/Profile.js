@@ -15,17 +15,18 @@ const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState(studentProfile?.name ?? "");
 
-  useEffect(() => {
-    const fetch = () => {
-      const config = {
-        url: "student/getStudentDetail",
-        method: GET,
-      };
-      dispatch(api({ name: "studentProfile", config }));
+  const fetch = () => {
+    const config = {
+      url: "student/getStudentDetail",
+      method: GET,
     };
-    fetch();
+    dispatch(api({ name: "studentProfile", config }));
+  };
+
+  useEffect(() => {
+    !studentProfile && fetch();
     return () => dispatch(clearForm());
-  }, [dispatch]);
+  }, [dispatch, studentProfile?.name]);
 
   useEffect(() => {
     if (name === "") {
@@ -33,7 +34,7 @@ const Profile = () => {
     } else {
       dispatch(removeError({ name: "name" }));
     }
-  });
+  }, [name, dispatch]);
 
   const editProfile = () => {
     setName(studentProfile?.name);
@@ -79,7 +80,7 @@ const Profile = () => {
       )}
 
       <CustomButton
-        onClick={() => (isEdit ? submitProfile() : editProfile())}
+        onClick={isEdit ? submitProfile : editProfile}
         disabled={profileLoader}
         value={
           isEdit ? "Submit" : profileLoader ? "Updating..." : "Edit Profile"

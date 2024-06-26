@@ -6,8 +6,8 @@ export const giveExamFormFields = ({ index, examData }) => {
       label: "A",
       id: "ans1",
       ans: examData?.exam?.[index - 1]?.options?.[0],
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
     {
       type: "radio",
@@ -15,8 +15,8 @@ export const giveExamFormFields = ({ index, examData }) => {
       label: "B",
       id: "ans2",
       ans: examData?.exam?.[index - 1]?.options?.[1],
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
     {
       type: "radio",
@@ -24,8 +24,8 @@ export const giveExamFormFields = ({ index, examData }) => {
       label: "C",
       id: "ans3",
       ans: examData?.exam?.[index - 1]?.options?.[2],
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
     {
       type: "radio",
@@ -33,8 +33,8 @@ export const giveExamFormFields = ({ index, examData }) => {
       label: "D",
       id: "ans4",
       ans: examData?.exam?.[index - 1]?.options?.[3],
-      checked: (value, compare) =>
-        value === compare && compare ? true : false,
+      checked: (selectedOption, answer) =>
+        selectedOption === answer && answer !== undefined,
     },
   ];
 };

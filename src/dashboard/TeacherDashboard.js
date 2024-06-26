@@ -1,19 +1,15 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import { Outlet } from "react-router-dom";
-import { clearForm } from "../redux/slices/formSlice";
-import Sidebar from "../Student/Navbar";
+import Navbar from "../Student/Navbar";
+import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
 
 const TeacherDashboard = () => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    return () => dispatch(clearForm());
-  });
+  useClearFormOnUnMound();
   return (
-    <div>
-      <Sidebar />
+    <>
+      <Navbar />
       <Outlet />
-    </div>
+    </>
   );
 };
 

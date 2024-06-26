@@ -13,19 +13,17 @@ const AllStudents = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const viewStudentDetailHandler = (e, id) => {
-    navigate(`/teacher/viewStudentDetail?id=${id}`);
-  };
-  useEffect(() => {
-    const fetch = () => {
-      const config = {
-        url: "dashboard/Teachers",
-        method: GET,
-      };
-      dispatch(api({ name: "allStudents", config }));
+  const fetch = () => {
+    const config = {
+      url: "dashboard/Teachers",
+      method: GET,
     };
-    fetch();
-  }, [dispatch]);
+    dispatch(api({ name: "allStudents", config }));
+  };
+
+  useEffect(() => {
+    !data.allStudents && fetch();
+  }, []);
 
   return (
     <div>
@@ -43,44 +41,15 @@ const AllStudents = () => {
                   <td>
                     <CustomButton
                       value="View"
-                      onClick={(e) => viewStudentDetailHandler(e, ele._id)}
+                      onClick={() =>
+                        navigate(`/teacher/viewStudentDetail?id=${ele._id}`)
+                      }
                     />
                   </td>
                 </tr>
               );
             })}
         </Table>
-        {/* <table>
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data &&
-              data.allStudents?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{ele.name}</td>
-                    <td>{ele.email}</td>
-                    <td>{ele.status}</td>
-                    <td>
-                      <button
-                        onClick={(e) => viewStudentDetailHandler(e, ele._id)}
-                      >
-                        View
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table> */}
         <Loader loading={loading.allStudents} />
       </div>
     </div>

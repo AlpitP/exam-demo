@@ -6,7 +6,7 @@ import Input from "./Input";
 import Radio from "./Radio";
 import SelectOptions from "./Select";
 
-const Form = ({ formFields, disable, checked, ...rest }) => {
+const Form = ({ formFields, disable, ...rest }) => {
   const { formData, error } = useSelector((state) => state.formData);
   const [checkValidation, setCheckValidation] = useState(false);
   const dispatch = useDispatch();
@@ -15,14 +15,10 @@ const Form = ({ formFields, disable, checked, ...rest }) => {
     checkValidation && validation(formFields);
   }, [formData, checkValidation]);
 
-  const changeHandler = (event, fieldData) => {
+  const changeHandler = (event) => {
     setCheckValidation(true);
-    const { name, value, type } = event.target;
-    if (type === "radio") {
-      dispatch(onChange({ data: fieldData ? { [name]: fieldData } : {} }));
-    } else {
-      dispatch(onChange({ name, value }));
-    }
+    const { name, value } = event.target;
+    dispatch(onChange({ name, value }));
   };
   return (
     <div>
@@ -48,7 +44,8 @@ const Form = ({ formFields, disable, checked, ...rest }) => {
                 label={label}
                 key={index}
                 name={name}
-                onChange={(e) => changeHandler(e, formData[id])}
+                value={formData[id]}
+                onChange={changeHandler}
                 checked={checked(formData[id], formData[name])}
                 ans={ans}
                 disabled={disable}

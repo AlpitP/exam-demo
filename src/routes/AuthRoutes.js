@@ -6,11 +6,7 @@ import Dashboard from "../dashboard/Dashboard";
 const AuthRoute = ({ role }) => {
   const currentRole = getLocalStorage("role");
 
-  if (isLoggedIn()) {
-    return <Navigate to={`/${currentRole}`} />;
-  }
-
-  if (role && role !== currentRole) {
+  if (isLoggedIn() && role !== currentRole) {
     return <Navigate to={`/${currentRole}`} />;
   }
 

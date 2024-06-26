@@ -10,11 +10,11 @@ const studentSlice = createSlice({
   name: "student",
   initialState,
   reducers: {
-    addExam: (state, action) => {
+    setExam: (state, action) => {
       const { data } = action.payload;
       state.exam.exam = data;
     },
-    addAnswer: (state, action) => {
+    setQuestion: (state, action) => {
       const { data, index } = action.payload;
       state.exam.questions[index - 1] = data;
     },
@@ -25,4 +25,4 @@ const studentSlice = createSlice({
 });
 
 export default studentSlice.reducer;
-export const { addExam, addAnswer, clearExam } = studentSlice.actions;
+export const { setExam, setQuestion, clearExam } = studentSlice.actions;

@@ -1,12 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 import { SUCCESS_CODE } from "../../constants";
 import { axiosInstance } from "../api";
-import { showToast } from "../slices/toastSlice";
 import { addUserInfo, removeUserInfo } from "../slices/userSlice";
+import { toastArray, userArray } from "../../discription/api";
 
 const api = createAsyncThunk(
   "api",
-  async ({ name, config, toast = true }, { rejectWithValue, dispatch }) => {
+  async ({ name, config }, { rejectWithValue, dispatch }) => {
     try {
       const { method, url, data, ...rest } = config;
 
@@ -25,24 +26,12 @@ const api = createAsyncThunk(
         throw new Error(message);
       }
 
-      if (["signIn", "signUp"].includes(name)) {
+      if (userArray.includes(name)) {
         statusCode === SUCCESS_CODE &&
           dispatch(addUserInfo(response?.data?.data));
       }
-      if (
-        [
-          "signIn",
-          "signUp",
-          "resetPassword",
-          "forgotPassword",
-          "newPassword",
-          "editedProfile",
-          "giveExam",
-          "updateExam",
-          "createExam",
-        ].includes(name)
-      ) {
-        toast && dispatch(showToast({ type: "success", message: message }));
+      if (toastArray.includes(name)) {
+        toast.success(message);
       }
       return { name, data: response?.data };
     } catch (error) {
@@ -50,12 +39,10 @@ const api = createAsyncThunk(
 
       if (error.response) {
         errorMessage = error.response?.data?.message;
-      } else if (error.request) {
-        errorMessage = "Network Problem!";
       } else {
         errorMessage = error.message;
       }
-      dispatch(showToast({ type: "error", message: errorMessage }));
+      toast.error(errorMessage);
       return rejectWithValue({ name, message: errorMessage });
     }
   }

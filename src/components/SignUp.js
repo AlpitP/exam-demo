@@ -1,56 +1,61 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { signUpHandler } from "../container/signUpHandler";
-import { clearForm } from "../redux/slices/formSlice";
+import { toast } from "react-toastify";
+import { POST, SIGN_UP, SUCCESS_CODE } from "../constants";
+import api from "../redux/actions/apiAction";
+import { onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { signUpFormFields } from "../utils/signUpFormFields";
-
-// const signUpHandler = async ({ formData, dispatch, navigate }) => {
-//   const valid = validation(signUpFormFields);
-//   if (valid) {
-//     const config = {
-//       url: "users/SignUp",
-//       data: formData,
-//       method: "POST",
-//     };
-//     const response = await dispatch(api({ name: "signUp", config }));
-
-//     const { statusCode } = response?.payload?.data ?? {};
-
-//     if (statusCode === SUCCESS_CODE) {
-//       navigate("/sign-in");
-//       dispatch(
-//         showToast({
-//           type: "info",
-//           message: "Please, Check you mail box for verification!",
-//         })
-//       );
-//     }
-//   }
-// };
+import useClearFormOnUnMound from "../shared/useClearFormOnUnmound";
+import { signUpFormFields } from "../discription/signUpFormFields";
+import { validation } from "../utils/validation";
 
 const SignUp = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {
-    return () => {
-      dispatch(clearForm());
-    };
-  }, [dispatch]);
+  useClearFormOnUnMound();
+
+  const signUpHandler = async (e) => {
+    e.preventDefault();
+    dispatch(
+      onChange({
+        data: {
+          email: formData?.email ?? "",
+          password: formData?.password ?? "",
+          role: formData?.role ?? "",
+          name: formData?.name ?? "",
+        },
+      })
+    );
+    const valid = validation(signUpFormFields);
+    if (valid) {
+      const config = {
+        url: SIGN_UP,
+        data: formData,
+        method: POST,
+      };
+      const response = await dispatch(api({ name: "signUp", config }));
+
+      const { statusCode } = response?.payload?.data ?? {};
+
+      if (statusCode === SUCCESS_CODE) {
+        navigate("/sign-in");
+        toast.info("Please, Check you mail box for verification!");
+      }
+    }
+  };
 
   return (
     <>
       <h1 style={{ textAlign: "center", marginTop: 180 }}>Sign Up</h1>
       <div style={signUpStyle}>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={signUpHandler}>
           <Form formFields={signUpFormFields} />
           <CustomButton
-            value={loading.signUp === true ? "Signing Up..." : "Sign Up"}
-            onClick={() => signUpHandler({ formData, dispatch, navigate })}
+            value={loading.signUp ? "Signing Up..." : "Sign Up"}
             disabled={loading.signUp}
           />
           <p>
