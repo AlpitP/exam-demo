@@ -1,31 +1,31 @@
 import {
-  getLocalStorage,
+  getStateFromLocalStorage,
   objectEntries,
-  removeLocalStorage,
-  setLocalStorage,
+  removeStateFromLocalStorage,
+  setStateToLocalStorage,
 } from "./javascript";
 
 export const isLoggedIn = () => {
-  const result = JSON.parse(getLocalStorage("isLoggedIn"));
+  const result = JSON.parse(getStateFromLocalStorage("isLoggedIn"));
   return result || false;
 };
-export const setLoggedIn = () => setLocalStorage("isLoggedIn", true);
+export const setLoggedIn = () => setStateToLocalStorage("isLoggedIn", true);
 
-export const setLoggedOut = () => removeLocalStorage("isLoggedIn");
+export const setLoggedOut = () => removeStateFromLocalStorage("isLoggedIn");
 
-export const getStateFromLocalStorage = () => {
+export const getUserFromLocalStorage = () => {
   const keys = ["token", "name", "role"];
 
   return keys.reduce((acc, key) => {
-    acc[key] = getLocalStorage(key);
+    acc[key] = getStateFromLocalStorage(key);
     return acc;
   }, {});
 };
 
-export const addUserLocalStorage = (obj) =>
+export const addUserToLocalStorage = (obj) =>
   objectEntries(obj).forEach(([key, value]) => {
-    setLocalStorage(key, value);
+    setStateToLocalStorage(key, value);
   });
 
-export const removeUserLocalStorage = (...rest) =>
-  rest.forEach((key) => removeLocalStorage(key));
+export const removeUserFromLocalStorage = (...rest) =>
+  rest.forEach((key) => removeStateFromLocalStorage(key));

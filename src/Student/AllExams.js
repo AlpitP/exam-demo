@@ -22,17 +22,16 @@ const AllExams = () => {
     };
     dispatch(api({ name: "allExam", config }));
   };
-
   useEffect(() => {
-    fetch();
+    !data.allExam && fetch();
   }, []);
 
   const giveExam = ({ alreadyGiveExam, ele }) => {
-    alreadyGiveExam
-      ? navigate("/student/view-result", {
-          state: ele?.Result?.[0],
-        })
-      : navigate(`/student/give-exam/${1}?id=${ele._id}`);
+    if (alreadyGiveExam) {
+      navigate("/student/view-result", { state: ele?.Result?.[0] });
+    } else {
+      navigate(`/student/give-exam/1?id=${ele._id}`);
+    }
   };
   return (
     <>

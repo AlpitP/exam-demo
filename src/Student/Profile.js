@@ -5,6 +5,7 @@ import api from "../redux/actions/apiAction";
 import { clearForm, removeError, setError } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Input from "../shared/Input";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const { error } = useSelector((state) => state.formData);
@@ -29,19 +30,21 @@ const Profile = () => {
   }, [dispatch, studentProfile?.name]);
 
   useEffect(() => {
-    if (name === "") {
+    if (!name) {
       dispatch(setError({ name: "name", error: "Please Enter Name." }));
     } else {
       dispatch(removeError({ name: "name" }));
     }
   }, [name, dispatch]);
 
-  const editProfile = () => {
+  const editProfile = (e) => {
+    e.preventDefault();
     setName(studentProfile?.name);
     setIsEdit(true);
   };
 
-  const submitProfile = () => {
+  const submitProfile = async (e) => {
+    e.preventDefault();
     if (name) {
       setIsEdit(false);
       const config = {
@@ -49,7 +52,9 @@ const Profile = () => {
         method: "put",
         data: { name },
       };
-      dispatch(api({ name: "studentProfile", config }));
+      const response = await dispatch(api({ name: "studentProfile", config }));
+      const { message } = response?.payload?.data ?? {};
+      toast.success(message);
     }
   };
 
@@ -60,32 +65,23 @@ const Profile = () => {
         <h1>Loading..</h1>
       ) : (
         studentProfile?.name && (
-          <>
+          <form onSubmit={isEdit ? submitProfile : editProfile}>
             {isEdit ? (
-              <>
-                <Input
-                  type="text"
-                  label="Name"
-                  name="name"
-                  value={name ?? ""}
-                  errorMessage={error.name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </>
+              <Input
+                type="text"
+                label="Name"
+                name="name"
+                value={name}
+                errorMessage={error.name}
+                onChange={(e) => setName(e.target.value)}
+              />
             ) : (
               <h3>Name: {studentProfile?.name}</h3>
             )}
-          </>
+            <CustomButton value={isEdit ? "Submit" : "Edit Profile"} />
+          </form>
         )
       )}
-
-      <CustomButton
-        onClick={isEdit ? submitProfile : editProfile}
-        disabled={profileLoader}
-        value={
-          isEdit ? "Submit" : profileLoader ? "Updating..." : "Edit Profile"
-        }
-      />
     </div>
   );
 };

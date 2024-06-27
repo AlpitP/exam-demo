@@ -1,40 +1,46 @@
+import { TOTAL_OPTIONS } from "../constants";
+import { radioCheckedCondition } from "../container/radioCheckedCondition";
+
 export const giveExamFormFields = ({ index, examData }) => {
-  return [
-    {
+  const options = [];
+  for (let i = 0; i < TOTAL_OPTIONS; i++) {
+    options.push({
       type: "radio",
-      name: `answer`,
-      label: "A",
-      id: "ans1",
-      ans: examData?.exam?.[index - 1]?.options?.[0],
-      checked: (selectedOption, answer) =>
-        selectedOption === answer && answer !== undefined,
-    },
-    {
-      type: "radio",
-      name: `answer`,
-      label: "B",
-      id: "ans2",
-      ans: examData?.exam?.[index - 1]?.options?.[1],
-      checked: (selectedOption, answer) =>
-        selectedOption === answer && answer !== undefined,
-    },
-    {
-      type: "radio",
-      name: `answer`,
-      label: "C",
-      id: "ans3",
-      ans: examData?.exam?.[index - 1]?.options?.[2],
-      checked: (selectedOption, answer) =>
-        selectedOption === answer && answer !== undefined,
-    },
-    {
-      type: "radio",
-      name: `answer`,
-      label: "D",
-      id: "ans4",
-      ans: examData?.exam?.[index - 1]?.options?.[3],
-      checked: (selectedOption, answer) =>
-        selectedOption === answer && answer !== undefined,
-    },
-  ];
+      name: "answer",
+      id: `ans${i + 1}`,
+      label: examData?.exam?.[index - 1]?.options?.[i],
+      checked: radioCheckedCondition,
+    });
+  }
+  return options;
+  // return [
+  //   {
+  //     type: "radio",
+  //     name: `answer`,
+  //     id: "ans1",
+  //     label: examData?.exam?.[index - 1]?.options?.[0],
+  //     checked: radioCheckedCondition,
+  //   },
+  //   {
+  //     type: "radio",
+  //     name: `answer`,
+  //     id: "ans2",
+  //     label: examData?.exam?.[index - 1]?.options?.[1],
+  //     checked: radioCheckedCondition,
+  //   },
+  //   {
+  //     type: "radio",
+  //     name: `answer`,
+  //     id: "ans3",
+  //     label: examData?.exam?.[index - 1]?.options?.[2],
+  //     checked: radioCheckedCondition,
+  //   },
+  //   {
+  //     type: "radio",
+  //     name: `answer`,
+  //     id: "ans4",
+  //     label: examData?.exam?.[index - 1]?.options?.[3],
+  //     checked: radioCheckedCondition,
+  //   },
+  // ];
 };

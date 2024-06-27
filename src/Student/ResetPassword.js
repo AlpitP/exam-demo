@@ -8,6 +8,7 @@ import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 import { validation } from "../utils/validation";
+import { toast } from "react-toastify";
 
 // const resetPasswordHandler = async ({formData,dispatch}) => {
 //   const valid = validation(resetPasswordFormFields);
@@ -46,7 +47,9 @@ const ResetPassword = () => {
         method: POST,
         data: formData,
       };
-      await dispatch(api({ name: "resetPassword", config }));
+      const response = await dispatch(api({ name: "resetPassword", config }));
+      const { message } = response?.payload?.data ?? {};
+      toast.success(message);
       dispatch(clearForm());
     }
   };

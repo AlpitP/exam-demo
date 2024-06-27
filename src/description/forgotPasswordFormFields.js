@@ -1,14 +1,11 @@
-import { EMAIL } from "../constants";
+import { emailPattern } from "./validation";
 
 export const forgotPasswordFormFields = [
   {
     type: "email",
     label: "Enter Email",
     name: "email",
-    pattern: {
-      value: EMAIL,
-      message: "Please Enter Valid Email",
-    },
+    pattern: emailPattern,
     isRequired: "Please Enter Your Email.",
   },
 ];

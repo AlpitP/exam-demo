@@ -14,11 +14,11 @@ export const DELETE = "DELETE";
 export const PREVIOUS = "Previous";
 
 export const FIRST_QUESTION = 1;
-export const LAST_QUESTION = 7;
+export const TOTAL_QUESTIONS_GIVE_EXAM = 7;
 
-export const CREATE_EXAM_LAST_QUESTION = 15;
+export const TOTAL_QUESTIONS_CREATE_EXAM = 15;
 
-export const OPTIONS_LENGTH = 4;
+export const TOTAL_OPTIONS = 4;
 
 // url end points constant
 export const FORGOT_PASSWORD = "users/ForgotPassword";
@@ -27,6 +27,6 @@ export const RESET_PASSWORD = "users/ResetPassword";
 export const SIGN_IN = "users/Login";
 export const SIGN_UP = "users/SignUp";
 
-export const PASSWORD = /^[a-zA-Z0-9@]{6,}$/;
-export const EMAIL = /^[a-z0-9A-Z]+@[a-z]+\.[a-z]{2,3}$/;
-export const NAME = /^[a-zA-Z]*$/;
+export const PASSWORD_PATTERN = /^[a-zA-Z0-9@]{6,}$/;
+export const EMAIL_PATTERN = /^[a-z0-9A-Z]+@[a-z]+\.[a-z]{2,3}$/;
+export const NAME_PATTERN = /^[a-zA-Z]*$/;

@@ -2,10 +2,10 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { isLoggedIn } from "../utils/authentication";
 import Dashboard from "../dashboard/Dashboard";
-import { getLocalStorage } from "../utils/javascript";
+import { getStateFromLocalStorage } from "../utils/javascript";
 
 const ProtectedRoute = ({ role }) => {
-  const currentRole = getLocalStorage("role");
+  const currentRole = getStateFromLocalStorage("role");
 
   if (!isLoggedIn()) {
     return <Navigate to="/sign-in" />;

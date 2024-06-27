@@ -4,7 +4,7 @@ import { clearForm } from "../redux/slices/formSlice";
 
 const useClearFormOnUnMount = () => {
   const dispatch = useDispatch();
-  return useEffect(() => {
+  useEffect(() => {
     return () => dispatch(clearForm());
   }, [dispatch]);
 };

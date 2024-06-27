@@ -6,7 +6,7 @@ import Input from "./Input";
 import Radio from "./Radio";
 import SelectOptions from "./Select";
 
-const Form = ({ formFields, disable, ...rest }) => {
+const Form = ({ formFields, disable }) => {
   const { formData, error } = useSelector((state) => state.formData);
   const [checkValidation, setCheckValidation] = useState(false);
   const dispatch = useDispatch();

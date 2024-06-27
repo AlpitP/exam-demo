@@ -1,4 +1,3 @@
-import { Fragment } from "react";
 import { useRoutes } from "react-router-dom";
 import AllExams from "../Student/AllExams";
 import GiveExam from "../Student/GiveExam";
@@ -10,14 +9,16 @@ import CreateExam from "../Teacher/CreateExam";
 import EditExam from "../Teacher/EditExam";
 import Student from "../Teacher/Student";
 import ViewExam from "../Teacher/ViewExam";
-import PageNotFound from "../components/PageNotFound";
 import ForgotPassword from "../components/ForgotPassword";
 import NewPassword from "../components/NewPassword";
+import PageNotFound from "../components/PageNotFound";
 import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 import HomePage from "../dashboard/HomePage";
 import AuthRoute from "./AuthRoutes";
 import ProtectedRoute from "./ProtectedRoutes";
+import { Role } from "../description/role.enums";
+import Layout from "../dashboard/Layout";
 
 const AppRoutes = () => {
   const routes = useRoutes([
@@ -34,10 +35,11 @@ const AppRoutes = () => {
     },
     {
       path: "/",
+      element: <Layout />,
       children: [
         {
           path: "teacher",
-          element: <ProtectedRoute role="teacher" />,
+          element: <ProtectedRoute role={Role.TEACHER} />,
           children: [
             { path: "", element: <HomePage /> },
             {
@@ -45,23 +47,23 @@ const AppRoutes = () => {
               children: [{ path: ":id", element: <CreateExam /> }],
             },
             { path: "students", element: <AllStudents /> },
-            { path: "viewStudentDetail", element: <Student /> },
-            { path: "view-exam", element: <ViewExam /> },
+            { path: "view-student-detail", element: <Student /> },
+            { path: "view-exams", element: <ViewExam /> },
             {
-              path: "editExam",
+              path: "edit-exam",
               children: [{ path: ":id", element: <EditExam /> }],
             },
             {
-              path: "viewExam",
+              path: "view-exam",
               children: [{ path: ":id", element: <EditExam /> }],
             },
-            { path: "resetPassword", element: <ResetPassword /> },
+            { path: "reset-password", element: <ResetPassword /> },
           ],
         },
 
         {
           path: "student",
-          element: <ProtectedRoute role="student" />,
+          element: <ProtectedRoute role={Role.STUDENT} />,
           children: [
             { path: "", element: <HomePage /> },
             { path: "Exams", element: <AllExams /> },
@@ -71,13 +73,13 @@ const AppRoutes = () => {
               children: [{ path: ":id", element: <GiveExam /> }],
             },
             { path: "profile", element: <Profile /> },
-            { path: "resetPassword", element: <ResetPassword /> },
+            { path: "reset-password", element: <ResetPassword /> },
           ],
         },
       ],
     },
   ]);
 
-  return <Fragment>{routes}</Fragment>;
+  return routes;
 };
 export default AppRoutes;

@@ -39,7 +39,7 @@ const EditExam = ({ id }) => {
   return (
     <div>
       <CreateExam
-        type={pathname.includes("viewExam") ? "viewExam" : "editExam"}
+        type={pathname.includes("view-exam") ? "viewExam" : "editExam"}
         id={id}
       />
     </div>

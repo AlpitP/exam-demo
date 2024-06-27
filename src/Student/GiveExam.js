@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import {
   FIRST_QUESTION,
   GET,
-  LAST_QUESTION,
+  TOTAL_QUESTIONS_GIVE_EXAM,
   POST,
   SUCCESS_CODE,
 } from "../constants";
@@ -17,6 +17,7 @@ import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
 import { giveExamFormFields } from "../description/giveExamFormFields";
+import PageNotFound from "../components/PageNotFound";
 
 const GiveExam = () => {
   const { id } = useParams();
@@ -32,16 +33,19 @@ const GiveExam = () => {
   const { exam: examData } = useSelector((state) => state.student);
 
   useEffect(() => {
-    const a = examData.exam?.[index - 1]?.options.reduce((acc, ele, index) => {
-      acc[`ans${index + 1}`] = ele;
-      return acc;
-    }, {});
+    const options = examData.exam?.[index - 1]?.options.reduce(
+      (acc, ele, index) => {
+        acc[`ans${index + 1}`] = ele;
+        return acc;
+      },
+      {}
+    );
     dispatch(
       onChange({
         data: {
           question: examData.exam?.[index - 1]?.question,
           answer: examData?.questions?.[index - 1]?.answer,
-          ...a,
+          ...options,
         },
       })
     );
@@ -69,25 +73,33 @@ const GiveExam = () => {
     return () => dispatch(clearExam());
   }, []);
 
+  const currentQuestion = () => {
+    dispatch(
+      setQuestion({
+        data: {
+          question: formData?.question,
+          answer: formData?.answer,
+        },
+        index: index,
+      })
+    );
+  };
+
   const submitHandler = async () => {
-    if (formData.answer && examData.questions.length === 6) {
-      dispatch(
-        setQuestion({
-          data: {
-            question: formData?.question,
-            answer: formData?.answer,
-          },
-          index: index,
-        })
-      );
+    if (
+      formData.answer &&
+      examData.questions.length === TOTAL_QUESTIONS_GIVE_EXAM - 1
+    ) {
+      currentQuestion();
       const config = {
         url: `student/giveExam${search}`,
         data: store.getState().student.exam.questions,
         method: POST,
       };
       const response = await dispatch(api({ name: "giveExam", config }));
-      const { statusCode } = response?.payload?.data ?? {};
+      const { statusCode, message } = response?.payload?.data ?? {};
       statusCode === SUCCESS_CODE && navigate("/student/exams");
+      toast.success(message);
       dispatch(removeError({ name: "error" }));
     } else if (!formData?.answer) {
       dispatch(setError({ name: "error", error: "Please Select Ans." }));
@@ -98,16 +110,8 @@ const GiveExam = () => {
 
   const nextHandler = () => {
     if (formData.answer) {
-      dispatch(
-        setQuestion({
-          data: {
-            question: formData?.question,
-            answer: formData?.answer,
-          },
-          index: index,
-        })
-      );
-      setIndex((index) => index++);
+      currentQuestion();
+      setIndex((index) => index + 1);
       dispatch(removeError({ name: "error" }));
       navigate(`/student/give-exam/${index + 1}${search}`);
     } else {
@@ -121,7 +125,7 @@ const GiveExam = () => {
         value: "Previous",
         type: "button",
         onClick: () => {
-          setIndex((index) => index--);
+          setIndex((index) => index - 1);
           dispatch(removeError({ name: "error" }));
           navigate(`/student/give-exam/${index - 1}${search}`);
         },
@@ -131,26 +135,30 @@ const GiveExam = () => {
         value: "Skip",
         type: "button",
         onClick: () => {
-          setIndex((index) => index++);
+          setIndex((index) => index + 1);
           dispatch(removeError({ name: "error" }));
           navigate(`/student/give-exam/${index + 1}${search}`);
         },
-        disabled: index === LAST_QUESTION,
+        disabled: index === TOTAL_QUESTIONS_GIVE_EXAM,
       },
       {
         value: giveExam ? "Submitting..." : " Submit",
         type: "button",
         onClick: submitHandler,
-        disabled: index !== LAST_QUESTION || giveExam,
+        disabled: index !== TOTAL_QUESTIONS_GIVE_EXAM || giveExam,
       },
       {
         value: "Next",
         type: "button",
         onClick: nextHandler,
-        disabled: index === LAST_QUESTION,
+        disabled: index === TOTAL_QUESTIONS_GIVE_EXAM,
       },
     ];
   };
+
+  if (+id < FIRST_QUESTION || +id > TOTAL_QUESTIONS_GIVE_EXAM) {
+    return <PageNotFound />;
+  }
 
   return (
     <div style={{ textAlign: "center" }}>
@@ -167,8 +175,8 @@ const GiveExam = () => {
             <p style={{ color: "red", fontSize: 14 }}>Please Select Ans.</p>
           )}
 
-          {buttonAttributes({ index }).map(({ value, ...rest }, index) => {
-            return <CustomButton key={index} value={value} {...rest} />;
+          {buttonAttributes({ index }).map(({ ...rest }, index) => {
+            return <CustomButton key={index} {...rest} />;
           })}
         </>
       )}

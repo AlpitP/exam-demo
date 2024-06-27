@@ -10,7 +10,7 @@ import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 import { signInFormFields } from "../description/signInFormFIelds";
 import { validation } from "../utils/validation";
 import { toast } from "react-toastify";
-import { addUserInfo } from "../redux/slices/userSlice";
+import { setUser } from "../redux/slices/userSlice";
 
 // const signInHandler = async ({ formData, dispatch, navigate }) => {
 //   const valid = validation(signInFormFields);
@@ -55,8 +55,8 @@ const SignIn = () => {
       const response = await dispatch(api({ name: "signIn", config }));
       const { data, statusCode, message } = response?.payload?.data ?? {};
       statusCode === SUCCESS_CODE && navigate(`/${data?.role}`);
-      dispatch(addUserInfo(data));
       toast.success(message);
+      dispatch(setUser(data));
     }
   };
 

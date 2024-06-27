@@ -12,7 +12,7 @@ const ViewExamContainer = ({ examsData }) => {
   const { loading } = useSelector((state) => state.api);
 
   const editExamHandler = () => {
-    navigate(`/teacher/editExam/1?id=${examsData._id}`, {
+    navigate(`/teacher/edit-exam/1?id=${examsData._id}`, {
       state: {
         subjectName: examsData?.subjectName,
         notes: examsData?.notes,
@@ -21,7 +21,7 @@ const ViewExamContainer = ({ examsData }) => {
     fetchExam({ id: examsData._id, dispatch });
   };
   const viewExamHandler = () => {
-    navigate(`/teacher/viewExam/1?id=${examsData._id}`, {
+    navigate(`/teacher/view-exam/1?id=${examsData._id}`, {
       state: {
         subjectName: examsData?.subjectName,
         notes: examsData?.notes,
@@ -36,6 +36,7 @@ const ViewExamContainer = ({ examsData }) => {
     };
     dispatch(api({ name: `deleteExam`, config }));
   };
+
   return (
     <div style={{ border: "1px solid black", width: "auto", padding: 10 }}>
       <h2>Subject : {examsData.subjectName}</h2>

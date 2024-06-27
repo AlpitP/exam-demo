@@ -21,6 +21,11 @@ const Student = () => {
     };
     fetch();
   }, [dispatch, search]);
+  const { name, email, Result } = viewStudentDetail?.[0] ?? {};
+
+  if (loading.viewStudentDetail) {
+    return <Loader loading={loading.viewStudentDetail} />;
+  }
 
   return (
     <div>
@@ -30,22 +35,20 @@ const Student = () => {
           textAlign: "center",
         }}
       >
-        {loading.viewStudentDetail ? (
-          <Loader loading={loading.viewStudentDetail} />
-        ) : (
-          <>
-            <h2>Name: {viewStudentDetail?.[0]?.name}</h2>
-            <h2>Email: {viewStudentDetail?.[0]?.email}</h2>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: 10,
-                marginBlock: 10,
-                flexWrap: "wrap",
-              }}
-            >
-              {viewStudentDetail?.[0]?.Result.map((ele, index) => {
+        <>
+          <h2>Name: {name}</h2>
+          <h2>Email: {email}</h2>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 10,
+              marginBlock: 10,
+              flexWrap: "wrap",
+            }}
+          >
+            {Result &&
+              Result.map((ele, index) => {
                 return (
                   <div
                     style={{ border: "1px solid black", padding: 10 }}
@@ -58,9 +61,8 @@ const Student = () => {
                   </div>
                 );
               })}
-            </div>
-          </>
-        )}
+          </div>
+        </>
       </div>
     </div>
   );

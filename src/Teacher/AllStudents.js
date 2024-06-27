@@ -30,25 +30,24 @@ const AllStudents = () => {
       <h1 style={{ textAlign: "center" }}>All Students Details.</h1>
       <div className="table">
         <Table tableHeadings={["No.", "Name", "Email", "Status", "Action"]}>
-          {data &&
-            data.allStudents?.map((ele, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{ele.name}</td>
-                  <td>{ele.email}</td>
-                  <td>{ele.status}</td>
-                  <td>
-                    <CustomButton
-                      value="View"
-                      onClick={() =>
-                        navigate(`/teacher/viewStudentDetail?id=${ele._id}`)
-                      }
-                    />
-                  </td>
-                </tr>
-              );
-            })}
+          {data.allStudents?.map((ele, index) => {
+            return (
+              <tr key={index}>
+                <td>{index + 1}</td>
+                <td>{ele.name}</td>
+                <td>{ele.email}</td>
+                <td>{ele.status}</td>
+                <td>
+                  <CustomButton
+                    value="View"
+                    onClick={() =>
+                      navigate(`/teacher/view-student-detail?id=${ele._id}`)
+                    }
+                  />
+                </td>
+              </tr>
+            );
+          })}
         </Table>
         <Loader loading={loading.allStudents} />
       </div>
@@ -56,4 +55,4 @@ const AllStudents = () => {
   );
 };
 
-export default React.memo(AllStudents);
+export default AllStudents;

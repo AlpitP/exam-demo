@@ -2,27 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import PageNotFound from "../components/PageNotFound";
 import {
-  CREATE_EXAM_LAST_QUESTION,
   FIRST_QUESTION,
   POST,
   PUT,
   SUCCESS_CODE,
+  TOTAL_OPTIONS,
+  TOTAL_QUESTIONS_CREATE_EXAM,
+  TOTAL_QUESTIONS_GIVE_EXAM,
 } from "../constants";
+import { setFormData } from "../container/setFormData";
+import { createExamFormFields } from "../description/createExamFormFields";
 import api from "../redux/actions/apiAction";
 import { clearForm, onChange, removeError } from "../redux/slices/formSlice";
 import {
-  setQuestion,
   setCurrentQuestionFormData,
+  setQuestion,
 } from "../redux/slices/teacherSlice";
 import store from "../redux/store/store";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
-import { createExamFormFields } from "../description/createExamFormFields";
 import { objectKeys } from "../utils/javascript";
 import { validation } from "../utils/validation";
-import { setFormData } from "../container/setFormData";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 
 const CreateExam = ({ type }) => {
   const { id } = useParams();
@@ -35,24 +39,28 @@ const CreateExam = ({ type }) => {
     (state) => state.teacher
   );
   const dispatch = useDispatch();
+  const { subjectName, notes, question, answer } = formData;
 
-  const { subjectName, notes, question, answer, ans1, ans2, ans3, ans4 } =
-    formData;
+  const options = [];
+  for (let i = 0; i < TOTAL_OPTIONS; i++) {
+    const option = `ans${i + 1}`;
+    formData?.[option] && options.push(formData?.[option]);
+  }
+
+  useClearFormOnUnMount();
 
   useEffect(() => {
     dispatch(
-      onChange(
-        currentQuestion?.question?.length
-          ? {
-              data:
-                objectKeys(formData).length > 0 ? formData : currentQuestion,
-            }
-          : {
-              data: data?.subjectName ? { subjectName: data?.subjectName } : {},
-            }
-      )
+      onChange({
+        data: currentQuestion?.question?.length
+          ? objectKeys(formData).length
+            ? formData
+            : currentQuestion
+          : data?.subjectName
+          ? { subjectName: data?.subjectName }
+          : {},
+      })
     );
-
     formData?.answer && dispatch(removeError({ name: "error" }));
   }, [currentQuestion]);
 
@@ -80,28 +88,102 @@ const CreateExam = ({ type }) => {
 
   const examData = {
     subjectName,
-    questions: [{ question, options: [ans1, ans2, ans3, ans4], answer }],
+    questions: [{ question, options, answer }],
     notes: [],
   };
 
   const previousHandler = () => {
     setIndex((index) => index - 1);
     type === "editExam"
-      ? navigate(`/teacher/editExam/${index - 1}${search}`)
+      ? navigate(`/teacher/edit-exam/${index - 1}${search}`)
       : type === "viewExam"
-      ? navigate(`/teacher/viewExam/${index - 1}${search}`)
+      ? navigate(`/teacher/view-exam/${index - 1}${search}`)
       : navigate(`/teacher/create-exam/${index - 1}`);
+  };
+
+  const submitHandler = async () => {
+    setFormData({ dispatch, formData, data, index });
+    const valid = validation(createExamFormFields(index - 1));
+    const filter = data.questions.filter((ele) => ele);
+    if (filter.length === TOTAL_QUESTIONS_GIVE_EXAM) {
+      const config = {
+        url: "dashboard/Teachers/Exam",
+        data: store.getState().teacher.examData,
+        method: POST,
+      };
+      const response = await dispatch(api({ name: "createExam", config }));
+      const { statusCode, message } = response?.payload?.data ?? {};
+      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
+      toast.success(message);
+    }
+    if (
+      valid &&
+      formData.answer &&
+      filter.length === TOTAL_QUESTIONS_CREATE_EXAM - 1
+    ) {
+      dispatch(
+        setQuestion({
+          subjectName: data?.subjectName,
+          question: examData?.questions?.[0],
+          note: notes,
+          currentQue: index,
+        })
+      );
+      const config = {
+        url: "dashboard/Teachers/Exam",
+        data: store.getState().teacher.examData,
+        method: POST,
+      };
+      const response = await dispatch(api({ name: "createExam", config }));
+      const { statusCode, message } = response?.payload?.data ?? {};
+      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
+      toast.success(message);
+    } else if (valid && !formData.answer) {
+      toast.error("Please Select Ans.");
+    } else {
+      toast.error(`Please Fill All Questions.`);
+    }
   };
 
   const skipHandler = () => {
     if (data.subjectName) {
-      setIndex((index) => index++);
+      setIndex((index) => index + 1);
       dispatch(clearForm());
       type === "editExam"
-        ? navigate(`/teacher/editExam/${index + 1}${search}`)
+        ? navigate(`/teacher/edit-exam/${index + 1}${search}`)
         : navigate(`/teacher/create-exam/${index + 1}`);
     } else {
       toast.error("You can not skip First question.");
+    }
+  };
+
+  const updateHandler = async () => {
+    const valid = validation(createExamFormFields(index - 1));
+    const filter = data.questions.filter((ele) => ele);
+    if (
+      valid &&
+      formData.answer &&
+      filter.length === TOTAL_QUESTIONS_CREATE_EXAM
+    ) {
+      dispatch(
+        setQuestion({
+          subjectName: examData?.subjectName,
+          question: examData?.questions?.[0],
+          note: notes,
+          currentQue: index,
+        })
+      );
+      const config = {
+        url: `dashboard/Teachers/editExam${search}`,
+        data: store.getState().teacher.examData,
+        method: PUT,
+      };
+      const response = await dispatch(api({ name: "updateExam", config }));
+      const { statusCode, message } = response?.payload?.data ?? {};
+      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exams`);
+      toast.success(message);
+    } else {
+      toast.error(`Please Fill All Questions.`);
     }
   };
 
@@ -120,71 +202,12 @@ const CreateExam = ({ type }) => {
       setIndex((index) => index + 1);
       dispatch(onChange({ data: { subjectName: examData?.subjectName } }));
       type === "editExam"
-        ? navigate(`/teacher/editExam/${index + 1}${search}`)
+        ? navigate(`/teacher/edit-exam/${index + 1}${search}`)
         : type === "viewExam"
-        ? navigate(`/teacher/viewExam/${index + 1}${search}`)
+        ? navigate(`/teacher/view-exam/${index + 1}${search}`)
         : navigate(`/teacher/create-exam/${index + 1}`);
     } else if (valid && !formData.answer) {
       toast.error("Please Select Ans");
-    }
-  };
-
-  const submitHandler = async () => {
-    setFormData({ dispatch, formData, data, index });
-    const valid = validation(createExamFormFields(index - 1));
-    const filter = data.questions.filter((ele) => ele !== null);
-    if (valid && formData.answer && filter.length === 14) {
-      dispatch(
-        setQuestion({
-          subjectName: data?.subjectName,
-          question: examData?.questions?.[0],
-          note: notes,
-          currentQue: index,
-        })
-      );
-      const config = {
-        url: "dashboard/Teachers/Exam",
-        data: store.getState().teacher.examData,
-        method: POST,
-      };
-      const response = await dispatch(api({ name: "createExam", config }));
-      const { statusCode } = response?.payload?.data ?? {};
-
-      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
-    } else if (valid && !formData.answer) {
-      toast.error("Please Select Ans.");
-    } else {
-      toast.error(`Please Fill All Questions.`);
-    }
-  };
-
-  const updateHandler = async () => {
-    const valid = validation(createExamFormFields(index - 1));
-    const filter = data.questions.filter((ele) => ele);
-    if (
-      valid &&
-      formData.answer &&
-      filter.length === CREATE_EXAM_LAST_QUESTION
-    ) {
-      dispatch(
-        setQuestion({
-          subjectName: examData?.subjectName,
-          question: examData?.questions?.[0],
-          note: notes,
-          currentQue: index,
-        })
-      );
-      const config = {
-        url: `dashboard/Teachers/editExam${search}`,
-        data: store.getState().teacher.examData,
-        method: PUT,
-      };
-      const response = await dispatch(api({ name: "updateExam", config }));
-      const { statusCode } = response?.payload?.data ?? {};
-
-      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
-    } else {
-      toast.error(`Please Fill All Questions.`);
     }
   };
 
@@ -202,7 +225,7 @@ const CreateExam = ({ type }) => {
         type: "button",
         onClick: skipHandler,
         disabled:
-          index === CREATE_EXAM_LAST_QUESTION ||
+          index === TOTAL_QUESTIONS_CREATE_EXAM ||
           loading.updateExam ||
           loading.createExam ||
           (type !== "editExam" && index === FIRST_QUESTION),
@@ -219,7 +242,7 @@ const CreateExam = ({ type }) => {
         type: "button",
         onClick: type === "editExam" ? updateHandler : submitHandler,
         disabled:
-          (type !== "editExam" && index !== CREATE_EXAM_LAST_QUESTION) ||
+          (type !== "editExam" && index !== TOTAL_QUESTIONS_CREATE_EXAM) ||
           loading.updateExam ||
           loading.createExam,
       },
@@ -227,11 +250,13 @@ const CreateExam = ({ type }) => {
         value: "Next",
         type: "button",
         onClick: nextHandler,
-        disabled: index >= CREATE_EXAM_LAST_QUESTION || loading.updateExam,
+        disabled: index >= TOTAL_QUESTIONS_CREATE_EXAM || loading.updateExam,
       },
     ];
   };
-
+  if (+id < FIRST_QUESTION || +id > TOTAL_QUESTIONS_CREATE_EXAM) {
+    return <PageNotFound />;
+  }
   return (
     <div>
       <h1 style={{ textAlign: "center" }}>
@@ -248,13 +273,9 @@ const CreateExam = ({ type }) => {
               disable={type === "viewExam"}
             />
 
-            {buttonAttributes({ index, type }).map(
-              ({ value, ...rest }, index) => {
-                return (
-                  value && <CustomButton key={index} {...rest} value={value} />
-                );
-              }
-            )}
+            {buttonAttributes({ index, type }).map(({ ...rest }, index) => {
+              return rest.value && <CustomButton key={index} {...rest} />;
+            })}
           </form>
         </div>
       )}

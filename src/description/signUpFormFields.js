@@ -1,4 +1,4 @@
-import { EMAIL, NAME, PASSWORD } from "../constants";
+import { passwordPattern, namePattern, emailPattern } from "./validation";
 
 export const signUpFormFields = [
   {
@@ -12,30 +12,21 @@ export const signUpFormFields = [
     type: "text",
     label: "Enter Name",
     name: "name",
-    pattern: {
-      value: NAME,
-      message: "Number and Special character not Allow.",
-    },
+    pattern: namePattern,
     isRequired: "Please Enter Your Name.",
   },
   {
     type: "email",
     label: "Enter Email",
     name: "email",
-    pattern: {
-      value: EMAIL,
-      message: "Please Enter Valid Email",
-    },
+    pattern: emailPattern,
     isRequired: "Please Enter Your Email.",
   },
   {
     type: "password",
     label: "Enter Password",
     name: "password",
-    pattern: {
-      value: PASSWORD,
-      message: "Password must have more than 6 characters.",
-    },
+    pattern: passwordPattern,
     isRequired: "Please Enter Your Password.",
   },
 ];

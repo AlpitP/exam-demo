@@ -1,4 +1,5 @@
-import { PASSWORD } from "../constants";
+import { passwordValidation } from "../container/passwordValidation";
+import { passwordPattern } from "./validation";
 
 export const newPasswordFormFields = [
   {
@@ -6,24 +7,14 @@ export const newPasswordFormFields = [
     label: "Enter New Password",
     name: "Password",
     isRequired: "Please Enter New Password",
-    pattern: {
-      value: PASSWORD,
-      message: "Password must have more than 6 characters.",
-    },
+    pattern: passwordPattern,
   },
   {
     type: "password",
     label: "Confirm Password",
     name: "ConfirmPassword",
     isRequired: "Please Enter Confirm Password",
-    pattern: {
-      value: PASSWORD,
-      message: "Password must have more than 6 characters.",
-    },
-    customValidations: ({ password, oldPassword }) => {
-      if (password !== oldPassword) {
-        return "New Password and Confirm Password Not match.";
-      }
-    },
+    pattern: passwordPattern,
+    customValidations: passwordValidation,
   },
 ];
