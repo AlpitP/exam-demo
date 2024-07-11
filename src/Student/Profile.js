@@ -15,18 +15,22 @@ const Profile = () => {
   const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState(false);
   const [name, setName] = useState(studentProfile?.name ?? "");
-
+  const controller = new AbortController();
   const fetch = () => {
     const config = {
       url: "student/getStudentDetail",
       method: GET,
+      signal: controller.signal,
     };
     dispatch(api({ name: "studentProfile", config }));
   };
 
   useEffect(() => {
     !studentProfile && fetch();
-    return () => dispatch(clearForm());
+    return () => {
+      dispatch(clearForm());
+      controller.abort();
+    };
   }, [dispatch, studentProfile?.name]);
 
   useEffect(() => {

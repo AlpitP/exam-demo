@@ -1,16 +1,15 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchExam } from "./EditExam";
 import { DELETE } from "../constants";
 import api from "../redux/actions/apiAction";
 import CustomButton from "../shared/Button";
+import { fetchExam } from "./EditExam";
 
 const ViewExamContainer = ({ examsData }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { loading } = useSelector((state) => state.api);
-
   const editExamHandler = () => {
     navigate(`/teacher/edit-exam/1?id=${examsData._id}`, {
       state: {

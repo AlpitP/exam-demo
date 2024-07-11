@@ -10,7 +10,6 @@ import {
   SUCCESS_CODE,
   TOTAL_OPTIONS,
   TOTAL_QUESTIONS_CREATE_EXAM,
-  TOTAL_QUESTIONS_GIVE_EXAM,
 } from "../constants";
 import { setFormData } from "../container/setFormData";
 import { createExamFormFields } from "../description/createExamFormFields";
@@ -24,9 +23,9 @@ import store from "../redux/store/store";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
 import Loader from "../shared/Loader";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 import { objectKeys } from "../utils/javascript";
 import { validation } from "../utils/validation";
-import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
 
 const CreateExam = ({ type }) => {
   const { id } = useParams();
@@ -105,30 +104,21 @@ const CreateExam = ({ type }) => {
     setFormData({ dispatch, formData, data, index });
     const valid = validation(createExamFormFields(index - 1));
     const filter = data.questions.filter((ele) => ele);
-    if (filter.length === TOTAL_QUESTIONS_GIVE_EXAM) {
-      const config = {
-        url: "dashboard/Teachers/Exam",
-        data: store.getState().teacher.examData,
-        method: POST,
-      };
-      const response = await dispatch(api({ name: "createExam", config }));
-      const { statusCode, message } = response?.payload?.data ?? {};
-      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
-      toast.success(message);
-    }
     if (
       valid &&
       formData.answer &&
-      filter.length === TOTAL_QUESTIONS_CREATE_EXAM - 1
+      filter.length >= TOTAL_QUESTIONS_CREATE_EXAM - 1
     ) {
-      dispatch(
-        setQuestion({
-          subjectName: data?.subjectName,
-          question: examData?.questions?.[0],
-          note: notes,
-          currentQue: index,
-        })
-      );
+      if (filter.length < TOTAL_QUESTIONS_CREATE_EXAM) {
+        dispatch(
+          setQuestion({
+            subjectName: data?.subjectName,
+            question: examData?.questions?.[0],
+            note: notes,
+            currentQue: index,
+          })
+        );
+      }
       const config = {
         url: "dashboard/Teachers/Exam",
         data: store.getState().teacher.examData,
@@ -136,7 +126,7 @@ const CreateExam = ({ type }) => {
       };
       const response = await dispatch(api({ name: "createExam", config }));
       const { statusCode, message } = response?.payload?.data ?? {};
-      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exam`);
+      statusCode === SUCCESS_CODE && navigate(`/teacher/view-exams`);
       toast.success(message);
     } else if (valid && !formData.answer) {
       toast.error("Please Select Ans.");
@@ -211,49 +201,6 @@ const CreateExam = ({ type }) => {
     }
   };
 
-  const buttonAttributes = ({ index, type }) => {
-    return [
-      {
-        value: "Previous",
-        type: "button",
-        onClick: previousHandler,
-        disabled:
-          index === FIRST_QUESTION || loading.updateExam || loading.createExam,
-      },
-      type !== "viewExam" && {
-        value: "Skip",
-        type: "button",
-        onClick: skipHandler,
-        disabled:
-          index === TOTAL_QUESTIONS_CREATE_EXAM ||
-          loading.updateExam ||
-          loading.createExam ||
-          (type !== "editExam" && index === FIRST_QUESTION),
-      },
-      type !== "viewExam" && {
-        value:
-          type === "editExam"
-            ? loading.updateExam
-              ? "Updating.."
-              : "Update"
-            : loading.createExam
-            ? "Submitting.."
-            : "Submit",
-        type: "button",
-        onClick: type === "editExam" ? updateHandler : submitHandler,
-        disabled:
-          (type !== "editExam" && index !== TOTAL_QUESTIONS_CREATE_EXAM) ||
-          loading.updateExam ||
-          loading.createExam,
-      },
-      {
-        value: "Next",
-        type: "button",
-        onClick: nextHandler,
-        disabled: index >= TOTAL_QUESTIONS_CREATE_EXAM || loading.updateExam,
-      },
-    ];
-  };
   if (+id < FIRST_QUESTION || +id > TOTAL_QUESTIONS_CREATE_EXAM) {
     return <PageNotFound />;
   }
@@ -272,10 +219,55 @@ const CreateExam = ({ type }) => {
               formFields={createExamFormFields(index - 1)}
               disable={type === "viewExam"}
             />
-
-            {buttonAttributes({ index, type }).map(({ ...rest }, index) => {
-              return rest.value && <CustomButton key={index} {...rest} />;
-            })}
+            <CustomButton
+              value="Previous"
+              onClick={previousHandler}
+              disabled={
+                index === FIRST_QUESTION ||
+                loading.updateExam ||
+                loading.createExam
+              }
+            />
+            {console.log(type)}
+            {type !== "viewExam" && (
+              <>
+                <CustomButton
+                  value={
+                    type === "editExam"
+                      ? loading.updateExam
+                        ? "Updating.."
+                        : "Update"
+                      : loading.createExam
+                      ? "Submitting.."
+                      : "Submit"
+                  }
+                  onClick={type === "editExam" ? updateHandler : submitHandler}
+                  disabled={
+                    (type !== "editExam" &&
+                      index !== TOTAL_QUESTIONS_CREATE_EXAM) ||
+                    loading.updateExam ||
+                    loading.createExam
+                  }
+                />
+                <CustomButton
+                  value="Skip"
+                  onClick={skipHandler}
+                  disabled={
+                    index === TOTAL_QUESTIONS_CREATE_EXAM ||
+                    loading.updateExam ||
+                    loading.createExam ||
+                    (type !== "editExam" && index === FIRST_QUESTION)
+                  }
+                />
+              </>
+            )}
+            <CustomButton
+              value="Next"
+              onClick={nextHandler}
+              disabled={
+                index >= TOTAL_QUESTIONS_CREATE_EXAM || loading.updateExam
+              }
+            />
           </form>
         </div>
       )}

@@ -9,7 +9,7 @@ import {
   studentNavbarFields,
   teacherNavbarFields,
 } from "../description/navbar";
-import { Role } from "../description/role.enums";
+import { userRole } from "../description/role.enums";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ const Navbar = () => {
   };
   const role = getStateFromLocalStorage("role");
   const navbarFields =
-    role === Role.STUDENT ? studentNavbarFields : teacherNavbarFields;
+    role === userRole.STUDENT ? studentNavbarFields : teacherNavbarFields;
   return (
     <div
       style={{ display: "flex", justifyContent: "space-between", margin: 20 }}

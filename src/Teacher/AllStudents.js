@@ -12,17 +12,19 @@ const AllStudents = () => {
   const { data, loading } = useSelector((state) => state.api);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const controller = new AbortController();
   const fetch = () => {
     const config = {
       url: "dashboard/Teachers",
       method: GET,
+      signal: controller.signal,
     };
     dispatch(api({ name: "allStudents", config }));
   };
 
   useEffect(() => {
     !data.allStudents && fetch();
+    return () => controller.abort();
   }, []);
 
   return (

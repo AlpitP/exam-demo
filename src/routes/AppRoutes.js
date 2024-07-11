@@ -17,7 +17,7 @@ import SignUp from "../components/SignUp";
 import HomePage from "../dashboard/HomePage";
 import AuthRoute from "./AuthRoutes";
 import ProtectedRoute from "./ProtectedRoutes";
-import { Role } from "../description/role.enums";
+import { userRole } from "../description/role.enums";
 import Layout from "../dashboard/Layout";
 
 const AppRoutes = () => {
@@ -39,7 +39,7 @@ const AppRoutes = () => {
       children: [
         {
           path: "teacher",
-          element: <ProtectedRoute role={Role.TEACHER} />,
+          element: <ProtectedRoute role={userRole.TEACHER} />,
           children: [
             { path: "", element: <HomePage /> },
             {
@@ -63,7 +63,7 @@ const AppRoutes = () => {
 
         {
           path: "student",
-          element: <ProtectedRoute role={Role.STUDENT} />,
+          element: <ProtectedRoute role={userRole.STUDENT} />,
           children: [
             { path: "", element: <HomePage /> },
             { path: "Exams", element: <AllExams /> },

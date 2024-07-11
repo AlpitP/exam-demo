@@ -8,22 +8,24 @@ import Loader from "../shared/Loader";
 import Table from "../shared/Table";
 import "./allExam.css";
 
+const controller = new AbortController();
 const AllExams = () => {
   const dispatch = useDispatch();
   const { data, loading } = useSelector((state) => state.api);
   const navigate = useNavigate();
   const { allExam } = data;
   const { allExam: allExamLoader } = loading;
-
   const fetch = () => {
     const config = {
       url: "student/studentExam",
       method: GET,
+      signal: controller.signal,
     };
     dispatch(api({ name: "allExam", config }));
   };
   useEffect(() => {
     !data.allExam && fetch();
+    return () => controller.abort();
   }, []);
 
   const giveExam = ({ alreadyGiveExam, ele }) => {

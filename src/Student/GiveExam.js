@@ -85,7 +85,7 @@ const GiveExam = () => {
     );
   };
 
-  const submitHandler = async () => {
+  const submitExamHandler = async () => {
     if (
       formData.answer &&
       examData.questions.length === TOTAL_QUESTIONS_GIVE_EXAM - 1
@@ -108,7 +108,7 @@ const GiveExam = () => {
     }
   };
 
-  const nextHandler = () => {
+  const nextQuestionHandler = () => {
     if (formData.answer) {
       currentQuestion();
       setIndex((index) => index + 1);
@@ -118,42 +118,15 @@ const GiveExam = () => {
       dispatch(setError({ name: "error", error: "Please Select Ans." }));
     }
   };
-
-  const buttonAttributes = ({ index }) => {
-    return [
-      {
-        value: "Previous",
-        type: "button",
-        onClick: () => {
-          setIndex((index) => index - 1);
-          dispatch(removeError({ name: "error" }));
-          navigate(`/student/give-exam/${index - 1}${search}`);
-        },
-        disabled: index === FIRST_QUESTION || giveExam,
-      },
-      {
-        value: "Skip",
-        type: "button",
-        onClick: () => {
-          setIndex((index) => index + 1);
-          dispatch(removeError({ name: "error" }));
-          navigate(`/student/give-exam/${index + 1}${search}`);
-        },
-        disabled: index === TOTAL_QUESTIONS_GIVE_EXAM,
-      },
-      {
-        value: giveExam ? "Submitting..." : " Submit",
-        type: "button",
-        onClick: submitHandler,
-        disabled: index !== TOTAL_QUESTIONS_GIVE_EXAM || giveExam,
-      },
-      {
-        value: "Next",
-        type: "button",
-        onClick: nextHandler,
-        disabled: index === TOTAL_QUESTIONS_GIVE_EXAM,
-      },
-    ];
+  const previousQuestionHandler = () => {
+    setIndex((index) => index - 1);
+    dispatch(removeError({ name: "error" }));
+    navigate(`/student/give-exam/${index - 1}${search}`);
+  };
+  const skipQuestionHandler = () => {
+    setIndex((index) => index + 1);
+    dispatch(removeError({ name: "error" }));
+    navigate(`/student/give-exam/${index + 1}${search}`);
   };
 
   if (+id < FIRST_QUESTION || +id > TOTAL_QUESTIONS_GIVE_EXAM) {
@@ -175,9 +148,29 @@ const GiveExam = () => {
             <p style={{ color: "red", fontSize: 14 }}>Please Select Ans.</p>
           )}
 
-          {buttonAttributes({ index }).map(({ ...rest }, index) => {
-            return <CustomButton key={index} {...rest} />;
-          })}
+          <CustomButton
+            value="Previous"
+            onClick={previousQuestionHandler}
+            disabled={index === FIRST_QUESTION || giveExam}
+          />
+
+          <CustomButton
+            value={giveExam ? "Submitting..." : " Submit"}
+            onClick={submitExamHandler}
+            disabled={index !== TOTAL_QUESTIONS_GIVE_EXAM || giveExam}
+          />
+
+          <CustomButton
+            value="Skip"
+            onClick={skipQuestionHandler}
+            disabled={index === TOTAL_QUESTIONS_GIVE_EXAM}
+          />
+
+          <CustomButton
+            value="Next"
+            onClick={nextQuestionHandler}
+            disabled={index === TOTAL_QUESTIONS_GIVE_EXAM}
+          />
         </>
       )}
     </div>
