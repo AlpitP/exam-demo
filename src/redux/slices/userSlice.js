@@ -1,39 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  addUserLocalStorage,
-  getStateFromLocalStorage,
-  removeUserLocalStorage,
+  addUserToLocalStorage,
+  getUserFromLocalStorage,
+  removeUserFromLocalStorage,
   setLoggedIn,
   setLoggedOut,
 } from "../../utils/authentication";
 
-const initialState = getStateFromLocalStorage();
+const initialState = getUserFromLocalStorage();
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    addUserInfo: (state, action) => {
-      const { name, role, token } = action.payload;
+    setUser: (state, action) => {
+      const { name, role, token } = action.payload ?? {};
 
       token && setLoggedIn();
-      addUserLocalStorage({
-        name,
-        role,
-        token,
-      });
-
-      return getStateFromLocalStorage();
+      addUserToLocalStorage({ name, role, token });
+      return getUserFromLocalStorage();
     },
 
-    removeUserInfo: (state, action) => {
+    removeUser: () => {
       setLoggedOut();
-      removeUserLocalStorage("token", "name", "role");
-
-      return getStateFromLocalStorage();
+      removeUserFromLocalStorage("token", "name", "role");
+      return getUserFromLocalStorage();
     },
   },
 });
 
 export default userSlice.reducer;
-export const { addUserInfo, removeUserInfo } = userSlice.actions;
+export const { setUser, removeUser } = userSlice.actions;

@@ -1,16 +1,13 @@
 import React from "react";
-import TeacherDashboard from "./TeacherDashboard";
+import { Outlet } from "react-router-dom";
+import { userRole } from "../description/role.enums";
 import StudentDashboard from "./StudentDashboard";
-import AuthDashboard from "./AuthDashboard";
+import TeacherDashboard from "./TeacherDashboard";
 
 const Dashboard = ({ role }) => {
-  return role === "teacher" ? (
-    <TeacherDashboard />
-  ) : role === "student" ? (
-    <StudentDashboard />
-  ) : (
-    <AuthDashboard />
-  );
+  if (role === userRole.TEACHER) return <TeacherDashboard />;
+  if (role === userRole.STUDENT) return <StudentDashboard />;
+  return <Outlet />;
 };
 
 export default Dashboard;

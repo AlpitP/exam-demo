@@ -1,23 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  examData: {},
+  examData: {
+    subjectName: "",
+    questions: [],
+    notes: [],
+  },
+  currentQuestion: {},
 };
 const teacherSlice = createSlice({
   name: "teacher",
   initialState,
   reducers: {
-    addExam: (state, action) => {
-      state.examData = action.payload;
+    setQuestion: (state, action) => {
+      const { question, note, currentQue, subjectName, data, notes } =
+        action.payload;
+      state.examData.subjectName = subjectName;
+      if (data) {
+        state.examData.questions = data ?? [];
+        state.examData.notes = notes ?? [];
+      } else {
+        state.examData.questions[currentQue - 1] = question;
+        state.examData.notes[currentQue - 1] = note ? note : " ";
+      }
     },
-    addQuestion: (state, action) => {
-      const { subjectName, question, note } = action.payload;
-      state.examData?.questions.push(question);
-      state.examData.subjectName = subjectName ?? state.examData.subjectName;
-      note && state.examData?.notes.push(note);
+    setCurrentQuestionFormData: (state, action) => {
+      const { data } = action?.payload;
+      state.currentQuestion = data;
+    },
+    clearExam: () => {
+      return initialState;
     },
   },
 });
 
 export default teacherSlice.reducer;
-export const { addExam, addQuestion } = teacherSlice.actions;
+export const { setQuestion, setCurrentQuestionFormData, clearExam } =
+  teacherSlice.actions;

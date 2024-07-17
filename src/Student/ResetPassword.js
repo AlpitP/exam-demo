@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { resetPasswordHandler } from "../container/resetPasswordHandler";
+import { POST, RESET_PASSWORD } from "../constants";
+import { resetPasswordFormFields } from "../description/resetPasswordFormFields";
+import api from "../redux/actions/apiAction";
+import { clearForm, onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { resetPasswordFormFields } from "../utils/resetPasswordFormFields";
-import Sidebar from "./Sidebar";
-import { clearForm } from "../redux/slices/formSlice";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
+import { validation } from "../utils/validation";
+import { toast } from "react-toastify";
 
 // const resetPasswordHandler = async ({formData,dispatch}) => {
 //   const valid = validation(resetPasswordFormFields);
@@ -23,20 +26,41 @@ import { clearForm } from "../redux/slices/formSlice";
 const ResetPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
-
   const dispatch = useDispatch();
-  useEffect(() => {
-    return () => dispatch(clearForm());
-  }, [dispatch]);
+  useClearFormOnUnMount();
+
+  const resetPasswordHandler = async (e) => {
+    e.preventDefault();
+    dispatch(
+      onChange({
+        data: {
+          oldPassword: formData?.oldPassword ?? "",
+          Password: formData?.Password ?? "",
+          ConfirmPassword: formData?.ConfirmPassword ?? "",
+        },
+      })
+    );
+    const valid = validation(resetPasswordFormFields);
+    if (valid) {
+      const config = {
+        url: RESET_PASSWORD,
+        method: POST,
+        data: formData,
+      };
+      const response = await dispatch(api({ name: "resetPassword", config }));
+      const { message } = response?.payload?.data ?? {};
+      toast.success(message);
+      dispatch(clearForm());
+    }
+  };
+
   return (
     <div>
-      <Sidebar />
       <h1>Reset Password</h1>
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={resetPasswordHandler}>
         <Form formFields={resetPasswordFormFields} />
         <CustomButton
-          text={loading.resetPassword ? "Submitting.." : "Submit"}
-          onClick={() => resetPasswordHandler({ formData, dispatch })}
+          value={loading.resetPassword ? "Submitting.." : "Submit"}
           disabled={loading.resetPassword}
         />
       </form>

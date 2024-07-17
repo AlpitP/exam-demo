@@ -3,33 +3,27 @@ import { useDispatch, useSelector } from "react-redux";
 import { onChange } from "../redux/slices/formSlice";
 import { validation } from "../utils/validation";
 import Input from "./Input";
-import SelectOptions from "./Select";
 import Radio from "./Radio";
+import SelectOptions from "./Select";
 
-const Form = ({ formFields, value, ...rest }) => {
-  const { formData } = useSelector((state) => state.formData);
-  const { examData } = useSelector((state) => state.teacher);
-  const { error } = useSelector((state) => state.formData);
-  const [isValid, setIsValid] = useState(false);
-  const [ans, setAns] = useState(examData?.questions?.[rest.index]?.ans ?? "");
+const Form = ({ formFields, disable }) => {
+  const { formData, error } = useSelector((state) => state.formData);
+  const [checkValidation, setCheckValidation] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    isValid && validation(formFields);
-  });
+    checkValidation && validation(formFields);
+  }, [formData, checkValidation]);
 
-  const changeHandler = (event, data) => {
-    setIsValid(true);
-    return (dispatch) => {
-      const { name, value } = event.target;
-      dispatch(onChange(data ?? { name, value }));
-    };
+  const changeHandler = (event) => {
+    setCheckValidation(true);
+    const { name, value } = event.target;
+    dispatch(onChange({ name, value }));
   };
-
   return (
     <div>
       {formFields.map((ele, index) => {
-        const { name, label, list, type, disabled } = ele;
+        const { name, label, list, type, readonly, id, ans, checked } = ele;
         switch (type) {
           case "select":
             return (
@@ -38,9 +32,10 @@ const Form = ({ formFields, value, ...rest }) => {
                 list={list}
                 key={index}
                 name={name}
-                value={formData[name] || "select"}
-                onChange={(e) => dispatch(changeHandler(e))}
+                value={formData[name]}
+                onChange={changeHandler}
                 errorMessage={error[name]}
+                disabled={disable}
               />
             );
           case "radio":
@@ -49,16 +44,11 @@ const Form = ({ formFields, value, ...rest }) => {
                 label={label}
                 key={index}
                 name={name}
-                onChange={(e) => {
-                  setAns(formData[name]);
-                  dispatch(
-                    changeHandler(e, { name: "ans", value: formData[name] })
-                  );
-                }}
-                errorMessage={error[name]}
-                checked={
-                  ans === formData[name] && ans !== undefined && ans !== ""
-                }
+                value={formData[id]}
+                onChange={changeHandler}
+                checked={checked(formData[id], formData[name])}
+                ans={ans}
+                disabled={disable}
               />
             );
           default:
@@ -68,10 +58,11 @@ const Form = ({ formFields, value, ...rest }) => {
                 label={label}
                 key={index}
                 name={name}
-                value={formData[name] ?? examData[name] ?? value ?? ""}
+                value={formData?.[name] ?? ""}
+                readOnly={readonly}
                 errorMessage={error[name]}
-                onChange={(e) => dispatch(changeHandler(e))}
-                disabled={disabled}
+                onChange={changeHandler}
+                disabled={disable}
               />
             );
         }

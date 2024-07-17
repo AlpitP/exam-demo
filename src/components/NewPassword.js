@@ -1,11 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { newPasswordHandler } from "../container/newPasswordHandler";
-import { clearForm } from "../redux/slices/formSlice";
+import { NEW_PASSWORD, POST, SUCCESS_CODE } from "../constants";
+import api from "../redux/actions/apiAction";
+import { onChange } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
 import Form from "../shared/Form";
-import { newPasswordFormFields } from "../utils/newPasswordFormFields";
+import { newPasswordFormFields } from "../description/newPasswordFormFields";
+import { validation } from "../utils/validation";
+import useClearFormOnUnMount from "../shared/useClearFormOnUnmount";
+import { toast } from "react-toastify";
 
 // const clickHandler = async ({formData,dispatch,search,navigate}) => {
 //   const valid = validation(newPasswordFormFields);
@@ -25,28 +29,44 @@ import { newPasswordFormFields } from "../utils/newPasswordFormFields";
 const NewPassword = () => {
   const { formData } = useSelector((state) => state.formData);
   const { loading } = useSelector((state) => state.api);
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { search } = useLocation();
+  useClearFormOnUnMount();
 
-  useEffect(() => {
-    return () => {
-      dispatch(clearForm());
-    };
-  }, [dispatch]);
+  const newPasswordHandler = async (e) => {
+    e.preventDefault();
+    dispatch(
+      onChange({
+        data: {
+          Password: formData?.Password ?? "",
+          ConfirmPassword: formData?.ConfirmPassword ?? "",
+        },
+      })
+    );
+    const valid = validation(newPasswordFormFields);
+    if (valid) {
+      const config = {
+        url: `${NEW_PASSWORD}${search}`,
+        method: POST,
+        data: formData,
+      };
+      const response = await dispatch(api({ name: "newPassword", config }));
+      const { statusCode, message } = response?.payload?.data ?? {};
+
+      statusCode === SUCCESS_CODE && navigate(`/sign-in`);
+      toast.success(message);
+    }
+  };
 
   return (
     <div>
       <h1 style={{ textAlign: "center", marginTop: 200 }}>New Password</h1>
-      <div style={forgotPasswordStyle}>
-        <form onSubmit={(e) => e.preventDefault()}>
+      <div style={newPasswordStyle}>
+        <form onSubmit={newPasswordHandler}>
           <Form formFields={newPasswordFormFields} />
           <CustomButton
-            text={loading.newPassword === true ? "Submitting..." : "Submit"}
-            onClick={() =>
-              newPasswordHandler({ formData, dispatch, search, navigate })
-            }
+            value={loading.newPassword ? "Submitting..." : "Submit"}
             disabled={loading.newPassword}
           />
           <p>
@@ -60,7 +80,7 @@ const NewPassword = () => {
 
 export default NewPassword;
 
-const forgotPasswordStyle = {
+const newPasswordStyle = {
   margin: 0,
   position: "absolute",
   top: " 50%",

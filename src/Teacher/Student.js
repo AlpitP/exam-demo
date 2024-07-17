@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
+import { GET } from "../constants";
 import api from "../redux/actions/apiAction";
-import Sidebar from "../Student/Sidebar";
+import Loader from "../shared/Loader";
 
 const Student = () => {
   const { data, loading } = useSelector((state) => state.api);
@@ -11,38 +12,57 @@ const Student = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetch = async () => {
+    const fetch = () => {
       const config = {
         url: `dashboard/Teachers/viewStudentDetail${search}`,
-        method: "get",
+        method: GET,
       };
-      await dispatch(api({ name: "viewStudentDetail", config }));
+      dispatch(api({ name: "viewStudentDetail", config }));
     };
-    !viewStudentDetail && fetch();
-  }, [dispatch, search, viewStudentDetail]);
+    fetch();
+  }, [dispatch, search]);
+  const { name, email, Result } = viewStudentDetail?.[0] ?? {};
+
+  if (loading.viewStudentDetail) {
+    return <Loader loading={loading.viewStudentDetail} />;
+  }
+
   return (
     <div>
-      <Sidebar />
       <h1 style={{ textAlign: "center" }}>Student Detail.</h1>
       <div
         style={{
           textAlign: "center",
-          border: "1px solid black",
-          width: "40%",
-          marginInline: "auto",
         }}
       >
-        {loading.viewStudentDetail ? (
-          <h1>Loading.</h1>
-        ) : (
-          <>
-            <h2>Name: {viewStudentDetail && viewStudentDetail[0].name}</h2>
-            <h2>Email: {viewStudentDetail && viewStudentDetail[0].email}</h2>
-            {viewStudentDetail && (
-              <h2>Rank:{viewStudentDetail[0]?.Result[0]?.rank}</h2>
-            )}
-          </>
-        )}
+        <>
+          <h2>Name: {name}</h2>
+          <h2>Email: {email}</h2>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 10,
+              marginBlock: 10,
+              flexWrap: "wrap",
+            }}
+          >
+            {Result &&
+              Result.map((ele, index) => {
+                return (
+                  <div
+                    style={{ border: "1px solid black", padding: 10 }}
+                    key={index}
+                  >
+                    <h3>Subject : {ele.subjectName}</h3>
+                    <h3>Score : {ele.score}</h3>
+                    <h3>Rank : {ele.rank}</h3>
+                    <h3>Result Status : {ele.resultStatus}</h3>
+                  </div>
+                );
+              })}
+          </div>
+        </>
       </div>
     </div>
   );

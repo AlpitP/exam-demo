@@ -1,82 +1,91 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editProfile } from "../container/editProfileHandler";
-import { submitProfile } from "../container/submitNewProfileHandler";
+import { GET } from "../constants";
 import api from "../redux/actions/apiAction";
-import { clearForm } from "../redux/slices/formSlice";
+import { clearForm, removeError, setError } from "../redux/slices/formSlice";
 import CustomButton from "../shared/Button";
-import Form from "../shared/Form";
-import { editProfileFormFields } from "../utils/editProfileFormFields";
-import Sidebar from "./Sidebar";
+import Input from "../shared/Input";
+import { toast } from "react-toastify";
 
 const Profile = () => {
-  const { formData } = useSelector((state) => state.formData);
+  const { error } = useSelector((state) => state.formData);
   const { data, loading } = useSelector((state) => state.api);
-  const { studentProfile, editedProfile } = data;
-  const { studentProfile: ProfileLoader, editedProfile: editLoader } = loading;
+  const { studentProfile } = data;
+  const { studentProfile: profileLoader } = loading;
   const dispatch = useDispatch();
   const [isEdit, setIsEdit] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(studentProfile?.name ?? "");
+  const controller = new AbortController();
+  const fetch = () => {
+    const config = {
+      url: "student/getStudentDetail",
+      method: GET,
+      signal: controller.signal,
+    };
+    dispatch(api({ name: "studentProfile", config }));
+  };
 
   useEffect(() => {
-    const fetch = async () => {
-      const config = {
-        url: "student/getStudentDetail",
-        method: "get",
-      };
-      await dispatch(api({ name: "studentProfile", config }));
-    };
     !studentProfile && fetch();
-    return () => dispatch(clearForm());
-  }, [dispatch, studentProfile]);
+    return () => {
+      dispatch(clearForm());
+      controller.abort();
+    };
+  }, [dispatch, studentProfile?.name]);
 
-  // const editProfile = () => {
-  //   setName(editedProfile?.name || studentProfile?.name);
-  //   setIsEdit(true);
-  // };
+  useEffect(() => {
+    if (!name) {
+      dispatch(setError({ name: "name", error: "Please Enter Name." }));
+    } else {
+      dispatch(removeError({ name: "name" }));
+    }
+  }, [name, dispatch]);
 
-  // const submitProfile = async () => {
-  //   const valid = validation(editProfileFormFields);
-  //   if (valid) {
-  //     setIsEdit(false);
-  //     const config = {
-  //       url: "student/studentProfile",
-  //       method: "put",
-  //       data: formData,
-  //     };
-  //     await dispatch(api({ name: "editedProfile", config }));
-  //   }
-  // };
+  const editProfile = (e) => {
+    e.preventDefault();
+    setName(studentProfile?.name);
+    setIsEdit(true);
+  };
+
+  const submitProfile = async (e) => {
+    e.preventDefault();
+    if (name) {
+      setIsEdit(false);
+      const config = {
+        url: "student/studentProfile",
+        method: "put",
+        data: { name },
+      };
+      const response = await dispatch(api({ name: "studentProfile", config }));
+      const { message } = response?.payload?.data ?? {};
+      toast.success(message);
+    }
+  };
 
   return (
     <div>
-      <Sidebar />
       <h1>Profile</h1>
-      {ProfileLoader ? (
+      {profileLoader ? (
         <h1>Loading..</h1>
       ) : (
         studentProfile?.name && (
-          <>
+          <form onSubmit={isEdit ? submitProfile : editProfile}>
             {isEdit ? (
-              <Form formFields={editProfileFormFields} value={name} />
-            ) : editedProfile ? (
-              <h3>Name: {editedProfile?.name}</h3>
+              <Input
+                type="text"
+                label="Name"
+                name="name"
+                value={name}
+                errorMessage={error.name}
+                onChange={(e) => setName(e.target.value)}
+              />
             ) : (
               <h3>Name: {studentProfile?.name}</h3>
             )}
-          </>
+            <CustomButton value={isEdit ? "Submit" : "Edit Profile"} />
+          </form>
         )
       )}
-
-      <CustomButton
-        onClick={() =>
-          isEdit
-            ? submitProfile({ setIsEdit, formData, dispatch })
-            : editProfile({ setName, editedProfile, studentProfile, setIsEdit })
-        }
-        disabled={editLoader}
-        text={isEdit ? "Submit" : editLoader ? "Editing..." : "Edit Profile"}
-      />
     </div>
   );
 };
